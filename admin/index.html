@@ -191,6 +191,12 @@ p{color:var(--muted);line-height:1.65}
 
 /* ADMIN AUTH */
 .auth-screen{position:fixed;z-index:500;inset:0;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 15% 0,rgba(99,21,26,.25),transparent 38%),#080705}.auth-card{width:min(460px,100%);padding:34px;border:1px solid var(--line);background:var(--panel);box-shadow:0 28px 90px #0009}.auth-card h1{margin:10px 0 8px;font-size:38px}.auth-card .primary,.auth-card .secondary{width:100%;margin-top:10px}.auth-link{display:block;margin-top:14px;border:0;background:transparent;color:var(--gold);text-align:center;width:100%}.auth-message{min-height:20px;color:var(--gold2);font-size:11px;text-align:center}.admin-invite-box{display:grid;grid-template-columns:1fr 1fr;gap:18px}.admin-list-item{display:grid;grid-template-columns:1fr auto;gap:15px;align-items:center;padding:15px;border:1px solid var(--line);background:var(--panel2)}@media(max-width:760px){.admin-invite-box{grid-template-columns:1fr}.auth-card{padding:27px 22px}}
+
+/* MODULOS FINAIS */
+.editor-grid{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:18px}.sticky-preview{position:sticky;top:18px}.media-slot{padding:16px;border:1px solid var(--line);background:var(--panel2)}.media-preview{min-height:180px;display:grid;place-items:center;margin-bottom:12px;border:1px dashed var(--line);background:#090705;color:var(--muted);text-align:center;overflow:hidden}.media-preview img,.media-preview video{width:100%;max-height:320px;object-fit:contain}.media-preview audio{width:90%}.gallery-admin{display:grid;gap:10px}.gallery-admin-item{display:grid;grid-template-columns:80px 1fr auto;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);background:var(--panel2)}.gallery-admin-item img{width:80px;height:65px;object-fit:cover}.mini-actions{display:flex;gap:5px}.mini-actions button{width:38px;height:38px;padding:0;border:1px solid var(--line);background:transparent;color:var(--gold)}.preview-card{padding:24px;border:1px solid var(--line);background:radial-gradient(circle at top right,#63151a33,transparent 42%),#120e0b}.preview-card.mobile{max-width:340px;margin:auto}.preview-card h3{font-size:34px;margin:12px 0}.preview-media{min-height:240px;display:grid;place-items:center;margin:16px 0;border:1px solid var(--line);background:#090705;color:var(--muted);overflow:hidden}.preview-media img,.preview-media video{width:100%;height:100%;max-height:360px;object-fit:contain}.history-grid{display:grid;gap:10px}.history-item{display:grid;grid-template-columns:1fr auto;gap:15px;padding:16px;border:1px solid var(--line);background:var(--panel)}.status-select{max-width:190px}.content-type-options{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.content-type-options label{padding:12px;border:1px solid var(--line);background:var(--panel2);text-align:center}.promo-preview-price{display:flex;gap:12px;align-items:baseline}.promo-preview-price del{color:var(--muted)}.promo-preview-price strong{color:var(--gold2);font:30px Georgia,serif}.media-library-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.library-item{padding:14px;border:1px solid var(--line);background:var(--panel)}.library-thumb{aspect-ratio:4/3;display:grid;place-items:center;margin-bottom:10px;background:#090705;color:var(--muted);overflow:hidden}.library-thumb img,.library-thumb video{width:100%;height:100%;object-fit:cover}.empty-note{padding:30px;border:1px dashed var(--line);color:var(--muted);text-align:center}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.full{grid-column:1/-1}
+@media(max-width:1100px){.editor-grid{grid-template-columns:1fr}.sticky-preview{position:static}.media-library-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.gallery-admin-item{grid-template-columns:60px 1fr}.gallery-admin-item img{width:60px;height:55px}.mini-actions{grid-column:1/-1}.content-type-options,.media-library-grid{grid-template-columns:1fr 1fr}.history-item{grid-template-columns:1fr}.toolbar button{width:100%}}
+@media(max-width:390px){.content-type-options,.media-library-grid{grid-template-columns:1fr}}
 </style>
 </head>
 
@@ -629,32 +635,8 @@ p{color:var(--muted);line-height:1.65}
 </section>
 </div>
 
-<div id="siteWorks" class="tab-panel" data-tab-panel-group="site">
-<section class="panel">
-<div class="panel-head">
-  <h2>Trabalhos</h2>
-  <button class="primary">Novo trabalho</button>
-</div>
-
-<div class="notice">
-  Fotos, textos, legendas, ordem e visibilidade.
-</div>
-</section>
-</div>
-
-<div id="siteFeedbacks" class="tab-panel" data-tab-panel-group="site">
-<section class="panel">
-<div class="panel-head">
-  <h2>Feedbacks</h2>
-  <button class="primary">Novo feedback</button>
-</div>
-
-<div class="notice">
-  Imagens, depoimentos, ordem e visibilidade.
-</div>
-</section>
-</div>
-
+<div id="siteWorks" class="tab-panel" data-tab-panel-group="site"><section class="panel"><div class="panel-head"><h2>Trabalhos</h2><label class="primary" style="display:inline-flex;align-items:center">Adicionar fotos<input id="worksFiles" class="hidden" type="file" accept="image/*" multiple></label></div><div class="form-grid"><label class="field">Título<input id="workTitle" placeholder="Título do trabalho"></label><label class="field">Status<select><option>Publicado</option><option>Rascunho</option><option>Oculto</option></select></label></div><label class="field">Descrição<textarea id="workDescription"></textarea></label><div id="worksGallery" class="gallery-admin"><div class="empty-note">Adicione fotos para montar e ordenar o trabalho.</div></div><div class="toolbar"><button class="secondary">Salvar rascunho</button><button class="primary">Publicar trabalho</button></div></section></div>
+<div id="siteFeedbacks" class="tab-panel" data-tab-panel-group="site"><section class="panel"><div class="panel-head"><h2>Feedbacks</h2><label class="primary" style="display:inline-flex;align-items:center">Adicionar imagem<input id="feedbackFiles" class="hidden" type="file" accept="image/*" multiple></label></div><label class="field">Texto/depoimento<textarea id="feedbackText"></textarea></label><label class="check"><input type="checkbox" checked>Mostrar no site</label><div id="feedbackGallery" class="gallery-admin"><div class="empty-note">Adicione imagens dos feedbacks e ordene a exibição.</div></div><div class="toolbar"><button class="secondary">Salvar rascunho</button><button class="primary">Publicar feedbacks</button></div></section></div>
 </section>
 
 <!-- LOJA -->
@@ -1026,116 +1008,25 @@ p{color:var(--muted);line-height:1.65}
 <!-- LEITURA DA SEMANA -->
 
 <section id="reading" class="page">
-
-<div class="page-head">
-  <div>
-    <span class="eyebrow">Área do Cliente</span>
-    <h1>Leitura da semana</h1>
-    <p>Fotos das cartas, texto, áudio, vídeo, prévia e histórico.</p>
-  </div>
-
-  <div class="actions">
-    <button class="secondary">Histórico</button>
-    <button class="primary">Nova leitura</button>
-  </div>
-</div>
-
-<div class="module-grid">
-
-<article class="module">
-  <span class="eyebrow">01</span>
-  <h2>Texto</h2>
-  <p>Título, período e interpretação introdutória.</p>
-  <button class="secondary">Editar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">02</span>
-  <h2>Fotos</h2>
-  <p>Várias fotos das cartas e ordenação.</p>
-  <button class="secondary">Gerenciar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">03</span>
-  <h2>Áudio</h2>
-  <p>Áudio explicando toda a leitura.</p>
-  <button class="secondary">Enviar áudio</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">04</span>
-  <h2>Vídeo</h2>
-  <p>Vídeo opcional da cartomante.</p>
-  <button class="secondary">Enviar vídeo</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">05</span>
-  <h2>Publicação</h2>
-  <p>Rascunho, prévia, publicado ou oculto.</p>
-  <button class="secondary">Configurar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">06</span>
-  <h2>Histórico</h2>
-  <p>Editar ou ocultar leituras anteriores.</p>
-  <button class="secondary">Abrir histórico</button>
-</article>
-
-</div>
-
+<div class="page-head"><div><span class="eyebrow">Área do Cliente</span><h1>Leitura da semana</h1><p>Crie a publicação completa com fotos, áudio, vídeo e histórico.</p></div><div class="actions"><button class="secondary" data-reading-tab="readingHistory">Histórico</button><button class="primary" data-reading-tab="readingEditor">Nova leitura</button></div></div>
+<div class="tabs"><button class="active" data-tab-group="reading" data-tab="readingEditor">Editor</button><button data-tab-group="reading" data-tab="readingHistory">Histórico</button></div>
+<div id="readingEditor" class="tab-panel active" data-tab-panel-group="reading"><div class="editor-grid"><div>
+<section class="panel"><div class="panel-head"><h2>Informações</h2><select id="readingStatus" class="status-select"><option>Rascunho</option><option>Publicado</option><option>Oculto</option></select></div><label class="field">Título<input id="readingTitle" value="Caminhos, escolhas e movimento"></label><div class="form-grid"><label class="field">Data inicial<input id="readingStart" type="date"></label><label class="field">Data final<input id="readingEnd" type="date"></label></div><label class="field">Texto introdutório<textarea id="readingText">Acompanhe a abertura das cartas e ouça a interpretação preparada para esta semana.</textarea></label></section>
+<section class="panel"><div class="panel-head"><h2>Fotos das cartas</h2><label class="secondary" style="display:inline-flex;align-items:center">Adicionar fotos<input id="readingPhotos" class="hidden" type="file" accept="image/*" multiple></label></div><div id="readingGalleryAdmin" class="gallery-admin"><div class="empty-note">Nenhuma foto selecionada.</div></div></section>
+<section class="panel"><h2>Áudio da interpretação</h2><div class="media-slot"><div id="readingAudioPreview" class="media-preview">MP3, M4A ou áudio compatível</div><input id="readingAudio" type="file" accept="audio/*"><button id="removeReadingAudio" class="danger" type="button" style="margin-top:10px">Remover áudio</button></div></section>
+<section class="panel"><h2>Vídeo opcional</h2><div class="media-slot"><div id="readingVideoPreview" class="media-preview">MP4 ou WebM</div><input id="readingVideo" type="file" accept="video/mp4,video/webm"><button id="removeReadingVideo" class="danger" type="button" style="margin-top:10px">Remover vídeo</button></div></section>
+<div class="toolbar"><button id="readingDraft" class="secondary">Salvar rascunho</button><button id="readingPreviewAction" class="secondary">Pré-visualizar</button><button id="readingPublish" class="primary">Publicar leitura</button><button id="readingHide" class="danger">Ocultar</button></div>
+</div><aside><div class="preview-switch"><button id="readingDesktop" class="secondary">Desktop</button><button id="readingMobile" class="secondary">Mobile</button></div><div id="readingPreviewCard" class="preview-card sticky-preview"><span class="eyebrow">LEITURA DA SEMANA</span><h3 id="readingPreviewTitle">Caminhos, escolhas e movimento</h3><p id="readingPreviewPeriod">Período da leitura</p><div id="readingPreviewImage" class="preview-media">A primeira foto aparecerá aqui</div><p id="readingPreviewText">Acompanhe a abertura das cartas e ouça a interpretação preparada para esta semana.</p><div id="readingPreviewAudio" class="media-preview" style="min-height:90px">O áudio aparecerá aqui</div><div id="readingPreviewVideo" class="media-preview">O vídeo aparecerá aqui</div></div></aside></div></div>
+<div id="readingHistory" class="tab-panel" data-tab-panel-group="reading"><div class="history-grid"><div class="history-item"><div><strong>Nenhuma leitura salva ainda</strong><br><span class="small">O histórico real será carregado do banco.</span></div></div></div></div>
 </section>
-
 <!-- CONTEÚDOS EXCLUSIVOS -->
 
 <section id="exclusive" class="page">
-
-<div class="page-head">
-  <div>
-    <span class="eyebrow">Área do Cliente</span>
-    <h1>Conteúdos exclusivos</h1>
-    <p>Textos, imagens, vídeos e áudios exclusivos.</p>
-  </div>
-
-  <button class="primary">Novo conteúdo</button>
-</div>
-
-<div class="module-grid">
-
-<article class="module">
-  <span class="eyebrow">TEXTOS</span>
-  <h2>Publicações</h2>
-  <p>Orientações, textos e materiais especiais.</p>
-  <button class="secondary">Gerenciar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">IMAGENS</span>
-  <h2>Galerias</h2>
-  <p>Imagens e publicações visuais.</p>
-  <button class="secondary">Gerenciar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">VÍDEOS</span>
-  <h2>Mensagens</h2>
-  <p>Conteúdo em vídeo.</p>
-  <button class="secondary">Gerenciar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">ÁUDIOS</span>
-  <h2>Orientações</h2>
-  <p>Conteúdo exclusivo em áudio.</p>
-  <button class="secondary">Gerenciar</button>
-</article>
-
-</div>
-
+<div class="page-head"><div><span class="eyebrow">Área do Cliente</span><h1>Conteúdos exclusivos</h1><p>Crie textos, imagens, vídeos e áudios em uma única publicação.</p></div><button class="primary" data-content-tab="contentEditor">Novo conteúdo</button></div>
+<div class="tabs"><button class="active" data-tab-group="content" data-tab="contentEditor">Editor</button><button data-tab-group="content" data-tab="contentList">Publicados</button></div>
+<div id="contentEditor" class="tab-panel active" data-tab-panel-group="content"><div class="editor-grid"><section class="panel"><h2>Nova publicação</h2><div class="form-grid"><label class="field">Título<input id="contentTitle"></label><label class="field">Categoria<input id="contentCategory" placeholder="Cartomancia, orientação..."></label></div><label class="field">Texto<textarea id="contentText"></textarea></label><div class="content-type-options"><label><input id="contentHasImage" type="checkbox" checked> Imagem</label><label><input id="contentHasVideo" type="checkbox"> Vídeo</label><label><input id="contentHasAudio" type="checkbox"> Áudio</label><label><input id="contentFeatured" type="checkbox"> Destaque</label></div><div class="form-grid"><label class="field">Capa/imagem<input id="contentImage" type="file" accept="image/*"></label><label class="field">Vídeo<input id="contentVideo" type="file" accept="video/*"></label><label class="field">Áudio<input id="contentAudio" type="file" accept="audio/*"></label><label class="field">Status<select id="contentStatus"><option>Rascunho</option><option>Publicado</option><option>Oculto</option></select></label></div><div class="toolbar"><button class="secondary" id="contentDraft">Salvar rascunho</button><button class="primary" id="contentPublish">Publicar conteúdo</button></div></section><aside><div id="contentPreview" class="preview-card sticky-preview"><span id="contentPreviewCategory" class="eyebrow">CATEGORIA</span><h3 id="contentPreviewTitle">Título do conteúdo</h3><div id="contentPreviewMedia" class="preview-media">Capa da publicação</div><p id="contentPreviewText">O texto aparecerá aqui.</p></div></aside></div></div>
+<div id="contentList" class="tab-panel" data-tab-panel-group="content"><div class="empty-note">Os conteúdos publicados aparecerão aqui após a integração com o banco.</div></div>
 </section>
-
 <!-- AGENDA -->
 
 <section id="schedule" class="page">
@@ -1361,43 +1252,11 @@ p{color:var(--muted);line-height:1.65}
 <!-- PROMOÇÕES -->
 
 <section id="promotions" class="page">
-
-<div class="page-head">
-  <div>
-    <span class="eyebrow">Benefícios</span>
-    <h1>Promoções</h1>
-    <p>Promoções públicas, exclusivas ou disponíveis nos dois ambientes.</p>
-  </div>
-
-  <button class="primary">Nova promoção</button>
-</div>
-
-<div class="module-grid">
-
-<article class="module">
-  <span class="eyebrow">CLIENTES</span>
-  <h2>Promoção exclusiva</h2>
-  <p>Imagem, vídeo, preço e validade.</p>
-  <button class="secondary">Criar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">PÚBLICO</span>
-  <h2>Promoção pública</h2>
-  <p>Oferta disponibilizada no site.</p>
-  <button class="secondary">Criar</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">AMBOS</span>
-  <h2>Promoção compartilhada</h2>
-  <p>Pode ter preço especial para clientes.</p>
-  <button class="secondary">Criar</button>
-</article>
-
-</div>
+<div class="page-head"><div><span class="eyebrow">Benefícios</span><h1>Promoções</h1><p>Crie ofertas públicas, exclusivas ou compartilhadas.</p></div><button class="primary" data-promo-tab="promoEditor">Nova promoção</button></div>
+<div class="tabs"><button class="active" data-tab-group="promo" data-tab="promoEditor">Editor</button><button data-tab-group="promo" data-tab="promoList">Promoções</button></div>
+<div id="promoEditor" class="tab-panel active" data-tab-panel-group="promo"><div class="editor-grid"><section class="panel"><h2>Nova promoção</h2><div class="form-grid"><label class="field">Título<input id="promoTitle"></label><label class="field">Onde aparece?<select id="promoVisibility"><option>Público</option><option>Cliente</option><option>Ambos</option></select></label></div><label class="field">Descrição<textarea id="promoText"></textarea></label><div class="form-grid"><label class="field">Preço normal<input id="promoNormal" type="number" min="0" step=".01"></label><label class="field">Preço promocional<input id="promoSale" type="number" min="0" step=".01"></label><label class="field">Preço para cliente<input id="promoClient" type="number" min="0" step=".01"></label><label class="field">Status<select id="promoStatus"><option>Ativa</option><option>Rascunho</option><option>Oculta</option><option>Encerrada</option></select></label><label class="field">Início<input type="datetime-local"></label><label class="field">Fim<input type="datetime-local"></label><label class="field">Imagem<input id="promoImage" type="file" accept="image/*"></label><label class="field">Vídeo opcional<input id="promoVideo" type="file" accept="video/*"></label></div><div class="toolbar"><button class="secondary" id="promoDraft">Salvar rascunho</button><button class="primary" id="promoPublish">Publicar promoção</button></div></section><aside><div id="promoPreview" class="preview-card sticky-preview"><span id="promoPreviewVisibility" class="eyebrow">PÚBLICO</span><h3 id="promoPreviewTitle">Título da promoção</h3><div id="promoPreviewMedia" class="preview-media">Imagem da promoção</div><p id="promoPreviewText">Descrição da promoção.</p><div class="promo-preview-price"><del id="promoPreviewNormal">R$ 0,00</del><strong id="promoPreviewSale">R$ 0,00</strong></div></div></aside></div></div>
+<div id="promoList" class="tab-panel" data-tab-panel-group="promo"><div class="empty-note">As promoções cadastradas aparecerão aqui.</div></div>
 </section>
-
 <!-- CLIENTES -->
 
 <section id="clients" class="page">
@@ -1429,43 +1288,11 @@ p{color:var(--muted);line-height:1.65}
 <!-- MÍDIAS -->
 
 <section id="media" class="page">
-
-<div class="page-head">
-  <div>
-    <span class="eyebrow">Biblioteca</span>
-    <h1>Mídias</h1>
-    <p>Fotos, vídeos e áudios utilizados no sistema.</p>
-  </div>
-
-  <button class="primary">Enviar arquivo</button>
-</div>
-
-<div class="module-grid">
-
-<article class="module">
-  <span class="eyebrow">FOTOS</span>
-  <h2>Imagens</h2>
-  <p>Site, leituras, trabalhos, loja e promoções.</p>
-  <button class="secondary">Abrir</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">VÍDEOS</span>
-  <h2>Vídeos</h2>
-  <p>Leituras, loja e conteúdos exclusivos.</p>
-  <button class="secondary">Abrir</button>
-</article>
-
-<article class="module">
-  <span class="eyebrow">ÁUDIOS</span>
-  <h2>Áudios</h2>
-  <p>Interpretações e orientações.</p>
-  <button class="secondary">Abrir</button>
-</article>
-
-</div>
+<div class="page-head"><div><span class="eyebrow">Biblioteca</span><h1>Mídias</h1><p>Envie, visualize e reutilize fotos, vídeos e áudios.</p></div><label class="primary" style="display:inline-flex;align-items:center">Enviar arquivos<input id="libraryFiles" class="hidden" type="file" accept="image/*,video/*,audio/*" multiple></label></div>
+<div class="tabs"><button class="active" data-tab-group="media" data-tab="mediaAll">Todos</button><button data-tab-group="media" data-tab="mediaImages">Fotos</button><button data-tab-group="media" data-tab="mediaVideos">Vídeos</button><button data-tab-group="media" data-tab="mediaAudios">Áudios</button></div>
+<div id="mediaAll" class="tab-panel active" data-tab-panel-group="media"><div id="mediaLibrary" class="media-library-grid"><div class="empty-note full">Nenhuma mídia adicionada nesta demonstração.</div></div></div><div id="mediaImages" class="tab-panel" data-tab-panel-group="media"><div class="empty-note">As imagens aparecerão aqui.</div></div><div id="mediaVideos" class="tab-panel" data-tab-panel-group="media"><div class="empty-note">Os vídeos aparecerão aqui.</div></div><div id="mediaAudios" class="tab-panel" data-tab-panel-group="media"><div class="empty-note">Os áudios aparecerão aqui.</div></div>
+<div class="notice">Na integração com o banco, cada arquivo mostrará onde está sendo utilizado antes de permitir a exclusão.</div>
 </section>
-
 <!-- CONFIGURAÇÕES -->
 
 <section id="settings" class="page">
