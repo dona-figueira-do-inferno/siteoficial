@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="robots" content="noindex, nofollow">
+
+<title>Confirmar conta | Dona Figueira do Inferno</title>
+
+<style>
+
+:root{
+  --bg:#080705;
+  --panel:#120e0b;
+  --gold:#d7a650;
+  --gold-light:#efc878;
+  --text:#f2e5cf;
+  --muted:#b3a58f;
+  --line:rgba(215,166,80,.24);
+  --wine:#63151a;
+  --success:#8fae78;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  color-scheme:dark;
+}
+
+body{
+  margin:0;
+  min-width:320px;
+  min-height:100vh;
+
+  display:grid;
+  place-items:center;
+
+  padding:30px 20px;
+
+  background:
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(99,21,26,.22),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      rgba(215,166,80,.08),
+      transparent 35%
+    ),
+    var(--bg);
+
+  color:var(--text);
+
+  font-family:
+    Arial,
+    sans-serif;
+}
+
+button,
+a{
+  font:inherit;
+}
+
+.wrapper{
+  width:min(760px,100%);
+}
+
+.logo-area{
+  margin-bottom:30px;
+  text-align:center;
+}
+
+.brand{
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:32px;
+  color:var(--text);
+}
+
+.brand-small{
+  display:block;
+
+  margin-top:9px;
+
+  color:var(--gold);
+
+  font-size:8px;
+
+  letter-spacing:.25em;
+
+  text-transform:uppercase;
+}
+
+.card{
+  position:relative;
+
+  overflow:hidden;
+
+  padding:
+    clamp(35px,6vw,70px);
+
+  border:
+    1px solid var(--line);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24,17,13,.98),
+      rgba(12,9,7,.98)
+    );
+
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.48);
+}
+
+.card::before{
+  content:"";
+
+  position:absolute;
+
+  width:320px;
+  height:320px;
+
+  top:-180px;
+  right:-140px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(215,166,80,.13),
+      transparent 68%
+    );
+
+  pointer-events:none;
+}
+
+.icon{
+  width:76px;
+  height:76px;
+
+  display:grid;
+  place-items:center;
+
+  margin:
+    0 auto 30px;
+
+  border:
+    1px solid var(--gold);
+
+  border-radius:50%;
+
+  color:var(--gold-light);
+
+  font-size:32px;
+}
+
+.eyebrow{
+  display:block;
+
+  margin-bottom:16px;
+
+  color:var(--gold);
+
+  font-size:10px;
+
+  letter-spacing:.22em;
+
+  text-align:center;
+
+  text-transform:uppercase;
+}
+
+h1{
+  max-width:600px;
+
+  margin:
+    0 auto 22px;
+
+  color:var(--text);
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:
+    clamp(38px,7vw,62px);
+
+  font-weight:400;
+
+  line-height:1.04;
+
+  text-align:center;
+}
+
+.description{
+  max-width:550px;
+
+  margin:
+    0 auto;
+
+  color:var(--muted);
+
+  font-size:14px;
+
+  line-height:1.8;
+
+  text-align:center;
+}
+
+.email-box{
+  max-width:500px;
+
+  margin:
+    34px auto;
+
+  padding:20px;
+
+  border:
+    1px solid var(--line);
+
+  background:
+    rgba(8,7,5,.65);
+
+  text-align:center;
+}
+
+.email-label{
+  display:block;
+
+  color:var(--gold);
+
+  font-size:9px;
+
+  letter-spacing:.16em;
+
+  text-transform:uppercase;
+}
+
+.email-address{
+  display:block;
+
+  margin-top:7px;
+
+  overflow-wrap:anywhere;
+
+  color:var(--text);
+
+  font-size:14px;
+}
+
+.actions{
+  max-width:500px;
+
+  display:grid;
+
+  gap:12px;
+
+  margin:
+    30px auto 0;
+}
+
+.primary{
+  min-height:50px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:13px 18px;
+
+  border:
+    1px solid var(--gold);
+
+  background:var(--gold);
+
+  color:#21150b;
+
+  font-weight:700;
+
+  text-decoration:none;
+
+  transition:.2s ease;
+}
+
+.primary:hover{
+  border-color:
+    var(--gold-light);
+
+  background:
+    var(--gold-light);
+}
+
+.secondary{
+  min-height:48px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:12px 18px;
+
+  border:
+    1px solid var(--line);
+
+  background:
+    transparent;
+
+  color:var(--text);
+
+  text-decoration:none;
+
+  transition:.2s ease;
+}
+
+.secondary:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+}
+
+.help{
+  max-width:500px;
+
+  margin:
+    34px auto 0;
+
+  padding-top:25px;
+
+  border-top:
+    1px solid var(--line);
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  line-height:1.7;
+
+  text-align:center;
+}
+
+.state{
+  display:none;
+}
+
+.state.active{
+  display:block;
+}
+
+/* CONFIRMADO */
+
+#confirmed .icon{
+  border-color:
+    var(--success);
+
+  color:
+    var(--success);
+}
+
+#confirmed .eyebrow{
+  color:
+    var(--success);
+}
+
+/* ERRO */
+
+#errorState .icon{
+  border-color:
+    #a86a70;
+
+  color:
+    #d79ca2;
+}
+
+#errorState .eyebrow{
+  color:
+    #d79ca2;
+}
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+  body{
+    padding:
+      20px 14px;
+  }
+
+  .logo-area{
+    margin-bottom:20px;
+  }
+
+  .brand{
+    font-size:27px;
+  }
+
+  .card{
+    padding:
+      40px 22px;
+  }
+
+  .icon{
+    width:66px;
+    height:66px;
+
+    margin-bottom:25px;
+
+    font-size:27px;
+  }
+
+  h1{
+    font-size:
+      clamp(36px,11vw,47px);
+  }
+
+  .description{
+    font-size:13px;
+  }
+
+  .email-box{
+    margin:
+      28px auto;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<main class="wrapper">
+
+<header class="logo-area">
+
+<div class="brand">
+Dona Figueira
+
+<span class="brand-small">
+Área do cliente
+</span>
+
+</div>
+
+</header>
+
+
+<div class="card">
+
+
+<!-- =================================
+AGUARDANDO CONFIRMAÇÃO
+================================= -->
+
+<section
+id="waiting"
+class="state active"
+>
+
+<div class="icon">
+✉
+</div>
+
+<span class="eyebrow">
+Cadastro recebido
+</span>
+
+<h1>
+Confira seu e-mail.
+</h1>
+
+<p class="description">
+
+Seu cadastro foi realizado.
+
+Enviamos uma mensagem para confirmar
+seu endereço de e-mail e liberar o acesso
+à Área do Cliente.
+
+</p>
+
+
+<div class="email-box">
+
+<span class="email-label">
+E-mail enviado para
+</span>
+
+<strong
+id="userEmail"
+class="email-address"
+>
+seu@email.com
+</strong>
+
+</div>
+
+
+<div class="actions">
+
+<a
+href="./"
+class="primary"
+>
+Voltar para entrar
+</a>
+
+<button
+id="resendButton"
+class="secondary"
+type="button"
+>
+Reenviar e-mail de confirmação
+</button>
+
+</div>
+
+
+<p class="help">
+
+Não encontrou a mensagem?
+
+Confira as pastas de spam, lixo eletrônico
+e promoções.
+
+O reenvio real será ativado quando esta
+página estiver conectada ao Supabase.
+
+</p>
+
+</section>
+
+
+<!-- =================================
+CONTA CONFIRMADA
+================================= -->
+
+<section
+id="confirmed"
+class="state"
+>
+
+<div class="icon">
+✓
+</div>
+
+<span class="eyebrow">
+Conta confirmada
+</span>
+
+<h1>
+Tudo pronto.
+</h1>
+
+<p class="description">
+
+Seu endereço de e-mail foi confirmado.
+
+Agora você poderá entrar na Área do Cliente
+e acessar leituras, conteúdos exclusivos,
+horários antecipados e benefícios especiais.
+
+</p>
+
+
+<div class="actions">
+
+<a
+href="./"
+class="primary"
+>
+Entrar na minha conta
+</a>
+
+<a
+href="../"
+class="secondary"
+>
+Voltar ao site
+</a>
+
+</div>
+
+</section>
+
+
+<!-- =================================
+LINK INVÁLIDO OU EXPIRADO
+================================= -->
+
+<section
+id="errorState"
+class="state"
+>
+
+<div class="icon">
+!
+</div>
+
+<span class="eyebrow">
+Não foi possível confirmar
+</span>
+
+<h1>
+Este link não é mais válido.
+</h1>
+
+<p class="description">
+
+O link de confirmação pode ter expirado
+ou já ter sido utilizado.
+
+Você poderá solicitar um novo e-mail
+de confirmação.
+
+</p>
+
+
+<div class="actions">
+
+<button
+id="newLinkButton"
+class="primary"
+type="button"
+>
+Enviar um novo link
+</button>
+
+<a
+href="./"
+class="secondary"
+>
+Voltar para entrar
+</a>
+
+</div>
+
+</section>
+
+
+</div>
+
+</main>
+
+
+<script>
+
+/*
+===========================================
+ESTADO DEMONSTRATIVO
+===========================================
+
+Quando fizermos a integração com Supabase,
+esta página identificará automaticamente:
+
+1. aguardando confirmação
+2. confirmação realizada
+3. link inválido/expirado
+
+Por enquanto a página abre no estado
+"Confira seu e-mail".
+*/
+
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+
+const email =
+  params.get("email");
+
+
+if(email){
+
+  document
+    .getElementById("userEmail")
+    .textContent =
+    email;
+
+}
+
+
+/*
+===========================================
+FUNÇÃO PARA ALTERAR ESTADO
+===========================================
+*/
+
+function showState(stateId){
+
+  document
+    .querySelectorAll(".state")
+    .forEach(
+      function(state){
+
+        state.classList.remove(
+          "active"
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(stateId)
+    .classList.add(
+      "active"
+    );
+
+}
+
+
+/*
+===========================================
+DEMONSTRAÇÃO
+
+Para testar manualmente:
+
+confirmar.html?status=confirmed
+
+confirmar.html?status=error
+
+===========================================
+*/
+
+const status =
+  params.get("status");
+
+
+if(status === "confirmed"){
+
+  showState("confirmed");
+
+}
+
+
+if(status === "error"){
+
+  showState("errorState");
+
+}
+
+
+/*
+===========================================
+REENVIAR CONFIRMAÇÃO
+
+Depois será conectado ao Supabase.
+===========================================
+*/
+
+document
+  .getElementById(
+    "resendButton"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      alert(
+        "O reenvio será ativado na integração com o Supabase."
+      );
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "newLinkButton"
+  )
+  .addEventListener(
+    "click",
+    function(){
+
+      showState(
+        "waiting"
+      );
+
+    }
+  );
+
+</script>
+
+</body>
+
+</html>
