@@ -181,6 +181,13 @@ p{color:var(--muted);line-height:1.65}
 @media(max-width:390px){
   .metrics{grid-template-columns:1fr}
 }
+
+/* AREA EXCLUSIVA - ADMIN */
+.exclusive-editor{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:18px}
+.benefits-editor{display:grid;gap:10px}.benefit-row{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);background:var(--panel2)}.benefit-row input[type=text]{margin:0}.benefit-row .danger{min-height:42px;padding:8px 12px}
+.exclusive-preview{position:sticky;top:18px;padding:28px;border:1px solid var(--line);background:radial-gradient(circle at 88% 12%,rgba(118,13,22,.25),transparent 42%),#15100C}.exclusive-preview.mobile{max-width:340px;margin:auto}.exclusive-preview-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center}.exclusive-preview.mobile .exclusive-preview-grid{grid-template-columns:1fr}.exclusive-preview h3{margin:12px 0;font-size:32px}.exclusive-preview ul{padding-left:18px;color:var(--muted);font-size:11px;line-height:1.7}.exclusive-preview-card{padding:20px;border:1px solid var(--line);background:#090806}.exclusive-preview-card strong{display:block;margin:8px 0;color:var(--gold2);font:21px Georgia,serif}.exclusive-preview-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.exclusive-preview-actions span{display:inline-flex;min-height:40px;align-items:center;justify-content:center;padding:9px 13px;border:1px solid var(--line);font-size:10px}.exclusive-preview-actions .filled{background:var(--gold);border-color:var(--gold);color:#21150b;font-weight:700}.publish-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:1100px){.exclusive-editor{grid-template-columns:1fr}.exclusive-preview{position:static}}
+@media(max-width:760px){.benefit-row{grid-template-columns:22px 1fr}.benefit-row .danger{grid-column:1/-1;width:100%}.exclusive-preview-actions,.publish-bar{display:grid}.exclusive-preview-actions span,.publish-bar button{width:100%}}
 </style>
 </head>
 
@@ -357,6 +364,7 @@ p{color:var(--muted);line-height:1.65}
 <div class="tabs">
   <button class="active" data-tab-group="site" data-tab="siteGeneral">Geral</button>
   <button data-tab-group="site" data-tab="siteEssence">Nossa Essência</button>
+  <button data-tab-group="site" data-tab="siteExclusive">Área Exclusiva</button>
   <button data-tab-group="site" data-tab="siteServices">Atendimentos</button>
   <button data-tab-group="site" data-tab="siteWorks">Trabalhos</button>
   <button data-tab-group="site" data-tab="siteFeedbacks">Feedbacks</button>
@@ -531,6 +539,51 @@ p{color:var(--muted);line-height:1.65}
   </div>
 </aside>
 
+</div>
+</div>
+
+
+<div id="siteExclusive" class="tab-panel" data-tab-panel-group="site">
+<div class="exclusive-editor">
+<div>
+<section class="panel">
+<div class="panel-head"><div><span class="eyebrow">Site público</span><h2>Área Exclusiva</h2></div><label class="check"><input id="exclusiveVisible" type="checkbox" checked>Mostrar seção</label></div>
+<label class="field">Título pequeno<input id="exclusiveKicker" value="ÁREA EXCLUSIVA"></label>
+<label class="field">Título principal<input id="exclusiveTitle" value="Um espaço reservado para você."></label>
+<label class="field">Texto de apresentação<textarea id="exclusiveDescription">Crie sua conta para acompanhar conteúdos e benefícios preparados especialmente para clientes cadastrados.</textarea></label>
+</section>
+<section class="panel">
+<div class="panel-head"><h2>Benefícios</h2><button id="addBenefit" class="secondary" type="button">Adicionar benefício</button></div>
+<div id="benefitsEditor" class="benefits-editor">
+<label class="benefit-row"><input type="checkbox" checked><input class="benefit-text" type="text" value="Leitura da Semana com fotos das cartas e interpretação em áudio"><button class="danger remove-benefit" type="button">Remover</button></label>
+<label class="benefit-row"><input type="checkbox" checked><input class="benefit-text" type="text" value="Vídeos, textos e conteúdos exclusivos"><button class="danger remove-benefit" type="button">Remover</button></label>
+<label class="benefit-row"><input type="checkbox" checked><input class="benefit-text" type="text" value="Horários de jogos liberados em primeira mão"><button class="danger remove-benefit" type="button">Remover</button></label>
+<label class="benefit-row"><input type="checkbox" checked><input class="benefit-text" type="text" value="Promoções e benefícios exclusivos"><button class="danger remove-benefit" type="button">Remover</button></label>
+<label class="benefit-row"><input id="storeBenefitVisible" type="checkbox" checked><input class="benefit-text" type="text" value="Acesso à Loja quando estiver liberada para clientes"><button class="danger remove-benefit" type="button">Remover</button></label>
+</div>
+</section>
+<section class="panel">
+<h2>Botões</h2>
+<div class="form-grid"><label class="field">Botão principal<input id="exclusiveCreateText" value="Criar minha conta"></label><label class="field">Botão secundário<input id="exclusiveLoginText" value="Já tenho conta"></label></div>
+<label class="check"><input id="exclusiveButtonsVisible" type="checkbox" checked>Mostrar os botões</label>
+</section>
+<section class="panel">
+<div class="panel-head"><h2>Quadro da direita</h2><label class="check"><input id="exclusiveRightVisible" type="checkbox" checked>Mostrar quadro</label></div>
+<label class="field">Título pequeno<input id="exclusiveRightKicker" value="PARA CLIENTES"></label>
+<label class="field">Título<input id="exclusiveRightTitle" value="Leituras, prioridade e conteúdos em um só lugar."></label>
+<label class="field">Texto<input id="exclusiveRightText" value="Tenha em um só lugar suas leituras, conteúdos exclusivos, benefícios especiais e acesso antecipado aos novos horários."></label>
+<div class="publish-bar"><button id="exclusiveDraft" class="secondary" type="button">Salvar rascunho</button><button id="exclusivePreviewAction" class="secondary" type="button">Pré-visualizar</button><button id="exclusivePublish" class="primary" type="button">Publicar alterações</button></div>
+</section>
+</div>
+<aside>
+<div class="preview-switch"><button id="exclusiveDesktopPreview" class="secondary" type="button">Desktop</button><button id="exclusiveMobilePreview" class="secondary" type="button">Mobile</button></div>
+<div id="exclusivePreview" class="exclusive-preview">
+<div class="exclusive-preview-grid">
+<div><span id="previewExclusiveKicker" class="eyebrow">ÁREA EXCLUSIVA</span><h3 id="previewExclusiveTitle">Um espaço reservado para você.</h3><p id="previewExclusiveDescription">Crie sua conta para acompanhar conteúdos e benefícios preparados especialmente para clientes cadastrados.</p><ul id="previewBenefits"></ul><div id="previewExclusiveActions" class="exclusive-preview-actions"><span id="previewCreateText" class="filled">Criar minha conta</span><span id="previewLoginText">Já tenho conta</span></div></div>
+<aside id="previewExclusiveRight" class="exclusive-preview-card"><span id="previewRightKicker" class="eyebrow">PARA CLIENTES</span><strong id="previewRightTitle">Leituras, prioridade e conteúdos em um só lugar.</strong><p id="previewRightText">Tenha em um só lugar suas leituras, conteúdos exclusivos, benefícios especiais e acesso antecipado aos novos horários.</p></aside>
+</div>
+</div>
+</aside>
 </div>
 </div>
 
@@ -1694,6 +1747,35 @@ document.getElementById("sortTime").addEventListener("click",()=>{
     a.dataset.time.localeCompare(b.dataset.time)
   );
 });
+
+
+/* AREA EXCLUSIVA */
+const exclusivePreview=document.getElementById("exclusivePreview");
+function syncExclusivePreview(){
+  document.getElementById("previewExclusiveKicker").textContent=document.getElementById("exclusiveKicker").value;
+  document.getElementById("previewExclusiveTitle").textContent=document.getElementById("exclusiveTitle").value;
+  document.getElementById("previewExclusiveDescription").textContent=document.getElementById("exclusiveDescription").value;
+  document.getElementById("previewCreateText").textContent=document.getElementById("exclusiveCreateText").value;
+  document.getElementById("previewLoginText").textContent=document.getElementById("exclusiveLoginText").value;
+  document.getElementById("previewRightKicker").textContent=document.getElementById("exclusiveRightKicker").value;
+  document.getElementById("previewRightTitle").textContent=document.getElementById("exclusiveRightTitle").value;
+  document.getElementById("previewRightText").textContent=document.getElementById("exclusiveRightText").value;
+  document.getElementById("previewExclusiveRight").classList.toggle("hidden",!document.getElementById("exclusiveRightVisible").checked);
+  document.getElementById("previewExclusiveActions").classList.toggle("hidden",!document.getElementById("exclusiveButtonsVisible").checked);
+  exclusivePreview.style.opacity=document.getElementById("exclusiveVisible").checked?"1":".35";
+  const list=document.getElementById("previewBenefits"); list.innerHTML="";
+  document.querySelectorAll("#benefitsEditor .benefit-row").forEach(row=>{const chk=row.querySelector('input[type="checkbox"]');const text=row.querySelector('.benefit-text');if(chk.checked&&text.value.trim()){const li=document.createElement("li");li.textContent=text.value.trim();list.appendChild(li);}});
+}
+["exclusiveKicker","exclusiveTitle","exclusiveDescription","exclusiveCreateText","exclusiveLoginText","exclusiveRightKicker","exclusiveRightTitle","exclusiveRightText","exclusiveVisible","exclusiveButtonsVisible","exclusiveRightVisible"].forEach(id=>{const el=document.getElementById(id); if(el) el.addEventListener("input",syncExclusivePreview); if(el) el.addEventListener("change",syncExclusivePreview);});
+function attachBenefitEvents(row){row.querySelectorAll("input").forEach(el=>{el.addEventListener("input",syncExclusivePreview);el.addEventListener("change",syncExclusivePreview);});row.querySelector(".remove-benefit").addEventListener("click",()=>{row.remove();syncExclusivePreview();});}
+document.querySelectorAll("#benefitsEditor .benefit-row").forEach(attachBenefitEvents);
+document.getElementById("addBenefit").addEventListener("click",()=>{const row=document.createElement("label");row.className="benefit-row";row.innerHTML='<input type="checkbox" checked><input class="benefit-text" type="text" placeholder="Novo benefício"><button class="danger remove-benefit" type="button">Remover</button>';document.getElementById("benefitsEditor").appendChild(row);attachBenefitEvents(row);syncExclusivePreview();});
+document.getElementById("exclusiveDesktopPreview").addEventListener("click",()=>exclusivePreview.classList.remove("mobile"));
+document.getElementById("exclusiveMobilePreview").addEventListener("click",()=>exclusivePreview.classList.add("mobile"));
+document.getElementById("exclusiveDraft").addEventListener("click",()=>alert("Rascunho preparado. O salvamento permanente será ativado com o banco."));
+document.getElementById("exclusivePreviewAction").addEventListener("click",syncExclusivePreview);
+document.getElementById("exclusivePublish").addEventListener("click",()=>alert("Alterações preparadas para publicação. A publicação real será ativada com o banco."));
+syncExclusivePreview();
 
 /* ESC */
 
