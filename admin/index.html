@@ -188,10 +188,31 @@ p{color:var(--muted);line-height:1.65}
 .exclusive-preview{position:sticky;top:18px;padding:28px;border:1px solid var(--line);background:radial-gradient(circle at 88% 12%,rgba(118,13,22,.25),transparent 42%),#15100C}.exclusive-preview.mobile{max-width:340px;margin:auto}.exclusive-preview-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center}.exclusive-preview.mobile .exclusive-preview-grid{grid-template-columns:1fr}.exclusive-preview h3{margin:12px 0;font-size:32px}.exclusive-preview ul{padding-left:18px;color:var(--muted);font-size:11px;line-height:1.7}.exclusive-preview-card{padding:20px;border:1px solid var(--line);background:#090806}.exclusive-preview-card strong{display:block;margin:8px 0;color:var(--gold2);font:21px Georgia,serif}.exclusive-preview-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.exclusive-preview-actions span{display:inline-flex;min-height:40px;align-items:center;justify-content:center;padding:9px 13px;border:1px solid var(--line);font-size:10px}.exclusive-preview-actions .filled{background:var(--gold);border-color:var(--gold);color:#21150b;font-weight:700}.publish-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
 @media(max-width:1100px){.exclusive-editor{grid-template-columns:1fr}.exclusive-preview{position:static}}
 @media(max-width:760px){.benefit-row{grid-template-columns:22px 1fr}.benefit-row .danger{grid-column:1/-1;width:100%}.exclusive-preview-actions,.publish-bar{display:grid}.exclusive-preview-actions span,.publish-bar button{width:100%}}
+
+/* ADMIN AUTH */
+.auth-screen{position:fixed;z-index:500;inset:0;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 15% 0,rgba(99,21,26,.25),transparent 38%),#080705}.auth-card{width:min(460px,100%);padding:34px;border:1px solid var(--line);background:var(--panel);box-shadow:0 28px 90px #0009}.auth-card h1{margin:10px 0 8px;font-size:38px}.auth-card .primary,.auth-card .secondary{width:100%;margin-top:10px}.auth-link{display:block;margin-top:14px;border:0;background:transparent;color:var(--gold);text-align:center;width:100%}.auth-message{min-height:20px;color:var(--gold2);font-size:11px;text-align:center}.admin-invite-box{display:grid;grid-template-columns:1fr 1fr;gap:18px}.admin-list-item{display:grid;grid-template-columns:1fr auto;gap:15px;align-items:center;padding:15px;border:1px solid var(--line);background:var(--panel2)}@media(max-width:760px){.admin-invite-box{grid-template-columns:1fr}.auth-card{padding:27px 22px}}
 </style>
 </head>
 
 <body>
+<div id="adminAuthScreen" class="auth-screen">
+  <section id="adminLoginCard" class="auth-card">
+    <span class="eyebrow">Administração</span><h1>Entrar no painel</h1><p>Acesso reservado aos administradores autorizados.</p>
+    <label class="field">E-mail<input id="adminLoginEmail" type="email" autocomplete="username" required></label>
+    <label class="field">Senha<input id="adminLoginPassword" type="password" autocomplete="current-password" required></label>
+    <button id="adminLoginButton" class="primary" type="button">Entrar</button>
+    <button id="adminForgotButton" class="auth-link" type="button">Esqueci minha senha</button>
+    <p id="adminAuthMessage" class="auth-message"></p>
+  </section>
+  <section id="adminRecoveryCard" class="auth-card hidden">
+    <span class="eyebrow">Recuperação</span><h1>Recuperar senha</h1><p>Informe o e-mail administrativo. O link real será enviado quando conectarmos ao Supabase.</p>
+    <label class="field">E-mail<input id="adminRecoveryEmail" type="email"></label>
+    <button id="adminRecoverySend" class="primary" type="button">Enviar link de recuperação</button>
+    <button id="adminRecoveryBack" class="secondary" type="button">Voltar</button>
+    <p id="adminRecoveryMessage" class="auth-message"></p>
+  </section>
+</div>
+
 
 <div class="layout">
 
@@ -1457,6 +1478,24 @@ p{color:var(--muted);line-height:1.65}
   </div>
 </div>
 
+
+<section class="panel" style="margin-bottom:20px">
+<div class="panel-head"><div><span class="eyebrow">Acesso administrativo</span><h2>Administradores</h2></div></div>
+<div class="admin-invite-box">
+  <div>
+    <h3>Convidar novo administrador</h3><p>Não haverá cadastro administrativo público. Novos admins entram somente por convite de um administrador existente.</p>
+    <label class="field">Nome<input id="inviteAdminName" type="text" placeholder="Nome"></label>
+    <label class="field">E-mail<input id="inviteAdminEmail" type="email" placeholder="email@exemplo.com"></label>
+    <button id="inviteAdminButton" class="primary" type="button">Enviar convite</button>
+    <p id="inviteAdminMessage" class="small"></p>
+  </div>
+  <div>
+    <h3>Acessos atuais</h3>
+    <div class="admin-list-item"><div><strong>Administrador principal</strong><br><span class="small">A lista real virá do banco.</span></div><span class="badge">ADMIN</span></div>
+    <div class="notice">O convite real usará o fluxo de convite do Supabase e o perfil convidado receberá papel <strong>admin</strong> após a integração.</div>
+  </div>
+</div>
+</section>
 <div class="list">
 
 <div class="list-row">
@@ -1786,6 +1825,16 @@ window.addEventListener("keydown",event=>{
   }
 });
 
+
+/* ADMIN AUTH DEMONSTRATIVO */
+const adminAuthScreen=document.getElementById("adminAuthScreen");
+const adminLoginCard=document.getElementById("adminLoginCard");
+const adminRecoveryCard=document.getElementById("adminRecoveryCard");
+document.getElementById("adminLoginButton").addEventListener("click",()=>{const email=document.getElementById("adminLoginEmail").value.trim();const pass=document.getElementById("adminLoginPassword").value;if(!email||!pass){document.getElementById("adminAuthMessage").textContent="Preencha e-mail e senha.";return;}adminAuthScreen.classList.add("hidden");});
+document.getElementById("adminForgotButton").addEventListener("click",()=>{adminLoginCard.classList.add("hidden");adminRecoveryCard.classList.remove("hidden");document.getElementById("adminRecoveryEmail").value=document.getElementById("adminLoginEmail").value;});
+document.getElementById("adminRecoveryBack").addEventListener("click",()=>{adminRecoveryCard.classList.add("hidden");adminLoginCard.classList.remove("hidden");});
+document.getElementById("adminRecoverySend").addEventListener("click",()=>{const email=document.getElementById("adminRecoveryEmail").value.trim();document.getElementById("adminRecoveryMessage").textContent=email?"Fluxo preparado. O e-mail real será enviado após a integração com o Supabase.":"Informe o e-mail administrativo.";});
+const inviteButton=document.getElementById("inviteAdminButton");if(inviteButton){inviteButton.addEventListener("click",()=>{const email=document.getElementById("inviteAdminEmail").value.trim();document.getElementById("inviteAdminMessage").textContent=email?"Convite preparado para "+email+". O envio real será ativado com o Supabase.":"Informe o e-mail do novo administrador.";});}
 </script>
 </body>
 </html>
