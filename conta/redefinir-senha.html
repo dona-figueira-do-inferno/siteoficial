@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+
+<title>Redefinir senha | Dona Figueira do Inferno</title>
+
+<style>
+
+:root{
+  --bg:#080705;
+  --panel:#120e0b;
+  --gold:#d7a650;
+  --gold-light:#efc878;
+  --text:#f2e5cf;
+  --muted:#b3a58f;
+  --line:rgba(215,166,80,.24);
+  --wine:#63151a;
+  --success:#8fae78;
+  --error:#d79ca2;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  color-scheme:dark;
+}
+
+body{
+  margin:0;
+  min-width:320px;
+  min-height:100vh;
+
+  display:grid;
+  place-items:center;
+
+  padding:30px 20px;
+
+  background:
+    radial-gradient(
+      circle at 15% 0%,
+      rgba(99,21,26,.22),
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 90% 90%,
+      rgba(215,166,80,.08),
+      transparent 35%
+    ),
+    var(--bg);
+
+  color:var(--text);
+
+  font-family:Arial,sans-serif;
+}
+
+button,
+input,
+a{
+  font:inherit;
+}
+
+.wrapper{
+  width:min(760px,100%);
+}
+
+.logo-area{
+  margin-bottom:30px;
+  text-align:center;
+}
+
+.brand{
+  font-family:Georgia,serif;
+  font-size:32px;
+}
+
+.brand-small{
+  display:block;
+
+  margin-top:9px;
+
+  color:var(--gold);
+
+  font-size:8px;
+
+  letter-spacing:.25em;
+
+  text-transform:uppercase;
+}
+
+.card{
+  position:relative;
+
+  overflow:hidden;
+
+  padding:clamp(35px,6vw,65px);
+
+  border:1px solid var(--line);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24,17,13,.98),
+      rgba(12,9,7,.98)
+    );
+
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.48);
+}
+
+.card::before{
+  content:"";
+
+  position:absolute;
+
+  width:330px;
+  height:330px;
+
+  top:-180px;
+  right:-150px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(215,166,80,.13),
+      transparent 68%
+    );
+
+  pointer-events:none;
+}
+
+.icon{
+  width:74px;
+  height:74px;
+
+  display:grid;
+  place-items:center;
+
+  margin:0 auto 28px;
+
+  border:1px solid var(--gold);
+
+  border-radius:50%;
+
+  color:var(--gold);
+
+  font-size:28px;
+}
+
+.eyebrow{
+  display:block;
+
+  margin-bottom:15px;
+
+  color:var(--gold);
+
+  font-size:10px;
+
+  letter-spacing:.22em;
+
+  text-align:center;
+
+  text-transform:uppercase;
+}
+
+h1{
+  max-width:600px;
+
+  margin:0 auto 20px;
+
+  font-family:Georgia,serif;
+
+  font-size:clamp(38px,7vw,60px);
+
+  font-weight:400;
+
+  line-height:1.05;
+
+  text-align:center;
+}
+
+.description{
+  max-width:530px;
+
+  margin:0 auto 30px;
+
+  color:var(--muted);
+
+  font-size:14px;
+
+  line-height:1.8;
+
+  text-align:center;
+}
+
+.form{
+  max-width:500px;
+
+  margin:auto;
+}
+
+.field{
+  display:block;
+
+  margin:18px 0;
+
+  color:var(--text);
+
+  font-size:12px;
+}
+
+.input-wrap{
+  position:relative;
+}
+
+.field input{
+  width:100%;
+  min-height:50px;
+
+  margin-top:8px;
+
+  padding:12px 52px 12px 14px;
+
+  border:1px solid var(--line);
+
+  outline:none;
+
+  background:var(--bg);
+
+  color:var(--text);
+}
+
+.field input:focus{
+  border-color:var(--gold);
+}
+
+.password-toggle{
+  position:absolute;
+
+  right:7px;
+  bottom:6px;
+
+  width:40px;
+  height:38px;
+
+  border:0;
+
+  background:transparent;
+
+  color:var(--gold);
+
+  cursor:pointer;
+}
+
+.rules{
+  margin:17px 0 23px;
+
+  padding:16px;
+
+  border:1px solid var(--line);
+
+  background:
+    rgba(8,7,5,.45);
+
+  color:var(--muted);
+
+  font-size:11px;
+
+  line-height:1.8;
+}
+
+.rules strong{
+  display:block;
+
+  margin-bottom:5px;
+
+  color:var(--text);
+}
+
+.primary{
+  width:100%;
+
+  min-height:50px;
+
+  padding:13px 18px;
+
+  border:1px solid var(--gold);
+
+  background:var(--gold);
+
+  color:#21150b;
+
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+.primary:hover{
+  border-color:var(--gold-light);
+  background:var(--gold-light);
+}
+
+.secondary{
+  width:100%;
+
+  min-height:48px;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  margin-top:12px;
+
+  border:1px solid var(--line);
+
+  color:var(--text);
+
+  text-decoration:none;
+}
+
+.secondary:hover{
+  border-color:var(--gold);
+  color:var(--gold);
+}
+
+.message{
+  min-height:24px;
+
+  margin-top:16px;
+
+  color:var(--error);
+
+  font-size:12px;
+
+  text-align:center;
+}
+
+.state{
+  display:none;
+}
+
+.state.active{
+  display:block;
+}
+
+
+/* SUCESSO */
+
+.success .icon{
+  border-color:var(--success);
+  color:var(--success);
+}
+
+.success .eyebrow{
+  color:var(--success);
+}
+
+.success-message{
+  max-width:500px;
+
+  margin:
+    28px auto;
+
+  padding:18px;
+
+  border:1px solid rgba(143,174,120,.3);
+
+  background:rgba(143,174,120,.06);
+
+  color:#cbd9c1;
+
+  font-size:12px;
+
+  line-height:1.7;
+
+  text-align:center;
+}
+
+
+/* LINK INVÁLIDO */
+
+.expired .icon{
+  border-color:#a86a70;
+  color:var(--error);
+}
+
+.expired .eyebrow{
+  color:var(--error);
+}
+
+
+@media(max-width:600px){
+
+  body{
+    padding:20px 14px;
+  }
+
+  .brand{
+    font-size:27px;
+  }
+
+  .logo-area{
+    margin-bottom:20px;
+  }
+
+  .card{
+    padding:40px 22px;
+  }
+
+  .icon{
+    width:66px;
+    height:66px;
+
+    margin-bottom:24px;
+  }
+
+  h1{
+    font-size:clamp(36px,11vw,46px);
+  }
+
+  .description{
+    font-size:13px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<main class="wrapper">
+
+
+<header class="logo-area">
+
+<div class="brand">
+
+Dona Figueira
+
+<span class="brand-small">
+Área do cliente
+</span>
+
+</div>
+
+</header>
+
+
+<div class="card">
+
+
+<!-- =========================
+NOVA SENHA
+========================= -->
+
+<section
+id="resetState"
+class="state active"
+>
+
+<div class="icon">
+✦
+</div>
+
+<span class="eyebrow">
+Recuperação de acesso
+</span>
+
+<h1>
+Crie uma nova senha.
+</h1>
+
+<p class="description">
+
+Escolha uma nova senha para continuar
+acessando sua conta e os conteúdos
+exclusivos de Dona Figueira.
+
+</p>
+
+
+<form
+id="resetForm"
+class="form"
+>
+
+<label class="field">
+
+Nova senha
+
+<div class="input-wrap">
+
+<input
+id="newPassword"
+type="password"
+minlength="8"
+autocomplete="new-password"
+required
+>
+
+<button
+class="password-toggle"
+type="button"
+data-toggle="newPassword"
+aria-label="Mostrar senha"
+>
+◉
+</button>
+
+</div>
+
+</label>
+
+
+<label class="field">
+
+Confirmar nova senha
+
+<div class="input-wrap">
+
+<input
+id="confirmPassword"
+type="password"
+minlength="8"
+autocomplete="new-password"
+required
+>
+
+<button
+class="password-toggle"
+type="button"
+data-toggle="confirmPassword"
+aria-label="Mostrar senha"
+>
+◉
+</button>
+
+</div>
+
+</label>
+
+
+<div class="rules">
+
+<strong>
+Para sua segurança:
+</strong>
+
+Use pelo menos 8 caracteres.
+
+Evite utilizar a mesma senha de outros sites
+ou informações fáceis de adivinhar.
+
+</div>
+
+
+<button
+class="primary"
+type="submit"
+>
+Salvar nova senha
+</button>
+
+
+<p
+id="message"
+class="message"
+role="status"
+aria-live="polite"
+>
+</p>
+
+</form>
+
+
+<a
+href="./"
+class="secondary"
+>
+Voltar para entrar
+</a>
+
+</section>
+
+
+<!-- =========================
+SENHA ALTERADA
+========================= -->
+
+<section
+id="successState"
+class="state success"
+>
+
+<div class="icon">
+✓
+</div>
+
+<span class="eyebrow">
+Senha atualizada
+</span>
+
+<h1>
+Sua nova senha está pronta.
+</h1>
+
+
+<p class="description">
+
+A senha da sua conta foi atualizada.
+
+Agora você poderá entrar novamente
+na Área do Cliente.
+
+</p>
+
+
+<div class="success-message">
+
+Por segurança, utilize a nova senha
+no próximo acesso à sua conta.
+
+</div>
+
+
+<a
+href="./"
+class="primary"
+style="
+display:flex;
+align-items:center;
+justify-content:center;
+text-decoration:none;
+max-width:500px;
+margin:auto;
+"
+>
+Entrar na minha conta
+</a>
+
+
+<a
+href="../"
+class="secondary"
+style="
+max-width:500px;
+margin:12px auto 0;
+"
+>
+Voltar ao site
+</a>
+
+</section>
+
+
+<!-- =========================
+LINK EXPIRADO
+========================= -->
+
+<section
+id="expiredState"
+class="state expired"
+>
+
+<div class="icon">
+!
+</div>
+
+<span class="eyebrow">
+Link expirado
+</span>
+
+<h1>
+Solicite um novo link.
+</h1>
+
+<p class="description">
+
+Por segurança, links de redefinição
+não ficam disponíveis indefinidamente.
+
+Solicite um novo e-mail para alterar
+sua senha.
+
+</p>
+
+
+<a
+href="./"
+class="primary"
+style="
+display:flex;
+align-items:center;
+justify-content:center;
+text-decoration:none;
+max-width:500px;
+margin:auto;
+"
+>
+Solicitar novo link
+</a>
+
+
+<a
+href="../"
+class="secondary"
+style="
+max-width:500px;
+margin:12px auto 0;
+"
+>
+Voltar ao site
+</a>
+
+</section>
+
+
+</div>
+
+</main>
+
+
+<script>
+
+/*
+===========================================
+PÁGINA PREPARADA PARA SUPABASE
+===========================================
+
+Fluxo futuro:
+
+Esqueci minha senha
+        ↓
+resetPasswordForEmail()
+        ↓
+E-mail personalizado
+        ↓
+Usuário clica no link
+        ↓
+redefinir-senha.html
+        ↓
+PASSWORD_RECOVERY
+        ↓
+updateUser({ password })
+        ↓
+Senha alterada
+*/
+
+
+const resetForm =
+document.getElementById(
+"resetForm"
+);
+
+const newPassword =
+document.getElementById(
+"newPassword"
+);
+
+const confirmPassword =
+document.getElementById(
+"confirmPassword"
+);
+
+const message =
+document.getElementById(
+"message"
+);
+
+
+function showState(id){
+
+document
+.querySelectorAll(".state")
+.forEach(
+function(state){
+
+state.classList.remove(
+"active"
+);
+
+}
+);
+
+
+document
+.getElementById(id)
+.classList.add(
+"active"
+);
+
+}
+
+
+/*
+===========================================
+MOSTRAR / OCULTAR SENHA
+===========================================
+*/
+
+document
+.querySelectorAll(
+".password-toggle"
+)
+.forEach(
+function(button){
+
+button.addEventListener(
+"click",
+function(){
+
+const input =
+document.getElementById(
+button.dataset.toggle
+);
+
+if(
+input.type === "password"
+){
+
+input.type =
+"text";
+
+button.setAttribute(
+"aria-label",
+"Ocultar senha"
+);
+
+}else{
+
+input.type =
+"password";
+
+button.setAttribute(
+"aria-label",
+"Mostrar senha"
+);
+
+}
+
+}
+);
+
+}
+);
+
+
+/*
+===========================================
+VALIDAÇÃO VISUAL
+
+Depois será substituída pela chamada
+real ao Supabase.
+===========================================
+*/
+
+resetForm.addEventListener(
+"submit",
+function(event){
+
+event.preventDefault();
+
+message.textContent =
+"";
+
+
+if(
+newPassword.value.length < 8
+){
+
+message.textContent =
+"A senha precisa ter pelo menos 8 caracteres.";
+
+return;
+
+}
+
+
+if(
+newPassword.value !==
+confirmPassword.value
+){
+
+message.textContent =
+"As duas senhas precisam ser iguais.";
+
+return;
+
+}
+
+
+/*
+Na integração real:
+
+await supabase.auth.updateUser({
+  password: newPassword.value
+});
+*/
+
+
+showState(
+"successState"
+);
+
+}
+);
+
+
+/*
+===========================================
+TESTES DE DESIGN
+
+redefinir-senha.html?status=success
+redefinir-senha.html?status=expired
+===========================================
+*/
+
+const params =
+new URLSearchParams(
+window.location.search
+);
+
+const status =
+params.get(
+"status"
+);
+
+
+if(
+status === "success"
+){
+
+showState(
+"successState"
+);
+
+}
+
+
+if(
+status === "expired"
+){
+
+showState(
+"expiredState"
+);
+
+}
+
+</script>
+
+</body>
+
+</html>
