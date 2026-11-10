@@ -1,639 +1,4508 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
 
-  <title>Dona Figueira do Inferno | Administração</title>
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  >
+
+  <meta
+    name="robots"
+    content="noindex,nofollow"
+  >
+
+  <title>
+    Dona Figueira | Administração
+  </title>
 
   <style>
+
     :root {
-      --bg: #090806;
-      --panel: #15100c;
+      --bg: #080705;
+      --sidebar: #0d0a08;
+      --panel: #120e0b;
+      --panel-light: #18110d;
       --gold: #d7a650;
-      --text: #f1e5cf;
-      --muted: #b9aa94;
-      --line: #d7a65040;
-      --danger: #b23a48;
+      --gold-light: #efc878;
+      --text: #f2e5cf;
+      --muted: #ad9e88;
+      --line: rgba(215,166,80,.22);
+      --green: #7fa36b;
+      --red: #c1747b;
+      --shadow: 0 25px 70px rgba(0,0,0,.4);
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
     body {
       margin: 0;
+      min-width: 320px;
       min-height: 100vh;
+      overflow-x: hidden;
+
       background:
-        radial-gradient(circle at top left, #4a1b142b, transparent 38%),
+        radial-gradient(
+          circle at top right,
+          rgba(93,31,21,.13),
+          transparent 32%
+        ),
         var(--bg);
+
       color: var(--text);
       font-family: Arial, sans-serif;
     }
 
     button,
-    input {
+    input,
+    textarea,
+    select {
       font: inherit;
     }
 
-    .hidden {
-      display: none !important;
+    button {
+      cursor: pointer;
     }
 
-    .screen {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+    input,
+    textarea,
+    select {
+      width: 100%;
+      min-height: 46px;
+
+      padding: 11px 13px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--bg);
+
+      color:
+        var(--text);
+
+      outline:
+        none;
     }
 
-    .card {
-      width: min(430px, 100%);
-      padding: 32px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      box-shadow: 0 25px 80px #0008;
+    textarea {
+      min-height: 130px;
+      resize: vertical;
     }
 
-    .eyebrow {
-      color: var(--gold);
-      font-size: 10px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color:
+        var(--gold);
+    }
+
+    input[type="range"] {
+      min-height: auto;
+      padding: 0;
+      accent-color: var(--gold);
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      width: 18px;
+      min-height: 18px;
+      accent-color: var(--gold);
     }
 
     h1,
-    h2 {
-      font-family: Georgia, serif;
-      font-weight: 400;
-    }
+    h2,
+    h3 {
+      margin-top: 0;
 
-    h1 {
-      margin: 12px 0;
-      font-size: 40px;
+      font-family:
+        Georgia,
+        serif;
+
+      font-weight:
+        400;
     }
 
     p {
-      color: var(--muted);
-      line-height: 1.6;
+      color:
+        var(--muted);
+
+      line-height:
+        1.7;
     }
 
-    .field {
-      display: block;
-      margin: 18px 0;
-      color: var(--text);
-      font-size: 13px;
+    .hidden {
+      display:
+        none !important;
     }
 
-    .field input {
-      display: block;
-      width: 100%;
-      margin-top: 8px;
-      padding: 13px;
-      border: 1px solid var(--line);
-      background: #080706;
-      color: var(--text);
+    .eyebrow {
+      color:
+        var(--gold);
+
+      font-size:
+        9px;
+
+      letter-spacing:
+        .21em;
+
+      text-transform:
+        uppercase;
     }
 
     .primary {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid var(--gold);
-      background: var(--gold);
-      color: #20150b;
-      font-weight: 700;
-      cursor: pointer;
+      min-height: 46px;
+
+      padding:
+        11px 18px;
+
+      border:
+        1px solid var(--gold);
+
+      background:
+        var(--gold);
+
+      color:
+        #21150b;
+
+      font-weight:
+        700;
     }
 
-    .primary:disabled {
-      opacity: .6;
-      cursor: wait;
+    .primary:hover {
+      background:
+        var(--gold-light);
     }
 
-    .message {
-      min-height: 24px;
-      color: var(--gold);
-      font-size: 13px;
+    .secondary {
+      min-height: 46px;
+
+      padding:
+        11px 18px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        transparent;
+
+      color:
+        var(--text);
     }
 
-    .shell {
-      max-width: 1200px;
-      margin: auto;
-      padding: 28px;
+    .secondary:hover {
+      border-color:
+        var(--gold);
+
+      color:
+        var(--gold-light);
+    }
+
+    .danger {
+      min-height: 46px;
+
+      padding:
+        11px 18px;
+
+      border:
+        1px solid rgba(193,116,123,.45);
+
+      background:
+        transparent;
+
+      color:
+        #e2aab0;
+    }
+
+    .small {
+      color:
+        var(--muted);
+
+      font-size:
+        10px;
+    }
+
+    .form-label {
+      display:
+        block;
+
+      margin:
+        15px 0;
+
+      color:
+        var(--text);
+
+      font-size:
+        11px;
+    }
+
+    .form-label input,
+    .form-label textarea,
+    .form-label select {
+      margin-top:
+        7px;
+    }
+
+    .checkbox-line {
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        10px;
+
+      margin:
+        15px 0;
+
+      color:
+        var(--text);
+
+      font-size:
+        12px;
+    }
+
+
+    /* =====================================================
+       LAYOUT
+    ===================================================== */
+
+    .admin-layout {
+      min-height:
+        100vh;
+
+      display:
+        grid;
+
+      grid-template-columns:
+        260px minmax(0,1fr);
+    }
+
+    .sidebar {
+      position:
+        sticky;
+
+      top:
+        0;
+
+      height:
+        100vh;
+
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      padding:
+        28px 22px;
+
+      border-right:
+        1px solid var(--line);
+
+      background:
+        var(--sidebar);
+    }
+
+    .logo {
+      padding:
+        0 8px 25px;
+
+      border-bottom:
+        1px solid var(--line);
+
+      font:
+        27px Georgia,
+        serif;
+    }
+
+    .logo small {
+      display:
+        block;
+
+      margin-top:
+        8px;
+
+      color:
+        var(--gold);
+
+      font:
+        8px Arial;
+
+      letter-spacing:
+        .23em;
+    }
+
+    .menu {
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      gap:
+        3px;
+
+      margin-top:
+        24px;
+
+      overflow-y:
+        auto;
+    }
+
+    .menu button {
+      min-height:
+        49px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        13px;
+
+      padding:
+        11px 13px;
+
+      border:
+        0;
+
+      border-left:
+        2px solid transparent;
+
+      background:
+        transparent;
+
+      color:
+        var(--muted);
+
+      text-align:
+        left;
+    }
+
+    .menu button:hover {
+      color:
+        var(--text);
+
+      background:
+        rgba(215,166,80,.05);
+    }
+
+    .menu button.active {
+      border-left-color:
+        var(--gold);
+
+      background:
+        rgba(215,166,80,.08);
+
+      color:
+        var(--gold-light);
+    }
+
+    .menu-icon {
+      width:
+        21px;
+
+      color:
+        var(--gold);
+
+      text-align:
+        center;
+    }
+
+    .sidebar-footer {
+      margin-top:
+        auto;
+
+      padding-top:
+        20px;
+
+      border-top:
+        1px solid var(--line);
+    }
+
+    .system-status {
+      margin-bottom:
+        15px;
+
+      color:
+        var(--muted);
+
+      font-size:
+        10px;
+    }
+
+    .status-dot {
+      width:
+        7px;
+
+      height:
+        7px;
+
+      display:
+        inline-block;
+
+      margin-right:
+        7px;
+
+      border-radius:
+        50%;
+
+      background:
+        var(--green);
+    }
+
+    .sidebar-footer button {
+      width:
+        100%;
+    }
+
+    .workspace {
+      min-width:
+        0;
     }
 
     .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--line);
+      min-height:
+        82px;
+
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap:
+        20px;
+
+      padding:
+        18px 38px;
+
+      border-bottom:
+        1px solid var(--line);
+
+      background:
+        rgba(8,7,5,.88);
     }
 
-    .logout {
-      padding: 10px 16px;
-      border: 1px solid var(--line);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
+    .topbar-title {
+      color:
+        var(--muted);
+
+      font-size:
+        11px;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-top: 28px;
+    .admin-user {
+      text-align:
+        right;
     }
 
-    .module {
-      padding: 22px;
-      background: var(--panel);
-      border: 1px solid var(--line);
+    .admin-user strong {
+      display:
+        block;
+
+      font-size:
+        12px;
     }
 
-    .module h2 {
-      margin: 0 0 10px;
-      font-size: 24px;
+    .admin-user span {
+      color:
+        var(--gold);
+
+      font-size:
+        9px;
     }
 
-    .status {
-      display: inline-block;
-      margin-top: 12px;
-      color: var(--gold);
-      font-size: 11px;
+    .mobile-menu {
+      display:
+        none;
     }
 
-    .warning {
-      margin-top: 24px;
-      padding: 16px;
-      border: 1px solid #b23a4855;
-      background: #b23a4814;
-      color: #efc8cd;
+    .content {
+      padding:
+        38px;
     }
 
-    @media (max-width: 780px) {
-      .grid {
-        grid-template-columns: 1fr;
+    .page {
+      display:
+        none;
+    }
+
+    .page.active {
+      display:
+        block;
+    }
+
+    .page-header {
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        flex-end;
+
+      gap:
+        30px;
+
+      margin-bottom:
+        32px;
+    }
+
+    .page-header h1 {
+      margin:
+        8px 0 0;
+
+      font-size:
+        clamp(34px,4vw,52px);
+    }
+
+    .page-header p {
+      max-width:
+        700px;
+
+      margin-bottom:
+        0;
+    }
+
+    .page-actions {
+      display:
+        flex;
+
+      gap:
+        10px;
+
+      flex-wrap:
+        wrap;
+    }
+
+
+    /* =====================================================
+       ABAS
+    ===================================================== */
+
+    .tabs {
+      display:
+        flex;
+
+      gap:
+        24px;
+
+      overflow-x:
+        auto;
+
+      margin-bottom:
+        26px;
+
+      border-bottom:
+        1px solid var(--line);
+    }
+
+    .tabs button {
+      min-height:
+        54px;
+
+      padding:
+        14px 0;
+
+      white-space:
+        nowrap;
+
+      border:
+        0;
+
+      border-bottom:
+        2px solid transparent;
+
+      background:
+        transparent;
+
+      color:
+        var(--muted);
+    }
+
+    .tabs button.active {
+      border-bottom-color:
+        var(--gold);
+
+      color:
+        var(--gold-light);
+    }
+
+    .tab-panel {
+      display:
+        none;
+    }
+
+    .tab-panel.active {
+      display:
+        block;
+    }
+
+
+    /* =====================================================
+       CARDS E PAINÉIS
+    ===================================================== */
+
+    .panel {
+      padding:
+        26px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel);
+    }
+
+    .panel + .panel {
+      margin-top:
+        20px;
+    }
+
+    .panel-title {
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap:
+        20px;
+
+      margin-bottom:
+        22px;
+    }
+
+    .panel-title h2 {
+      margin:
+        0;
+
+      font-size:
+        29px;
+    }
+
+    .form-grid {
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        0 22px;
+    }
+
+    .metrics {
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(5,1fr);
+
+      gap:
+        15px;
+
+      margin-bottom:
+        28px;
+    }
+
+    .metric {
+      padding:
+        20px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel);
+    }
+
+    .metric strong {
+      display:
+        block;
+
+      margin-bottom:
+        7px;
+
+      color:
+        var(--gold-light);
+
+      font:
+        32px Georgia,
+        serif;
+
+      font-weight:
+        400;
+    }
+
+    .metric span {
+      color:
+        var(--muted);
+
+      font-size:
+        10px;
+    }
+
+    .dashboard-grid {
+      display:
+        grid;
+
+      grid-template-columns:
+        1.25fr .75fr;
+
+      gap:
+        20px;
+    }
+
+    .quick-grid {
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(2,1fr);
+
+      gap:
+        12px;
+    }
+
+    .quick-action {
+      min-height:
+        112px;
+
+      padding:
+        18px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel-light);
+
+      color:
+        var(--text);
+
+      text-align:
+        left;
+    }
+
+    .quick-action:hover {
+      border-color:
+        var(--gold);
+    }
+
+    .quick-action strong {
+      display:
+        block;
+
+      margin-bottom:
+        7px;
+
+      font:
+        19px Georgia,
+        serif;
+
+      font-weight:
+        400;
+    }
+
+    .quick-action span {
+      color:
+        var(--muted);
+
+      font-size:
+        10px;
+    }
+
+    .activity-item {
+      padding:
+        16px 0;
+
+      border-bottom:
+        1px solid var(--line);
+    }
+
+    .activity-item:last-child {
+      border-bottom:
+        0;
+    }
+
+    .activity-item strong {
+      display:
+        block;
+
+      margin-bottom:
+        4px;
+
+      font-size:
+        12px;
+    }
+
+    .activity-item span {
+      color:
+        var(--muted);
+
+      font-size:
+        10px;
+    }
+
+    .notice {
+      margin-top:
+        24px;
+
+      padding:
+        17px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        rgba(215,166,80,.05);
+
+      color:
+        var(--muted);
+
+      font-size:
+        11px;
+
+      line-height:
+        1.75;
+    }
+
+
+    /* =====================================================
+       NOSSA ESSÊNCIA
+    ===================================================== */
+
+    .essence-editor {
+      display:
+        grid;
+
+      grid-template-columns:
+        minmax(0,1fr) 420px;
+
+      gap:
+        20px;
+    }
+
+    .image-editors {
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        18px;
+    }
+
+    .image-editor {
+      padding:
+        20px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel-light);
+    }
+
+    .image-preview {
+      position:
+        relative;
+
+      min-height:
+        260px;
+
+      display:
+        grid;
+
+      place-items:
+        center;
+
+      overflow:
+        hidden;
+
+      margin-bottom:
+        17px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        #090705;
+
+      color:
+        var(--muted);
+
+      text-align:
+        center;
+    }
+
+    .image-preview img {
+      width:
+        100%;
+
+      height:
+        260px;
+
+      object-fit:
+        cover;
+    }
+
+    .image-placeholder {
+      padding:
+        20px;
+    }
+
+    .image-actions {
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        8px;
+    }
+
+    .image-actions button {
+      width:
+        100%;
+    }
+
+    .preview-controls {
+      display:
+        flex;
+
+      gap:
+        8px;
+
+      margin-bottom:
+        15px;
+    }
+
+    .preview-controls button.active {
+      border-color:
+        var(--gold);
+
+      color:
+        var(--gold);
+    }
+
+    .essence-preview {
+      position:
+        sticky;
+
+      top:
+        20px;
+
+      min-height:
+        560px;
+
+      overflow:
+        hidden;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        #050403;
+
+      box-shadow:
+        var(--shadow);
+    }
+
+    .essence-preview.mobile {
+      max-width:
+        340px;
+
+      margin:
+        auto;
+
+      min-height:
+        600px;
+    }
+
+    .essence-layout {
+      position:
+        relative;
+
+      min-height:
+        560px;
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1.15fr 1fr;
+
+      align-items:
+        center;
+
+      overflow:
+        hidden;
+    }
+
+    .essence-preview.mobile .essence-layout {
+      min-height:
+        600px;
+
+      grid-template-columns:
+        1fr;
+
+      padding:
+        240px 25px 55px;
+    }
+
+    .essence-side {
+      position:
+        absolute;
+
+      top:
+        0;
+
+      bottom:
+        0;
+
+      width:
+        42%;
+
+      background-size:
+        cover;
+
+      background-position:
+        center;
+    }
+
+    .essence-side.left {
+      left:
+        0;
+
+      background:
+        linear-gradient(
+          to right,
+          rgba(0,0,0,.08),
+          rgba(0,0,0,.9)
+        ),
+        radial-gradient(
+          circle,
+          rgba(99,21,26,.33),
+          transparent 65%
+        ),
+        #1b100b;
+    }
+
+    .essence-side.right {
+      right:
+        0;
+
+      background:
+        linear-gradient(
+          to left,
+          rgba(0,0,0,.08),
+          rgba(0,0,0,.9)
+        ),
+        radial-gradient(
+          circle,
+          rgba(215,166,80,.17),
+          transparent 65%
+        ),
+        #18100b;
+    }
+
+    .essence-preview.mobile .essence-side {
+      top:
+        0;
+
+      bottom:
+        auto;
+
+      width:
+        60%;
+
+      height:
+        280px;
+    }
+
+    .essence-preview.mobile .essence-side.right {
+      left:
+        auto;
+
+      right:
+        0;
+    }
+
+    .essence-center {
+      position:
+        relative;
+
+      z-index:
+        3;
+
+      grid-column:
+        2;
+
+      padding:
+        35px 20px;
+
+      text-align:
+        center;
+    }
+
+    .essence-preview.mobile .essence-center {
+      grid-column:
+        1;
+    }
+
+    .essence-center h3 {
+      margin:
+        14px 0;
+
+      color:
+        var(--text);
+
+      font-size:
+        37px;
+    }
+
+    .essence-center p {
+      font-size:
+        12px;
+    }
+
+
+    /* =====================================================
+       AGENDA
+    ===================================================== */
+
+    .agenda-toolbar {
+      display:
+        flex;
+
+      justify-content:
+        space-between;
+
+      align-items:
+        center;
+
+      gap:
+        20px;
+
+      margin-bottom:
+        20px;
+    }
+
+    .schedule-editor {
+      display:
+        grid;
+
+      grid-template-columns:
+        minmax(0,1fr) 340px;
+
+      gap:
+        20px;
+    }
+
+    .publish-options {
+      display:
+        grid;
+
+      gap:
+        10px;
+
+      margin:
+        15px 0;
+    }
+
+    .publish-option {
+      display:
+        grid;
+
+      grid-template-columns:
+        22px 1fr;
+
+      gap:
+        10px;
+
+      align-items:
+        flex-start;
+
+      padding:
+        15px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel-light);
+    }
+
+    .publish-option strong {
+      display:
+        block;
+
+      margin-bottom:
+        4px;
+
+      font-size:
+        12px;
+    }
+
+    .publish-option small {
+      color:
+        var(--muted);
+    }
+
+    .schedule-list {
+      display:
+        grid;
+
+      gap:
+        12px;
+    }
+
+    .schedule-item {
+      display:
+        grid;
+
+      grid-template-columns:
+        auto 1fr auto;
+
+      gap:
+        17px;
+
+      align-items:
+        center;
+
+      padding:
+        18px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel);
+    }
+
+    .drag-handle {
+      color:
+        var(--gold);
+
+      font-size:
+        18px;
+
+      cursor:
+        grab;
+    }
+
+    .schedule-info strong {
+      display:
+        block;
+
+      margin-bottom:
+        5px;
+
+      font:
+        19px Georgia,
+        serif;
+
+      font-weight:
+        400;
+    }
+
+    .schedule-info small {
+      color:
+        var(--muted);
+    }
+
+    .schedule-meta {
+      display:
+        flex;
+
+      gap:
+        8px;
+
+      flex-wrap:
+        wrap;
+
+      margin-top:
+        9px;
+    }
+
+    .badge {
+      display:
+        inline-block;
+
+      padding:
+        5px 8px;
+
+      border:
+        1px solid var(--line);
+
+      color:
+        var(--gold);
+
+      font-size:
+        8px;
+
+      letter-spacing:
+        .08em;
+
+      text-transform:
+        uppercase;
+    }
+
+    .schedule-actions {
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(2,42px);
+
+      gap:
+        7px;
+    }
+
+    .schedule-actions button {
+      width:
+        42px;
+
+      height:
+        42px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        transparent;
+
+      color:
+        var(--gold);
+    }
+
+    .order-options {
+      display:
+        grid;
+
+      gap:
+        9px;
+    }
+
+    .order-options button {
+      width:
+        100%;
+
+      text-align:
+        left;
+    }
+
+
+    /* =====================================================
+       MÓDULOS E LISTAS
+    ===================================================== */
+
+    .module-grid {
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(3,1fr);
+
+      gap:
+        18px;
+    }
+
+    .module-card {
+      min-height:
+        230px;
+
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      padding:
+        25px;
+
+      border:
+        1px solid var(--line);
+
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(215,166,80,.06),
+          transparent 45%
+        ),
+        var(--panel);
+    }
+
+    .module-card h2 {
+      margin:
+        18px 0 9px;
+
+      font-size:
+        28px;
+    }
+
+    .module-card p {
+      margin-top:
+        0;
+
+      font-size:
+        12px;
+    }
+
+    .module-card button {
+      margin-top:
+        auto;
+
+      align-self:
+        flex-start;
+    }
+
+    .list {
+      border:
+        1px solid var(--line);
+
+      background:
+        var(--panel);
+    }
+
+    .list-row {
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr auto;
+
+      gap:
+        20px;
+
+      align-items:
+        center;
+
+      padding:
+        18px 20px;
+
+      border-bottom:
+        1px solid var(--line);
+    }
+
+    .list-row:last-child {
+      border-bottom:
+        0;
+    }
+
+    .list-row strong {
+      display:
+        block;
+
+      margin-bottom:
+        4px;
+    }
+
+    .list-row small {
+      color:
+        var(--muted);
+    }
+
+    .menu-overlay {
+      display:
+        none;
+    }
+
+
+    /* =====================================================
+       TABLET
+    ===================================================== */
+
+    @media (max-width: 1120px) {
+
+      .metrics {
+        grid-template-columns:
+          repeat(3,1fr);
+      }
+
+      .dashboard-grid,
+      .essence-editor,
+      .schedule-editor {
+        grid-template-columns:
+          1fr;
+      }
+
+      .module-grid {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+      .essence-preview {
+        position:
+          static;
+      }
+
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ===================================================== */
+
+    @media (max-width: 760px) {
+
+      .admin-layout {
+        display:
+          block;
+      }
+
+      .sidebar {
+        position:
+          fixed;
+
+        z-index:
+          200;
+
+        top:
+          0;
+
+        bottom:
+          0;
+
+        left:
+          0;
+
+        width:
+          min(290px,86vw);
+
+        height:
+          100vh;
+
+        transform:
+          translateX(-102%);
+
+        transition:
+          transform .25s ease;
+
+        box-shadow:
+          20px 0 60px rgba(0,0,0,.55);
+      }
+
+      .sidebar.open {
+        transform:
+          translateX(0);
+      }
+
+      .menu-overlay {
+        position:
+          fixed;
+
+        z-index:
+          190;
+
+        inset:
+          0;
+
+        display:
+          none;
+
+        background:
+          rgba(0,0,0,.65);
+      }
+
+      .menu-overlay.active {
+        display:
+          block;
       }
 
       .topbar {
-        align-items: flex-start;
-        flex-direction: column;
+        min-height:
+          70px;
+
+        padding:
+          14px 17px;
       }
+
+      .mobile-menu {
+        width:
+          46px;
+
+        height:
+          46px;
+
+        display:
+          grid;
+
+        place-items:
+          center;
+
+        border:
+          1px solid var(--line);
+
+        background:
+          transparent;
+
+        color:
+          var(--gold);
+      }
+
+      .topbar-title {
+        display:
+          none;
+      }
+
+      .content {
+        padding:
+          26px 17px 50px;
+      }
+
+      .page-header {
+        align-items:
+          flex-start;
+
+        flex-direction:
+          column;
+
+        margin-bottom:
+          25px;
+      }
+
+      .page-header h1 {
+        font-size:
+          38px;
+      }
+
+      .metrics {
+        grid-template-columns:
+          1fr 1fr;
+
+        gap:
+          10px;
+      }
+
+      .metric {
+        padding:
+          17px;
+      }
+
+      .metric strong {
+        font-size:
+          27px;
+      }
+
+      .quick-grid,
+      .module-grid,
+      .form-grid,
+      .image-editors {
+        grid-template-columns:
+          1fr;
+      }
+
+      .panel {
+        padding:
+          21px;
+      }
+
+      .preview-controls {
+        display:
+          grid;
+
+        grid-template-columns:
+          1fr 1fr;
+      }
+
+      .preview-controls button {
+        width:
+          100%;
+      }
+
+      .agenda-toolbar {
+        align-items:
+          flex-start;
+
+        flex-direction:
+          column;
+      }
+
+      .agenda-toolbar button {
+        width:
+          100%;
+      }
+
+      .schedule-item {
+        grid-template-columns:
+          auto 1fr;
+      }
+
+      .schedule-actions {
+        grid-column:
+          1 / -1;
+
+        grid-template-columns:
+          repeat(4,1fr);
+      }
+
+      .schedule-actions button {
+        width:
+          100%;
+      }
+
+      .list-row {
+        grid-template-columns:
+          1fr;
+      }
+
+      .list-row button {
+        width:
+          100%;
+      }
+
     }
+
+    @media (max-width: 390px) {
+
+      .metrics {
+        grid-template-columns:
+          1fr;
+      }
+
+      .page-header h1 {
+        font-size:
+          34px;
+      }
+
+    }
+
   </style>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
 
-  <section id="loginScreen" class="screen">
+<div class="admin-layout">
 
-    <form id="loginForm" class="card">
+  <!-- =====================================================
+       MENU LATERAL
+  ====================================================== -->
 
-      <span class="eyebrow">
-        Área restrita
-      </span>
+  <aside id="sidebar" class="sidebar">
 
-      <h1>Dona Figueira</h1>
+    <div class="logo">
 
-      <p>
-        Entre com a conta administrativa cadastrada no Supabase.
-      </p>
+      Dona Figueira
 
-      <label class="field">
-        E-mail
+      <small>
+        ADMINISTRAÇÃO
+      </small>
 
-        <input
-          id="email"
-          type="email"
-          autocomplete="username"
-          required
-        >
-      </label>
+    </div>
 
-      <label class="field">
-        Senha
 
-        <input
-          id="password"
-          type="password"
-          autocomplete="current-password"
-          required
-        >
-      </label>
+    <nav class="menu">
 
       <button
-        id="loginButton"
-        class="primary"
-        type="submit"
+        class="active"
+        data-page="dashboard"
+        type="button"
       >
-        Entrar
+        <span class="menu-icon">⌂</span>
+        Visão geral
       </button>
 
-      <p
-        id="loginMessage"
-        class="message"
-        role="status"
-      ></p>
 
-    </form>
+      <button
+        data-page="publicSite"
+        type="button"
+      >
+        <span class="menu-icon">◇</span>
+        Site público
+      </button>
 
-  </section>
+
+      <button
+        data-page="weeklyReading"
+        type="button"
+      >
+        <span class="menu-icon">◈</span>
+        Leitura da semana
+      </button>
 
 
-  <main
-    id="adminScreen"
-    class="shell hidden"
-  >
+      <button
+        data-page="exclusiveContent"
+        type="button"
+      >
+        <span class="menu-icon">□</span>
+        Conteúdos exclusivos
+      </button>
 
-    <header class="topbar">
 
-      <div>
+      <button
+        data-page="schedule"
+        type="button"
+      >
+        <span class="menu-icon">⌑</span>
+        Agenda
+      </button>
 
-        <span class="eyebrow">
-          Administração
-        </span>
 
-        <h1>Painel Dona Figueira</h1>
+      <button
+        data-page="promotions"
+        type="button"
+      >
+        <span class="menu-icon">%</span>
+        Promoções
+      </button>
+
+
+      <button
+        data-page="clients"
+        type="button"
+      >
+        <span class="menu-icon">○</span>
+        Clientes
+      </button>
+
+
+      <button
+        data-page="media"
+        type="button"
+      >
+        <span class="menu-icon">▣</span>
+        Mídias
+      </button>
+
+
+      <button
+        data-page="settings"
+        type="button"
+      >
+        <span class="menu-icon">⚙</span>
+        Configurações
+      </button>
+
+    </nav>
+
+
+    <div class="sidebar-footer">
+
+      <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        Estrutura administrativa pronta
 
       </div>
 
       <button
-        id="logoutButton"
-        class="logout"
+        class="secondary"
         type="button"
       >
         Sair
       </button>
 
+    </div>
+
+  </aside>
+
+
+  <div
+    id="menuOverlay"
+    class="menu-overlay"
+  ></div>
+
+
+  <!-- =====================================================
+       ÁREA PRINCIPAL
+  ====================================================== -->
+
+  <div class="workspace">
+
+    <header class="topbar">
+
+      <button
+        id="mobileMenu"
+        class="mobile-menu"
+        type="button"
+        aria-label="Abrir menu"
+      >
+        ☰
+      </button>
+
+      <span class="topbar-title">
+        Painel de gerenciamento
+      </span>
+
+      <div class="admin-user">
+
+        <strong>
+          Administrador
+        </strong>
+
+        <span>
+          Acesso completo
+        </span>
+
+      </div>
+
     </header>
 
 
-    <section class="grid">
+    <main class="content">
 
-      <article class="module">
 
-        <h2>Site público</h2>
+      <!-- =====================================================
+           DASHBOARD
+      ====================================================== -->
 
-        <p>
-          Alterar textos, WhatsApp, serviços,
-          valores e elementos exibidos no site.
-        </p>
+      <section
+        id="dashboard"
+        class="page active"
+      >
 
-        <span class="status">
-          Próxima etapa
-        </span>
+        <div class="page-header">
 
-      </article>
+          <div>
 
+            <span class="eyebrow">
+              Visão geral
+            </span>
 
-      <article class="module">
+            <h1>
+              Painel Dona Figueira
+            </h1>
 
-        <h2>Fotos e vídeos</h2>
+            <p>
+              Controle o site público e a Área do Cliente
+              a partir de um único lugar.
+            </p>
 
-        <p>
-          Gerenciar imagens, vídeos e outras
-          mídias exibidas no site.
-        </p>
+          </div>
 
-        <span class="status">
-          Próxima etapa
-        </span>
 
-      </article>
+          <div class="page-actions">
 
+            <button
+              class="primary"
+              data-open="weeklyReading"
+              type="button"
+            >
+              Nova leitura
+            </button>
 
-      <article class="module">
+            <button
+              class="secondary"
+              data-open="exclusiveContent"
+              type="button"
+            >
+              Novo conteúdo
+            </button>
 
-        <h2>Área do cliente</h2>
+          </div>
 
-        <p>
-          Administrar os conteúdos exclusivos
-          disponíveis para clientes cadastrados.
-        </p>
+        </div>
 
-        <span class="status">
-          Próxima etapa
-        </span>
 
-      </article>
+        <div class="metrics">
 
+          <div class="metric">
+            <strong>1</strong>
+            <span>Leitura atual</span>
+          </div>
 
-      <article class="module">
+          <div class="metric">
+            <strong>3</strong>
+            <span>Conteúdos publicados</span>
+          </div>
 
-        <h2>Leitura da semana</h2>
+          <div class="metric">
+            <strong>3</strong>
+            <span>Horários disponíveis</span>
+          </div>
 
-        <p>
-          Publicar texto, imagem e vídeo
-          da leitura preparada pela cartomante.
-        </p>
+          <div class="metric">
+            <strong>1</strong>
+            <span>Promoção ativa</span>
+          </div>
 
-        <span class="status">
-          Próxima etapa
-        </span>
+          <div class="metric">
+            <strong>0</strong>
+            <span>Clientes cadastrados</span>
+          </div>
 
-      </article>
+        </div>
 
 
-      <article class="module">
+        <div class="dashboard-grid">
 
-        <h2>Agenda antecipada</h2>
+          <section class="panel">
 
-        <p>
-          Liberar horários de jogos primeiro
-          para clientes cadastrados.
-        </p>
+            <div class="panel-title">
+              <h2>Ações rápidas</h2>
+            </div>
 
-        <span class="status">
-          Próxima etapa
-        </span>
 
-      </article>
+            <div class="quick-grid">
 
+              <button
+                class="quick-action"
+                data-open="publicSite"
+                type="button"
+              >
+                <strong>Editar site</strong>
+                <span>Textos, fotos e serviços.</span>
+              </button>
 
-      <article class="module">
 
-        <h2>Promoções</h2>
+              <button
+                class="quick-action"
+                data-open="weeklyReading"
+                type="button"
+              >
+                <strong>Nova leitura</strong>
+                <span>Fotos, áudio, vídeo e texto.</span>
+              </button>
 
-        <p>
-          Criar promoções exclusivas,
-          períodos de validade, imagens e vídeos.
-        </p>
 
-        <span class="status">
-          Próxima etapa
-        </span>
+              <button
+                class="quick-action"
+                data-open="schedule"
+                type="button"
+              >
+                <strong>Abrir horário</strong>
+                <span>Cliente primeiro ou site público.</span>
+              </button>
 
-      </article>
 
+              <button
+                class="quick-action"
+                data-open="promotions"
+                type="button"
+              >
+                <strong>Criar promoção</strong>
+                <span>Pública ou exclusiva.</span>
+              </button>
 
-      <article class="module">
+            </div>
 
-        <h2>Conteúdos exclusivos</h2>
+          </section>
 
-        <p>
-          Criar textos, publicações,
-          imagens e vídeos exclusivos.
-        </p>
 
-        <span class="status">
-          Próxima etapa
-        </span>
+          <section class="panel">
 
-      </article>
+            <div class="panel-title">
+              <h2>Atividade recente</h2>
+            </div>
 
+            <div class="activity-item">
+              <strong>Painel administrativo criado</strong>
+              <span>Estrutura responsiva</span>
+            </div>
 
-      <article class="module">
+            <div class="activity-item">
+              <strong>Área do Cliente preparada</strong>
+              <span>Desktop e mobile</span>
+            </div>
 
-        <h2>Usuários</h2>
+            <div class="activity-item">
+              <strong>Agenda com prioridade definida</strong>
+              <span>Cliente ou site público</span>
+            </div>
 
-        <p>
-          Administrar e separar seguramente
-          clientes e administradores.
-        </p>
+          </section>
 
-        <span class="status">
-          Próxima etapa
-        </span>
+        </div>
 
-      </article>
 
+        <div class="notice">
 
-      <article class="module">
+          Os valores desta tela ainda são demonstrativos.
+          Quando o banco estiver conectado, os números serão
+          atualizados automaticamente.
 
-        <h2>Publicações</h2>
+        </div>
 
-        <p>
-          Controlar rascunhos, conteúdos publicados,
-          destaques e períodos de exibição.
-        </p>
+      </section>
 
-        <span class="status">
-          Próxima etapa
-        </span>
 
-      </article>
+      <!-- =====================================================
+           SITE PÚBLICO
+      ====================================================== -->
 
-    </section>
+      <section
+        id="publicSite"
+        class="page"
+      >
 
+        <div class="page-header">
 
-    <div class="warning">
+          <div>
 
-      Esta primeira versão do novo painel testa apenas
-      a autenticação.
+            <span class="eyebrow">
+              Site público
+            </span>
 
-      Os módulos serão conectados ao banco de dados
-      um por vez para evitar os erros do painel anterior.
+            <h1>
+              Editar página principal
+            </h1>
 
-    </div>
+            <p>
+              Controle os textos, contatos, serviços,
+              fotografias, trabalhos e feedbacks.
+            </p>
 
-  </main>
+          </div>
 
+          <button
+            class="primary"
+            type="button"
+          >
+            Salvar alterações
+          </button>
 
-  <script>
+        </div>
 
-    const SUPABASE_URL =
-      "https://rbkstefuutehbtzhxku.supabase.co";
 
-    const SUPABASE_KEY =
-      "sb_publishable_jehgF7iWfOZ55ZAIUsETbQ_J2P1u_4P";
+        <div class="tabs">
 
+          <button
+            class="active"
+            data-tab-group="site"
+            data-tab="siteGeneral"
+            type="button"
+          >
+            Geral
+          </button>
 
-    const loginScreen =
-      document.getElementById("loginScreen");
+          <button
+            data-tab-group="site"
+            data-tab="siteEssence"
+            type="button"
+          >
+            Nossa Essência
+          </button>
 
-    const adminScreen =
-      document.getElementById("adminScreen");
+          <button
+            data-tab-group="site"
+            data-tab="siteServices"
+            type="button"
+          >
+            Atendimentos
+          </button>
 
-    const loginForm =
-      document.getElementById("loginForm");
+          <button
+            data-tab-group="site"
+            data-tab="siteWorks"
+            type="button"
+          >
+            Trabalhos
+          </button>
 
-    const loginMessage =
-      document.getElementById("loginMessage");
+          <button
+            data-tab-group="site"
+            data-tab="siteFeedbacks"
+            type="button"
+          >
+            Feedbacks
+          </button>
 
-    const loginButton =
-      document.getElementById("loginButton");
+        </div>
 
-    const logoutButton =
-      document.getElementById("logoutButton");
 
+        <!-- GERAL -->
 
-    function showLogin(message = "") {
+        <div
+          id="siteGeneral"
+          class="tab-panel active"
+          data-tab-panel-group="site"
+        >
 
-      loginScreen.classList.remove("hidden");
+          <section class="panel">
 
-      adminScreen.classList.add("hidden");
+            <div class="panel-title">
+              <h2>Informações gerais</h2>
+            </div>
 
-      loginMessage.textContent = message;
+            <div class="form-grid">
 
-    }
+              <label class="form-label">
+                Nome apresentado
 
+                <input
+                  type="text"
+                  value="Dona Figueira"
+                >
+              </label>
 
-    function showAdmin() {
 
-      loginScreen.classList.add("hidden");
+              <label class="form-label">
+                WhatsApp
 
-      adminScreen.classList.remove("hidden");
+                <input
+                  type="tel"
+                  value="5521978966560"
+                >
+              </label>
 
-    }
 
+              <label class="form-label">
+                Instagram
 
-    const client =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+                <input
+                  type="text"
+                  placeholder="@usuario"
+                >
+              </label>
+
+
+              <label class="form-label">
+                E-mail de contato
+
+                <input
+                  type="email"
+                  placeholder="contato@exemplo.com"
+                >
+              </label>
+
+            </div>
+
+
+            <label class="form-label">
+              Texto principal do site
+
+              <textarea>
+Um espaço dedicado ao encontro, à escuta e ao respeito.
+              </textarea>
+            </label>
+
+          </section>
+
+        </div>
+
+
+        <!-- NOSSA ESSÊNCIA -->
+
+        <div
+          id="siteEssence"
+          class="tab-panel"
+          data-tab-panel-group="site"
+        >
+
+          <div class="essence-editor">
+
+            <div>
+
+              <section class="panel">
+
+                <div class="panel-title">
+
+                  <div>
+                    <span class="eyebrow">Textos</span>
+                    <h2>Nossa Essência</h2>
+                  </div>
+
+                  <label class="checkbox-line">
+                    <input
+                      id="essenceVisible"
+                      type="checkbox"
+                      checked
+                    >
+                    Mostrar seção
+                  </label>
+
+                </div>
+
+
+                <label class="form-label">
+                  Título pequeno
+
+                  <input
+                    id="essenceEyebrow"
+                    type="text"
+                    value="NOSSA ESSÊNCIA"
+                  >
+                </label>
+
+
+                <label class="form-label">
+                  Título principal
+
+                  <input
+                    id="essenceTitle"
+                    type="text"
+                    value="Entre o sagrado e o invisível"
+                  >
+                </label>
+
+
+                <label class="form-label">
+                  Texto descritivo
+
+                  <textarea
+                    id="essenceText"
+                  >Um espaço de escuta, cuidado e conexão com o sagrado.</textarea>
+                </label>
+
+              </section>
+
+
+              <section class="panel">
+
+                <div class="panel-title">
+                  <h2>Fotografias</h2>
+                </div>
+
+
+                <div class="image-editors">
+
+                  <!-- FOTO ESQUERDA -->
+
+                  <article class="image-editor">
+
+                    <h3>Foto esquerda</h3>
+
+                    <div
+                      id="leftPreview"
+                      class="image-preview"
+                    >
+
+                      <span class="image-placeholder">
+                        Foto atual da lateral esquerda
+                      </span>
+
+                    </div>
+
+
+                    <label class="form-label">
+                      Selecionar nova foto
+
+                      <input
+                        id="leftImageInput"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                      >
+                    </label>
+
+
+                    <label class="form-label">
+                      Descrição acessível
+
+                      <input
+                        type="text"
+                        placeholder="Descreva objetivamente a imagem"
+                      >
+                    </label>
+
+
+                    <label class="form-label">
+                      Posição horizontal
+
+                      <input
+                        id="leftPositionX"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value="50"
+                      >
+                    </label>
+
+
+                    <label class="form-label">
+                      Posição vertical
+
+                      <input
+                        id="leftPositionY"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value="50"
+                      >
+                    </label>
+
+
+                    <div class="image-actions">
+
+                      <button
+                        class="secondary"
+                        type="button"
+                      >
+                        Restaurar
+                      </button>
+
+                      <button
+                        id="removeLeftImage"
+                        class="danger"
+                        type="button"
+                      >
+                        Remover
+                      </button>
+
+                    </div>
+
+                  </article>
+
+
+                  <!-- FOTO DIREITA -->
+
+                  <article class="image-editor">
+
+                    <h3>Foto direita</h3>
+
+                    <div
+                      id="rightPreview"
+                      class="image-preview"
+                    >
+
+                      <span class="image-placeholder">
+                        Foto atual da lateral direita
+                      </span>
+
+                    </div>
+
+
+                    <label class="form-label">
+                      Selecionar nova foto
+
+                      <input
+                        id="rightImageInput"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                      >
+                    </label>
+
+
+                    <label class="form-label">
+                      Descrição acessível
+
+                      <input
+                        type="text"
+                        placeholder="Descreva objetivamente a imagem"
+                      >
+                    </label>
+
+
+                    <label class="form-label">
+                      Posição horizontal
+
+                      <input
+                        id="rightPositionX"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value="50"
+                      >
+                    </label>
+
+
+                    <label class="form-label">
+                      Posição vertical
+
+                      <input
+                        id="rightPositionY"
+                        type="range"
+                        min="0"
+                        max="100"
+                        value="50"
+                      >
+                    </label>
+
+
+                    <div class="image-actions">
+
+                      <button
+                        class="secondary"
+                        type="button"
+                      >
+                        Restaurar
+                      </button>
+
+                      <button
+                        id="removeRightImage"
+                        class="danger"
+                        type="button"
+                      >
+                        Remover
+                      </button>
+
+                    </div>
+
+                  </article>
+
+                </div>
+
+              </section>
+
+
+              <section class="panel">
+
+                <div class="panel-title">
+                  <h2>Aparência</h2>
+                </div>
+
+
+                <label class="form-label">
+                  Escurecimento das fotografias
+
+                  <input
+                    id="essenceDarkness"
+                    type="range"
+                    min="0"
+                    max="80"
+                    value="35"
+                  >
+                </label>
+
+
+                <label class="form-label">
+                  Intensidade do degradê central
+
+                  <input
+                    id="essenceGradient"
+                    type="range"
+                    min="20"
+                    max="100"
+                    value="75"
+                  >
+                </label>
+
+              </section>
+
+            </div>
+
+
+            <!-- PRÉVIA -->
+
+            <aside>
+
+              <div class="preview-controls">
+
+                <button
+                  id="desktopPreviewButton"
+                  class="secondary active"
+                  type="button"
+                >
+                  Desktop
+                </button>
+
+                <button
+                  id="mobilePreviewButton"
+                  class="secondary"
+                  type="button"
+                >
+                  Mobile
+                </button>
+
+              </div>
+
+
+              <div
+                id="essencePreview"
+                class="essence-preview"
+              >
+
+                <div class="essence-layout">
+
+                  <div
+                    id="previewLeftImage"
+                    class="essence-side left"
+                  ></div>
+
+                  <div class="essence-center">
+
+                    <span
+                      id="previewEssenceEyebrow"
+                      class="eyebrow"
+                    >
+                      NOSSA ESSÊNCIA
+                    </span>
+
+                    <h3
+                      id="previewEssenceTitle"
+                    >
+                      Entre o sagrado e o invisível
+                    </h3>
+
+                    <p
+                      id="previewEssenceText"
+                    >
+                      Um espaço de escuta, cuidado
+                      e conexão com o sagrado.
+                    </p>
+
+                  </div>
+
+                  <div
+                    id="previewRightImage"
+                    class="essence-side right"
+                  ></div>
+
+                </div>
+
+              </div>
+
+            </aside>
+
+          </div>
+
+        </div>
+
+
+        <!-- ATENDIMENTOS -->
+
+        <div
+          id="siteServices"
+          class="tab-panel"
+          data-tab-panel-group="site"
+        >
+
+          <section class="panel">
+
+            <div class="panel-title">
+
+              <h2>Atendimentos</h2>
+
+              <button
+                class="primary"
+                type="button"
+              >
+                Novo atendimento
+              </button>
+
+            </div>
+
+
+            <div class="list">
+
+              <div class="list-row">
+
+                <div>
+                  <strong>3 perguntas</strong>
+                  <small>R$ 27,00 · Ativo</small>
+                </div>
+
+                <button class="secondary">
+                  Editar
+                </button>
+
+              </div>
+
+
+              <div class="list-row">
+
+                <div>
+                  <strong>Jogo completo</strong>
+                  <small>R$ 47,00 · Ativo</small>
+                </div>
+
+                <button class="secondary">
+                  Editar
+                </button>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- TRABALHOS -->
+
+        <div
+          id="siteWorks"
+          class="tab-panel"
+          data-tab-panel-group="site"
+        >
+
+          <section class="panel">
+
+            <div class="panel-title">
+
+              <h2>Trabalhos</h2>
+
+              <button class="primary">
+                Novo trabalho
+              </button>
+
+            </div>
+
+
+            <div class="notice">
+
+              Este módulo permitirá adicionar fotografias,
+              legendas, textos, ordem de exibição
+              e visibilidade dos trabalhos.
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- FEEDBACKS -->
+
+        <div
+          id="siteFeedbacks"
+          class="tab-panel"
+          data-tab-panel-group="site"
+        >
+
+          <section class="panel">
+
+            <div class="panel-title">
+
+              <h2>Feedbacks</h2>
+
+              <button class="primary">
+                Novo feedback
+              </button>
+
+            </div>
+
+
+            <div class="notice">
+
+              Este módulo permitirá adicionar imagens,
+              mensagens, ordem e visibilidade dos feedbacks.
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           LEITURA DA SEMANA
+      ====================================================== -->
+
+      <section
+        id="weeklyReading"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Área do cliente
+            </span>
+
+            <h1>
+              Leitura da semana
+            </h1>
+
+            <p>
+              Publique texto, várias fotos das cartas,
+              áudio da interpretação e vídeo opcional.
+            </p>
+
+          </div>
+
+          <div class="page-actions">
+
+            <button class="secondary">
+              Histórico
+            </button>
+
+            <button class="primary">
+              Nova leitura
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="panel">
+
+          <div class="panel-title">
+
+            <h2>Estrutura da publicação</h2>
+
+          </div>
+
+
+          <div class="module-grid">
+
+            <article class="module-card">
+              <span class="eyebrow">01</span>
+              <h2>Texto</h2>
+              <p>Título, período e introdução.</p>
+              <button class="secondary">Editar</button>
+            </article>
+
+            <article class="module-card">
+              <span class="eyebrow">02</span>
+              <h2>Fotos</h2>
+              <p>Várias fotos e ordem da galeria.</p>
+              <button class="secondary">Gerenciar</button>
+            </article>
+
+            <article class="module-card">
+              <span class="eyebrow">03</span>
+              <h2>Áudio</h2>
+              <p>Explicação completa da cartomante.</p>
+              <button class="secondary">Enviar áudio</button>
+            </article>
+
+            <article class="module-card">
+              <span class="eyebrow">04</span>
+              <h2>Vídeo</h2>
+              <p>Mensagem em vídeo opcional.</p>
+              <button class="secondary">Enviar vídeo</button>
+            </article>
+
+            <article class="module-card">
+              <span class="eyebrow">05</span>
+              <h2>Publicação</h2>
+              <p>Rascunho, prévia ou publicar.</p>
+              <button class="secondary">Configurar</button>
+            </article>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           CONTEÚDOS EXCLUSIVOS
+      ====================================================== -->
+
+      <section
+        id="exclusiveContent"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Área do cliente
+            </span>
+
+            <h1>
+              Conteúdos exclusivos
+            </h1>
+
+            <p>
+              Textos, imagens, vídeos, áudios
+              e orientações para clientes cadastrados.
+            </p>
+
+          </div>
+
+          <button class="primary">
+            Novo conteúdo
+          </button>
+
+        </div>
+
+
+        <div class="module-grid">
+
+          <article class="module-card">
+            <span class="eyebrow">TEXTO</span>
+            <h2>Publicações</h2>
+            <p>Textos e orientações especiais.</p>
+            <button class="secondary">Gerenciar</button>
+          </article>
+
+          <article class="module-card">
+            <span class="eyebrow">IMAGEM</span>
+            <h2>Galerias</h2>
+            <p>Imagens e conteúdos visuais.</p>
+            <button class="secondary">Gerenciar</button>
+          </article>
+
+          <article class="module-card">
+            <span class="eyebrow">VÍDEO</span>
+            <h2>Mensagens</h2>
+            <p>Conteúdos exclusivos em vídeo.</p>
+            <button class="secondary">Gerenciar</button>
+          </article>
+
+          <article class="module-card">
+            <span class="eyebrow">ÁUDIO</span>
+            <h2>Orientações</h2>
+            <p>Conteúdos exclusivos em áudio.</p>
+            <button class="secondary">Gerenciar</button>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           AGENDA
+      ====================================================== -->
+
+      <section
+        id="schedule"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Agenda
+            </span>
+
+            <h1>
+              Horários e prioridade
+            </h1>
+
+            <p>
+              Escolha onde o horário será publicado primeiro
+              e organize a ordem exibida no site público.
+            </p>
+
+          </div>
+
+          <button
+            id="newScheduleButton"
+            class="primary"
+            type="button"
+          >
+            Novo horário
+          </button>
+
+        </div>
+
+
+        <div class="tabs">
+
+          <button
+            class="active"
+            data-tab-group="agenda"
+            data-tab="scheduleHours"
+            type="button"
+          >
+            Horários
+          </button>
+
+          <button
+            data-tab-group="agenda"
+            data-tab="schedulePriority"
+            type="button"
+          >
+            Publicação e prioridade
+          </button>
+
+          <button
+            data-tab-group="agenda"
+            data-tab="scheduleOrder"
+            type="button"
+          >
+            Ordem no site público
+          </button>
+
+        </div>
+
+
+        <!-- HORÁRIOS -->
+
+        <div
+          id="scheduleHours"
+          class="tab-panel active"
+          data-tab-panel-group="agenda"
+        >
+
+          <div class="schedule-list">
+
+            <article
+              class="schedule-item"
+              data-date="2026-11-15"
+              data-time="14:00"
+            >
+
+              <span class="drag-handle">
+                ⋮⋮
+              </span>
+
+              <div class="schedule-info">
+
+                <strong>
+                  15/11/2026 às 14:00
+                </strong>
+
+                <small>
+                  Jogo completo · Online
+                </small>
+
+                <div class="schedule-meta">
+
+                  <span class="badge">
+                    Cliente primeiro
+                  </span>
+
+                  <span class="badge">
+                    Disponível
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div class="schedule-actions">
+
+                <button
+                  class="move-up"
+                  type="button"
+                  aria-label="Mover para cima"
+                >
+                  ↑
+                </button>
+
+                <button
+                  class="move-down"
+                  type="button"
+                  aria-label="Mover para baixo"
+                >
+                  ↓
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Editar"
+                >
+                  ✎
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Excluir"
+                >
+                  ×
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <article
+              class="schedule-item"
+              data-date="2026-11-15"
+              data-time="17:30"
+            >
+
+              <span class="drag-handle">
+                ⋮⋮
+              </span>
+
+              <div class="schedule-info">
+
+                <strong>
+                  15/11/2026 às 17:30
+                </strong>
+
+                <small>
+                  Jogo completo · Presencial
+                </small>
+
+                <div class="schedule-meta">
+
+                  <span class="badge">
+                    Site público
+                  </span>
+
+                  <span class="badge">
+                    Disponível
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div class="schedule-actions">
+
+                <button
+                  class="move-up"
+                  type="button"
+                >
+                  ↑
+                </button>
+
+                <button
+                  class="move-down"
+                  type="button"
+                >
+                  ↓
+                </button>
+
+                <button type="button">
+                  ✎
+                </button>
+
+                <button type="button">
+                  ×
+                </button>
+
+              </div>
+
+            </article>
+
+
+            <article
+              class="schedule-item"
+              data-date="2026-11-16"
+              data-time="10:00"
+            >
+
+              <span class="drag-handle">
+                ⋮⋮
+              </span>
+
+              <div class="schedule-info">
+
+                <strong>
+                  16/11/2026 às 10:00
+                </strong>
+
+                <small>
+                  3 perguntas · Online
+                </small>
+
+                <div class="schedule-meta">
+
+                  <span class="badge">
+                    Ambos
+                  </span>
+
+                  <span class="badge">
+                    Disponível
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div class="schedule-actions">
+
+                <button
+                  class="move-up"
+                  type="button"
+                >
+                  ↑
+                </button>
+
+                <button
+                  class="move-down"
+                  type="button"
+                >
+                  ↓
+                </button>
+
+                <button type="button">
+                  ✎
+                </button>
+
+                <button type="button">
+                  ×
+                </button>
+
+              </div>
+
+            </article>
+
+          </div>
+
+        </div>
+
+
+        <!-- PUBLICAÇÃO E PRIORIDADE -->
+
+        <div
+          id="schedulePriority"
+          class="tab-panel"
+          data-tab-panel-group="agenda"
+        >
+
+          <div class="schedule-editor">
+
+            <section class="panel">
+
+              <div class="panel-title">
+                <h2>Novo horário</h2>
+              </div>
+
+
+              <div class="form-grid">
+
+                <label class="form-label">
+                  Data
+
+                  <input
+                    type="date"
+                  >
+                </label>
+
+
+                <label class="form-label">
+                  Horário
+
+                  <input
+                    type="time"
+                  >
+                </label>
+
+
+                <label class="form-label">
+                  Serviço
+
+                  <select>
+                    <option>Jogo completo</option>
+                    <option>3 perguntas</option>
+                  </select>
+                </label>
+
+
+                <label class="form-label">
+                  Modalidade
+
+                  <select>
+                    <option>Online</option>
+                    <option>Presencial</option>
+                  </select>
+                </label>
+
+              </div>
+
+
+              <label class="form-label">
+                Observação
+
+                <textarea
+                  placeholder="Informação opcional sobre o horário"
+                ></textarea>
+              </label>
+
+
+              <h3>
+                Onde publicar primeiro?
+              </h3>
+
+
+              <div class="publish-options">
+
+                <label class="publish-option">
+
+                  <input
+                    name="publishFirst"
+                    type="radio"
+                    value="client"
+                    checked
+                  >
+
+                  <span>
+                    <strong>
+                      Área do Cliente primeiro
+                    </strong>
+
+                    <small>
+                      Clientes cadastrados terão acesso antecipado.
+                    </small>
+                  </span>
+
+                </label>
+
+
+                <label class="publish-option">
+
+                  <input
+                    name="publishFirst"
+                    type="radio"
+                    value="public"
+                  >
+
+                  <span>
+                    <strong>
+                      Site público primeiro
+                    </strong>
+
+                    <small>
+                      O horário ficará disponível diretamente no site.
+                    </small>
+                  </span>
+
+                </label>
+
+
+                <label class="publish-option">
+
+                  <input
+                    name="publishFirst"
+                    type="radio"
+                    value="both"
+                  >
+
+                  <span>
+                    <strong>
+                      Ambos ao mesmo tempo
+                    </strong>
+
+                    <small>
+                      Área do Cliente e site público recebem juntos.
+                    </small>
+                  </span>
+
+                </label>
+
+              </div>
+
+
+              <div
+                id="clientPriorityOptions"
+              >
+
+                <div class="form-grid">
+
+                  <label class="form-label">
+                    Liberar para clientes em
+
+                    <input
+                      type="datetime-local"
+                    >
+                  </label>
+
+
+                  <label class="form-label">
+                    Liberar no site público em
+
+                    <input
+                      type="datetime-local"
+                    >
+                  </label>
+
+                </div>
+
+
+                <label class="checkbox-line">
+
+                  <input
+                    type="checkbox"
+                    checked
+                  >
+
+                  Se ainda estiver disponível,
+                  publicar automaticamente no site público
+
+                </label>
+
+              </div>
+
+
+              <button
+                class="primary"
+                type="button"
+              >
+                Adicionar horário
+              </button>
+
+            </section>
+
+
+            <aside class="panel">
+
+              <h3>
+                Regras de publicação
+              </h3>
+
+              <p>
+                Se um horário for reservado durante
+                o período exclusivo dos clientes,
+                o horário não será publicado posteriormente
+                como disponível no site público.
+              </p>
+
+              <div class="notice">
+
+                Exemplo:<br><br>
+
+                Clientes: 12/11 às 18:00<br>
+                Público: 13/11 às 18:00
+
+              </div>
+
+            </aside>
+
+          </div>
+
+        </div>
+
+
+        <!-- ORDEM -->
+
+        <div
+          id="scheduleOrder"
+          class="tab-panel"
+          data-tab-panel-group="agenda"
+        >
+
+          <div class="schedule-editor">
+
+            <section class="panel">
+
+              <div class="panel-title">
+
+                <div>
+                  <span class="eyebrow">
+                    Site público
+                  </span>
+
+                  <h2>
+                    Ordem de exibição
+                  </h2>
+                </div>
+
+              </div>
+
+
+              <p>
+                Use as setas na lista de horários
+                para organizar manualmente a ordem.
+              </p>
+
+
+              <div class="notice">
+
+                A ordem definida aqui será usada
+                quando os horários forem apresentados
+                no site público.
+
+              </div>
+
+            </section>
+
+
+            <aside class="panel">
+
+              <h3>
+                Ordenação automática
+              </h3>
+
+
+              <div class="order-options">
+
+                <button
+                  id="sortByDate"
+                  class="secondary"
+                  type="button"
+                >
+                  Ordenar por data
+                </button>
+
+
+                <button
+                  id="sortByTime"
+                  class="secondary"
+                  type="button"
+                >
+                  Ordenar por horário
+                </button>
+
+
+                <button
+                  class="secondary"
+                  type="button"
+                >
+                  Manter ordem manual
+                </button>
+
+              </div>
+
+            </aside>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           PROMOÇÕES
+      ====================================================== -->
+
+      <section
+        id="promotions"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Benefícios
+            </span>
+
+            <h1>
+              Promoções
+            </h1>
+
+            <p>
+              Crie promoções públicas
+              ou exclusivas para clientes cadastrados.
+            </p>
+
+          </div>
+
+          <button class="primary">
+            Nova promoção
+          </button>
+
+        </div>
+
+
+        <div class="module-grid">
+
+          <article class="module-card">
+            <span class="eyebrow">CLIENTES</span>
+            <h2>Promoção exclusiva</h2>
+            <p>Imagem, vídeo, preço e validade.</p>
+            <button class="secondary">Criar</button>
+          </article>
+
+          <article class="module-card">
+            <span class="eyebrow">SITE PÚBLICO</span>
+            <h2>Promoção pública</h2>
+            <p>Oferta aberta para visitantes.</p>
+            <button class="secondary">Criar</button>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           CLIENTES
+      ====================================================== -->
+
+      <section
+        id="clients"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Usuários
+            </span>
+
+            <h1>
+              Clientes cadastrados
+            </h1>
+
+            <p>
+              Visualize contas, dados básicos,
+              status e tipo de acesso.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="list">
+
+          <div class="list-row">
+
+            <div>
+
+              <strong>
+                Nenhum cliente cadastrado
+              </strong>
+
+              <small>
+                Os usuários aparecerão após a conexão com o banco.
+              </small>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="notice">
+
+          Clientes não poderão alterar site,
+          preços, horários administrativos,
+          mídias ou publicações.
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           MÍDIAS
+      ====================================================== -->
+
+      <section
+        id="media"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Biblioteca
+            </span>
+
+            <h1>
+              Mídias
+            </h1>
+
+            <p>
+              Fotos, vídeos e áudios utilizados
+              no site e na Área do Cliente.
+            </p>
+
+          </div>
+
+          <button class="primary">
+            Enviar arquivo
+          </button>
+
+        </div>
+
+
+        <div class="module-grid">
+
+          <article class="module-card">
+            <span class="eyebrow">FOTOS</span>
+            <h2>Imagens</h2>
+            <p>Site, cartas, trabalhos e promoções.</p>
+            <button class="secondary">Abrir biblioteca</button>
+          </article>
+
+          <article class="module-card">
+            <span class="eyebrow">VÍDEOS</span>
+            <h2>Vídeos</h2>
+            <p>Leituras e conteúdos exclusivos.</p>
+            <button class="secondary">Abrir biblioteca</button>
+          </article>
+
+          <article class="module-card">
+            <span class="eyebrow">ÁUDIOS</span>
+            <h2>Áudios</h2>
+            <p>Interpretações e orientações.</p>
+            <button class="secondary">Abrir biblioteca</button>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           CONFIGURAÇÕES
+      ====================================================== -->
+
+      <section
+        id="settings"
+        class="page"
+      >
+
+        <div class="page-header">
+
+          <div>
+
+            <span class="eyebrow">
+              Sistema
+            </span>
+
+            <h1>
+              Configurações
+            </h1>
+
+            <p>
+              Acesso administrativo, segurança,
+              autenticação e integração.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="list">
+
+          <div class="list-row">
+
+            <div>
+              <strong>Administradores</strong>
+              <small>Contas autorizadas a editar tudo.</small>
+            </div>
+
+            <button class="secondary">
+              Gerenciar
+            </button>
+
+          </div>
+
+
+          <div class="list-row">
+
+            <div>
+              <strong>Segurança</strong>
+              <small>Login, confirmação e recuperação.</small>
+            </div>
+
+            <button class="secondary">
+              Abrir
+            </button>
+
+          </div>
+
+
+          <div class="list-row">
+
+            <div>
+              <strong>Integração com banco</strong>
+              <small>Status da conexão e sincronização.</small>
+            </div>
+
+            <button class="secondary">
+              Ver status
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  /* =====================================================
+     NAVEGAÇÃO PRINCIPAL
+  ===================================================== */
+
+  const sidebar =
+    document.getElementById("sidebar");
+
+  const menuOverlay =
+    document.getElementById("menuOverlay");
+
+  const mobileMenu =
+    document.getElementById("mobileMenu");
+
+  const menuButtons =
+    document.querySelectorAll(
+      ".menu button[data-page]"
+    );
+
+  const pages =
+    document.querySelectorAll(".page");
+
+
+  function openPage(pageId) {
+
+    pages.forEach(function(page) {
+
+      page.classList.toggle(
+        "active",
+        page.id === pageId
       );
 
-
-    window.adminSupabase = client;
-
-
-    client.auth
-      .getSession()
-      .then(({ data, error }) => {
-
-        if (error) {
-
-          showLogin(
-            "Erro ao verificar sessão: " +
-            error.message
-          );
-
-          return;
-
-        }
+    });
 
 
-        if (data.session) {
+    menuButtons.forEach(function(button) {
 
-          showAdmin();
+      button.classList.toggle(
+        "active",
+        button.dataset.page === pageId
+      );
 
-        } else {
-
-          showLogin();
-
-        }
-
-      });
+    });
 
 
-    loginForm.addEventListener(
-      "submit",
-      async function (event) {
+    sidebar.classList.remove("open");
 
-        event.preventDefault();
+    menuOverlay.classList.remove("active");
 
 
-        loginButton.disabled = true;
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
 
-        loginMessage.textContent =
-          "Entrando...";
-
-
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim();
+  }
 
 
-        const password =
-          document
-            .getElementById("password")
-            .value;
+  menuButtons.forEach(function(button) {
 
+    button.addEventListener(
+      "click",
+      function() {
 
-        try {
-
-          const { data, error } =
-            await client.auth
-              .signInWithPassword({
-                email,
-                password
-              });
-
-
-          if (error) {
-
-            loginMessage.textContent =
-              "Erro do Supabase: " +
-              error.message +
-              (
-                error.code
-                  ? " | Código: " +
-                    error.code
-                  : ""
-              );
-
-            return;
-
-          }
-
-
-          if (data.session) {
-
-            loginForm.reset();
-
-            showAdmin();
-
-          } else {
-
-            loginMessage.textContent =
-              "O Supabase não retornou uma sessão.";
-
-          }
-
-        } catch (error) {
-
-          loginMessage.textContent =
-            "Erro de conexão: " +
-            error.message;
-
-        } finally {
-
-          loginButton.disabled = false;
-
-        }
+        openPage(
+          button.dataset.page
+        );
 
       }
     );
 
+  });
 
-    logoutButton.addEventListener(
-      "click",
-      async function () {
 
-        await client.auth.signOut();
+  document
+    .querySelectorAll("[data-open]")
+    .forEach(function(button) {
 
-        showLogin(
-          "Sessão encerrada."
+      button.addEventListener(
+        "click",
+        function() {
+
+          openPage(
+            button.dataset.open
+          );
+
+        }
+      );
+
+    });
+
+
+  mobileMenu.addEventListener(
+    "click",
+    function() {
+
+      sidebar.classList.add("open");
+
+      menuOverlay.classList.add("active");
+
+    }
+  );
+
+
+  menuOverlay.addEventListener(
+    "click",
+    function() {
+
+      sidebar.classList.remove("open");
+
+      menuOverlay.classList.remove("active");
+
+    }
+  );
+
+
+  /* =====================================================
+     ABAS
+  ===================================================== */
+
+  document
+    .querySelectorAll("[data-tab]")
+    .forEach(function(button) {
+
+      button.addEventListener(
+        "click",
+        function() {
+
+          const group =
+            button.dataset.tabGroup;
+
+          const target =
+            button.dataset.tab;
+
+
+          document
+            .querySelectorAll(
+              '[data-tab-group="' +
+              group +
+              '"]'
+            )
+            .forEach(function(tabButton) {
+
+              tabButton.classList.toggle(
+                "active",
+                tabButton === button
+              );
+
+            });
+
+
+          document
+            .querySelectorAll(
+              '[data-tab-panel-group="' +
+              group +
+              '"]'
+            )
+            .forEach(function(panel) {
+
+              panel.classList.toggle(
+                "active",
+                panel.id === target
+              );
+
+            });
+
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     NOSSA ESSÊNCIA
+  ===================================================== */
+
+  const essenceEyebrow =
+    document.getElementById(
+      "essenceEyebrow"
+    );
+
+  const essenceTitle =
+    document.getElementById(
+      "essenceTitle"
+    );
+
+  const essenceText =
+    document.getElementById(
+      "essenceText"
+    );
+
+  const previewEyebrow =
+    document.getElementById(
+      "previewEssenceEyebrow"
+    );
+
+  const previewTitle =
+    document.getElementById(
+      "previewEssenceTitle"
+    );
+
+  const previewText =
+    document.getElementById(
+      "previewEssenceText"
+    );
+
+
+  essenceEyebrow.addEventListener(
+    "input",
+    function() {
+
+      previewEyebrow.textContent =
+        essenceEyebrow.value;
+
+    }
+  );
+
+
+  essenceTitle.addEventListener(
+    "input",
+    function() {
+
+      previewTitle.textContent =
+        essenceTitle.value;
+
+    }
+  );
+
+
+  essenceText.addEventListener(
+    "input",
+    function() {
+
+      previewText.textContent =
+        essenceText.value;
+
+    }
+  );
+
+
+  function loadPreviewImage(
+    input,
+    localPreview,
+    sitePreview
+  ) {
+
+    const file =
+      input.files[0];
+
+
+    if(!file) {
+      return;
+    }
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      function(event) {
+
+        localPreview.innerHTML =
+          '<img alt="" src="' +
+          event.target.result +
+          '">';
+
+
+        sitePreview.style.backgroundImage =
+          'linear-gradient(' +
+          'to center,' +
+          'rgba(0,0,0,.15),' +
+          'rgba(0,0,0,.9)' +
+          '),url("' +
+          event.target.result +
+          '")';
+
+
+        sitePreview.style.backgroundSize =
+          "cover";
+
+      };
+
+
+    reader.readAsDataURL(file);
+
+  }
+
+
+  document
+    .getElementById("leftImageInput")
+    .addEventListener(
+      "change",
+      function() {
+
+        loadPreviewImage(
+          this,
+          document.getElementById(
+            "leftPreview"
+          ),
+          document.getElementById(
+            "previewLeftImage"
+          )
         );
 
       }
     );
 
 
-    client.auth.onAuthStateChange(
-      function (_event, session) {
+  document
+    .getElementById("rightImageInput")
+    .addEventListener(
+      "change",
+      function() {
 
-        if (session) {
-
-          showAdmin();
-
-        } else {
-
-          showLogin();
-
-        }
+        loadPreviewImage(
+          this,
+          document.getElementById(
+            "rightPreview"
+          ),
+          document.getElementById(
+            "previewRightImage"
+          )
+        );
 
       }
     );
 
-  </script>
+
+  const previewLeftImage =
+    document.getElementById(
+      "previewLeftImage"
+    );
+
+  const previewRightImage =
+    document.getElementById(
+      "previewRightImage"
+    );
+
+
+  document
+    .getElementById("leftPositionX")
+    .addEventListener(
+      "input",
+      function() {
+
+        previewLeftImage.style.backgroundPosition =
+          this.value + "% " +
+          document.getElementById(
+            "leftPositionY"
+          ).value + "%";
+
+      }
+    );
+
+
+  document
+    .getElementById("leftPositionY")
+    .addEventListener(
+      "input",
+      function() {
+
+        previewLeftImage.style.backgroundPosition =
+          document.getElementById(
+            "leftPositionX"
+          ).value + "% " +
+          this.value + "%";
+
+      }
+    );
+
+
+  document
+    .getElementById("rightPositionX")
+    .addEventListener(
+      "input",
+      function() {
+
+        previewRightImage.style.backgroundPosition =
+          this.value + "% " +
+          document.getElementById(
+            "rightPositionY"
+          ).value + "%";
+
+      }
+    );
+
+
+  document
+    .getElementById("rightPositionY")
+    .addEventListener(
+      "input",
+      function() {
+
+        previewRightImage.style.backgroundPosition =
+          document.getElementById(
+            "rightPositionX"
+          ).value + "% " +
+          this.value + "%";
+
+      }
+    );
+
+
+  const essencePreview =
+    document.getElementById(
+      "essencePreview"
+    );
+
+  const desktopPreviewButton =
+    document.getElementById(
+      "desktopPreviewButton"
+    );
+
+  const mobilePreviewButton =
+    document.getElementById(
+      "mobilePreviewButton"
+    );
+
+
+  desktopPreviewButton.addEventListener(
+    "click",
+    function() {
+
+      essencePreview.classList.remove(
+        "mobile"
+      );
+
+      desktopPreviewButton.classList.add(
+        "active"
+      );
+
+      mobilePreviewButton.classList.remove(
+        "active"
+      );
+
+    }
+  );
+
+
+  mobilePreviewButton.addEventListener(
+    "click",
+    function() {
+
+      essencePreview.classList.add(
+        "mobile"
+      );
+
+      mobilePreviewButton.classList.add(
+        "active"
+      );
+
+      desktopPreviewButton.classList.remove(
+        "active"
+      );
+
+    }
+  );
+
+
+  /* =====================================================
+     AGENDA PRIORIDADE
+  ===================================================== */
+
+  const priorityRadios =
+    document.querySelectorAll(
+      'input[name="publishFirst"]'
+    );
+
+  const clientPriorityOptions =
+    document.getElementById(
+      "clientPriorityOptions"
+    );
+
+
+  priorityRadios.forEach(function(radio) {
+
+    radio.addEventListener(
+      "change",
+      function() {
+
+        clientPriorityOptions.classList.toggle(
+          "hidden",
+          this.value !== "client"
+        );
+
+      }
+    );
+
+  });
+
+
+  /* =====================================================
+     ORDENAR HORÁRIOS
+  ===================================================== */
+
+  function moveScheduleItem(
+    button,
+    direction
+  ) {
+
+    const item =
+      button.closest(
+        ".schedule-item"
+      );
+
+    const container =
+      item.parentElement;
+
+
+    if(direction === "up") {
+
+      const previous =
+        item.previousElementSibling;
+
+
+      if(previous) {
+
+        container.insertBefore(
+          item,
+          previous
+        );
+
+      }
+
+    }
+
+
+    if(direction === "down") {
+
+      const next =
+        item.nextElementSibling;
+
+
+      if(next) {
+
+        container.insertBefore(
+          next,
+          item
+        );
+
+      }
+
+    }
+
+  }
+
+
+  document
+    .querySelectorAll(".move-up")
+    .forEach(function(button) {
+
+      button.addEventListener(
+        "click",
+        function() {
+
+          moveScheduleItem(
+            button,
+            "up"
+          );
+
+        }
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(".move-down")
+    .forEach(function(button) {
+
+      button.addEventListener(
+        "click",
+        function() {
+
+          moveScheduleItem(
+            button,
+            "down"
+          );
+
+        }
+      );
+
+    });
+
+
+  function sortSchedule(compareFunction) {
+
+    const container =
+      document.querySelector(
+        ".schedule-list"
+      );
+
+    const items =
+      Array.from(
+        container.children
+      );
+
+
+    items
+      .sort(compareFunction)
+      .forEach(function(item) {
+
+        container.appendChild(item);
+
+      });
+
+  }
+
+
+  document
+    .getElementById("sortByDate")
+    .addEventListener(
+      "click",
+      function() {
+
+        sortSchedule(
+          function(a,b) {
+
+            const dateA =
+              a.dataset.date +
+              " " +
+              a.dataset.time;
+
+            const dateB =
+              b.dataset.date +
+              " " +
+              b.dataset.time;
+
+            return dateA.localeCompare(
+              dateB
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById("sortByTime")
+    .addEventListener(
+      "click",
+      function() {
+
+        sortSchedule(
+          function(a,b) {
+
+            return a.dataset.time.localeCompare(
+              b.dataset.time
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  /* =====================================================
+     FECHAR MENU COM ESC
+  ===================================================== */
+
+  window.addEventListener(
+    "keydown",
+    function(event) {
+
+      if(event.key === "Escape") {
+
+        sidebar.classList.remove("open");
+
+        menuOverlay.classList.remove(
+          "active"
+        );
+
+      }
+
+    }
+  );
+
+</script>
 
 </body>
 </html>
