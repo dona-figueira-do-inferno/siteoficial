@@ -197,6 +197,9 @@ p{color:var(--muted);line-height:1.65}
 @media(max-width:1100px){.editor-grid{grid-template-columns:1fr}.sticky-preview{position:static}.media-library-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.gallery-admin-item{grid-template-columns:60px 1fr}.gallery-admin-item img{width:60px;height:55px}.mini-actions{grid-column:1/-1}.content-type-options,.media-library-grid{grid-template-columns:1fr 1fr}.history-item{grid-template-columns:1fr}.toolbar button{width:100%}}
 @media(max-width:390px){.content-type-options,.media-library-grid{grid-template-columns:1fr}}
+
+/* PERFIL E GESTAO DE ADMINISTRADORES */
+.profile-layout{display:grid;grid-template-columns:260px 1fr;gap:20px}.avatar-box{display:grid;place-items:center;gap:14px;text-align:center}.avatar-preview{width:150px;height:150px;border-radius:50%;border:2px solid var(--gold);background:#090705;display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:38px}.avatar-preview img{width:100%;height:100%;object-fit:cover}.profile-menu-button{display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--text)}.profile-menu-button img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--gold)}.admin-real-list{display:grid;gap:10px}.admin-real-item{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);background:var(--panel2)}.admin-real-item img,.admin-avatar-fallback{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}.admin-avatar-fallback{display:grid;place-items:center;background:#090705;color:var(--gold)}.account-actions{display:flex;gap:8px;flex-wrap:wrap}.message{min-height:18px;margin-top:10px;color:var(--gold2);font-size:11px}@media(max-width:760px){.profile-layout{grid-template-columns:1fr}.admin-real-item{grid-template-columns:42px 1fr}.admin-real-item .account-actions{grid-column:1/-1}.account-actions button{flex:1}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -268,6 +271,9 @@ p{color:var(--muted);line-height:1.65}
       <span class="icon">▣</span>Mídias
     </button>
 
+    <button data-page="profile">
+      <span class="icon">●</span>Meu perfil
+    </button>
     <button data-page="settings">
       <span class="icon">⚙</span>Configurações
     </button>
@@ -294,10 +300,10 @@ p{color:var(--muted);line-height:1.65}
     Painel de gerenciamento
   </span>
 
-  <div class="user">
-    <strong>Administrador</strong>
-    <span>Acesso completo</span>
-  </div>
+  <button id="openMyProfile" class="user profile-menu-button" type="button" aria-label="Abrir meu perfil">
+    <span id="topAvatar" class="admin-avatar-fallback">A</span>
+    <span><strong id="topAdminName">Administrador</strong><span id="topAdminEmail">Acesso completo</span></span>
+  </button>
 </header>
 
 <main class="content">
@@ -1294,6 +1300,44 @@ p{color:var(--muted);line-height:1.65}
 <div id="mediaAll" class="tab-panel active" data-tab-panel-group="media"><div id="mediaLibrary" class="media-library-grid"><div class="empty-note full">Nenhuma mídia adicionada nesta demonstração.</div></div></div><div id="mediaImages" class="tab-panel" data-tab-panel-group="media"><div class="empty-note">As imagens aparecerão aqui.</div></div><div id="mediaVideos" class="tab-panel" data-tab-panel-group="media"><div class="empty-note">Os vídeos aparecerão aqui.</div></div><div id="mediaAudios" class="tab-panel" data-tab-panel-group="media"><div class="empty-note">Os áudios aparecerão aqui.</div></div>
 <div class="notice">Na integração com o banco, cada arquivo mostrará onde está sendo utilizado antes de permitir a exclusão.</div>
 </section>
+
+<!-- MEU PERFIL -->
+<section id="profile" class="page">
+  <div class="page-head"><div><span class="eyebrow">Conta administrativa</span><h1>Meu perfil</h1><p>Atualize sua foto, nome, telefone e credenciais de acesso.</p></div></div>
+  <div class="profile-layout">
+    <aside class="panel avatar-box">
+      <div id="profileAvatarPreview" class="avatar-preview">A</div>
+      <label class="secondary" style="display:inline-flex;align-items:center">Trocar foto<input id="profileAvatarInput" class="hidden" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <button id="removeProfileAvatar" class="danger" type="button">Remover foto</button>
+      <span class="small">PNG, JPG ou WebP, até 5 MB.</span>
+    </aside>
+    <div>
+      <section class="panel">
+        <h2>Informações pessoais</h2>
+        <div class="form-grid">
+          <label class="field">Nome completo<input id="profileFullName" type="text" maxlength="120"></label>
+          <label class="field">Nome de exibição<input id="profileDisplayName" type="text" maxlength="80"></label>
+          <label class="field">E-mail<input id="profileEmail" type="email" readonly></label>
+          <label class="field">Telefone<input id="profilePhone" type="tel" maxlength="30" placeholder="(21) 99999-9999"></label>
+          <label class="field">Cargo<input id="profileRole" type="text" readonly></label>
+          <label class="field">Status<input id="profileStatus" type="text" readonly></label>
+        </div>
+        <button id="saveProfileButton" class="primary" type="button">Salvar perfil</button>
+        <p id="profileMessage" class="message"></p>
+      </section>
+      <section class="panel">
+        <h2>Segurança</h2>
+        <div class="form-grid">
+          <label class="field">Nova senha<input id="newAdminPassword" type="password" minlength="8" autocomplete="new-password"></label>
+          <label class="field">Confirmar nova senha<input id="confirmAdminPassword" type="password" minlength="8" autocomplete="new-password"></label>
+        </div>
+        <div class="account-actions"><button id="changeAdminPassword" class="primary" type="button">Alterar senha</button><button id="sendAdminRecovery" class="secondary" type="button">Enviar recuperação por e-mail</button></div>
+        <p id="securityMessage" class="message"></p>
+      </section>
+    </div>
+  </div>
+</section>
+
 <!-- CONFIGURAÇÕES -->
 
 <section id="settings" class="page">
@@ -1319,7 +1363,7 @@ p{color:var(--muted);line-height:1.65}
   </div>
   <div>
     <h3>Acessos atuais</h3>
-    <div class="admin-list-item"><div><strong>Administrador principal</strong><br><span class="small">A lista real virá do banco.</span></div><span class="badge">ADMIN</span></div>
+    <div id="currentAdminsList" class="admin-real-list"><div class="empty-note">Carregando administradores...</div></div>
     <div class="notice">Os convites são enviados pela função segura invite-admin. O novo administrador deverá aceitar o convite e definir a senha.</div>
   </div>
 </div>
@@ -1331,7 +1375,7 @@ p{color:var(--muted);line-height:1.65}
     <strong>Administradores</strong>
     <small>Contas com acesso completo.</small>
   </div>
-  <button class="secondary">Gerenciar</button>
+  <button id="manageAdminsButton" class="secondary" type="button">Gerenciar</button>
 </div>
 
 <div class="list-row">
@@ -1339,7 +1383,7 @@ p{color:var(--muted);line-height:1.65}
     <strong>Segurança</strong>
     <small>Login, confirmação e recuperação de senha.</small>
   </div>
-  <button class="secondary">Abrir</button>
+  <button id="openSecurityButton" class="secondary" type="button">Abrir</button>
 </div>
 
 <div class="list-row">
@@ -1670,7 +1714,7 @@ async function requireAdmin(user){
   if(profile?.status && profile.status!=='ativo')throw new Error('Conta administrativa inativa.');
   return {full_name:profile?.full_name||'Administrador',email:verified.user.email};
 }
-async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.querySelector('.user strong').textContent=p.full_name||'Administrador';document.querySelector('.user span').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await loadAdminData()}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
+async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.getElementById('topAdminName').textContent=p.full_name||'Administrador';document.getElementById('topAdminEmail').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await Promise.all([loadAdminData(),loadMyProfile(),loadAdminsList()])}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
 document.getElementById('adminLoginButton').onclick=async()=>{const email=document.getElementById('adminLoginEmail').value.trim(),password=document.getElementById('adminLoginPassword').value;if(!email||!password)return authMsg.textContent='Preencha e-mail e senha.';authMsg.textContent='Verificando acesso...';const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return authMsg.textContent=error.message;await openAdmin(data.user)};
 document.getElementById('adminForgotButton').onclick=()=>{adminLoginCard.classList.add('hidden');adminRecoveryCard.classList.remove('hidden');document.getElementById('adminRecoveryEmail').value=document.getElementById('adminLoginEmail').value};
 document.getElementById('adminRecoveryBack').onclick=()=>{adminRecoveryCard.classList.add('hidden');adminLoginCard.classList.remove('hidden')};
@@ -1693,7 +1737,7 @@ if(invite){
     invite.disabled=true;
     message.textContent='Enviando convite...';
     try{
-      const {data,error}=await sb.functions.invoke('invite-admin',{body:{email}});
+      const name=document.getElementById('inviteAdminName').value.trim();const {data,error}=await sb.functions.invoke('invite-admin',{body:{email,name}});
       if(error){
         let detail=error.message;
         if(error.context && typeof error.context.json==='function'){
@@ -1708,6 +1752,49 @@ if(invite){
     finally{invite.disabled=false;}
   });
 }
+
+/* PERFIL ADMINISTRATIVO */
+let currentAdminProfile=null;
+function avatarMarkup(url,name,cls=''){const initial=(name||'A').trim().charAt(0).toUpperCase()||'A';return url?`<img class="${cls}" src="${url}" alt="Foto de perfil">`:`<span class="admin-avatar-fallback ${cls}">${initial}</span>`}
+async function loadMyProfile(){
+  const {data:{user}}=await sb.auth.getUser(); if(!user)return;
+  const {data,error}=await sb.from('profiles').select('id,email,full_name,display_name,phone,role,status,avatar_url,created_at').eq('id',user.id).maybeSingle();
+  if(error){document.getElementById('profileMessage').textContent=error.message;return;}
+  currentAdminProfile=data||{id:user.id,email:user.email,role:'admin',status:'ativo'};
+  document.getElementById('profileFullName').value=currentAdminProfile.full_name||'';
+  document.getElementById('profileDisplayName').value=currentAdminProfile.display_name||'';
+  document.getElementById('profileEmail').value=user.email||currentAdminProfile.email||'';
+  document.getElementById('profilePhone').value=currentAdminProfile.phone||'';
+  document.getElementById('profileRole').value=currentAdminProfile.role==='admin'?'Administrador':(currentAdminProfile.role||'Administrador');
+  document.getElementById('profileStatus').value=currentAdminProfile.status||'ativo';
+  const box=document.getElementById('profileAvatarPreview');box.innerHTML=currentAdminProfile.avatar_url?`<img src="${currentAdminProfile.avatar_url}" alt="Foto de perfil">`:(currentAdminProfile.full_name||'A').charAt(0).toUpperCase();
+  document.getElementById('topAvatar').outerHTML=currentAdminProfile.avatar_url?`<img id="topAvatar" src="${currentAdminProfile.avatar_url}" alt="Foto de perfil">`:`<span id="topAvatar" class="admin-avatar-fallback">${(currentAdminProfile.full_name||'A').charAt(0).toUpperCase()}</span>`;
+}
+async function saveMyProfile(){
+  const msg=document.getElementById('profileMessage');msg.textContent='Salvando...';
+  try{
+    const {data:{user}}=await sb.auth.getUser();if(!user)throw new Error('Sessão expirada.');
+    let avatar_url=currentAdminProfile?.avatar_url||null;const file=document.getElementById('profileAvatarInput').files[0];
+    if(file){if(file.size>5*1024*1024)throw new Error('A foto deve ter no máximo 5 MB.');const ext=(file.name.split('.').pop()||'jpg').toLowerCase();const path=`${user.id}/avatar-${Date.now()}.${ext}`;const {error:upError}=await sb.storage.from('admin-avatars').upload(path,file,{upsert:true});if(upError)throw upError;const {data:pub}=sb.storage.from('admin-avatars').getPublicUrl(path);avatar_url=pub.publicUrl;}
+    const payload={id:user.id,email:user.email,full_name:document.getElementById('profileFullName').value.trim(),display_name:document.getElementById('profileDisplayName').value.trim(),phone:document.getElementById('profilePhone').value.trim(),avatar_url,role:'admin',status:currentAdminProfile?.status||'ativo',updated_at:new Date().toISOString()};
+    const {error}=await sb.from('profiles').upsert(payload,{onConflict:'id'});if(error)throw error;
+    msg.textContent='Perfil atualizado com sucesso.';await Promise.all([loadMyProfile(),loadAdminsList()]);
+  }catch(e){msg.textContent=e.message||'Não foi possível salvar o perfil.';}
+}
+async function loadAdminsList(){
+  const box=document.getElementById('currentAdminsList');if(!box)return;
+  const {data,error}=await sb.from('profiles').select('id,email,full_name,display_name,role,status,avatar_url,created_at').eq('role','admin').order('created_at',{ascending:true});
+  if(error){box.innerHTML=`<div class="empty-note">${error.message}</div>`;return;}
+  box.innerHTML=(data||[]).length?(data||[]).map(a=>`<article class="admin-real-item">${avatarMarkup(a.avatar_url,a.display_name||a.full_name)}<div><strong>${a.display_name||a.full_name||'Administrador'}</strong><br><span class="small">${a.email||''} · ${a.status||'ativo'}</span></div><span class="badge">ADMIN</span></article>`).join(''):'<div class="empty-note">Nenhum perfil administrativo encontrado.</div>';
+}
+document.getElementById('openMyProfile').addEventListener('click',()=>openPage('profile'));
+document.getElementById('manageAdminsButton').addEventListener('click',()=>{openPage('settings');document.getElementById('currentAdminsList').scrollIntoView({behavior:'smooth'});loadAdminsList()});
+document.getElementById('openSecurityButton').addEventListener('click',()=>{openPage('profile');document.getElementById('newAdminPassword').focus()});
+document.getElementById('saveProfileButton').addEventListener('click',saveMyProfile);
+document.getElementById('removeProfileAvatar').addEventListener('click',async()=>{currentAdminProfile={...(currentAdminProfile||{}),avatar_url:null};await saveMyProfile()});
+document.getElementById('changeAdminPassword').addEventListener('click',async()=>{const msg=document.getElementById('securityMessage'),p=document.getElementById('newAdminPassword').value,c=document.getElementById('confirmAdminPassword').value;if(p.length<8)return msg.textContent='A senha precisa ter pelo menos 8 caracteres.';if(p!==c)return msg.textContent='As senhas não coincidem.';msg.textContent='Alterando senha...';const {error}=await sb.auth.updateUser({password:p});msg.textContent=error?error.message:'Senha alterada com sucesso.';if(!error){document.getElementById('newAdminPassword').value='';document.getElementById('confirmAdminPassword').value='';}});
+document.getElementById('sendAdminRecovery').addEventListener('click',async()=>{const msg=document.getElementById('securityMessage');const {data:{user}}=await sb.auth.getUser();if(!user?.email)return msg.textContent='E-mail da conta não encontrado.';msg.textContent='Enviando link...';const {error}=await sb.auth.resetPasswordForEmail(user.email,{redirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/redefinir-senha.html'});msg.textContent=error?error.message:'Link de recuperação enviado.';});
+
 (async()=>{const {data:{session}}=await sb.auth.getSession();if(session?.user)await openAdmin(session.user);else adminAuthScreen.classList.remove('hidden')})();
 
 </script>
