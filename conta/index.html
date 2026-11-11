@@ -1127,7 +1127,7 @@
 
           <p id="registerMessage" class="helper-text" aria-live="polite"></p>
           <p class="helper-text">
-            O cadastro real será ativado na integração com o banco.
+            Após criar a conta, confirme o e-mail para liberar o acesso.
           </p>
         </form>
       </section>
@@ -1197,9 +1197,9 @@
         <article class="home-feature">
           <span class="eyebrow">Destaque da semana</span>
 
-          <h2>A nova leitura já está disponível.</h2>
+          <h2 id="homeReadingTitle">Carregando leitura...</h2>
 
-          <p>
+          <p id="homeReadingText">
             Veja as cartas abertas, acompanhe a interpretação
             e ouça o áudio preparado pela cartomante.
           </p>
@@ -1215,7 +1215,7 @@
 
             <h3>Novos horários</h3>
 
-            <p>
+            <p id="homeScheduleText">
               Confira os horários antes da abertura para o público.
             </p>
 
@@ -1227,9 +1227,9 @@
           <article class="home-card">
             <span class="eyebrow">Benefício da semana</span>
 
-            <h3>Condição especial</h3>
+            <h3 id="homeOfferTitle">Condição especial</h3>
 
-            <p>
+            <p id="homeOfferText">
               Veja a promoção disponível exclusivamente na sua conta.
             </p>
 
@@ -1258,90 +1258,50 @@
           </p>
         </div>
 
-        <span class="reading-period">
-          09 A 15 NOV
-        </span>
+        <span id="readingPeriod" class="reading-period">—</span>
       </div>
 
-      <article class="reading-feature">
+      <div id="readingEmpty" class="helper-text" hidden>
+        Nenhuma leitura publicada no momento. Assim que a cartomante publicar, ela aparece aqui.
+      </div>
+
+      <article id="readingFeature" class="reading-feature" hidden>
 
         <div class="gallery-side">
           <span class="eyebrow">Leitura atual</span>
 
-          <div class="gallery">
-            <div class="gallery-slide active">
-              <div class="reading-photo">
-                Foto principal da abertura das cartas
-              </div>
-            </div>
-
-            <div class="gallery-slide">
-              <div class="reading-photo">
-                Segunda foto da leitura
-              </div>
-            </div>
-
-            <div class="gallery-slide">
-              <div class="reading-photo">
-                Detalhe das cartas
-              </div>
-            </div>
-          </div>
+          <div id="readingGallery" class="gallery"></div>
 
           <div class="gallery-controls">
-            <button id="previousPhoto" type="button" aria-label="Foto anterior">
-              ←
-            </button>
-
-            <span id="galleryCounter" class="gallery-counter">
-              1 / 3
-            </span>
-
-            <button id="nextPhoto" type="button" aria-label="Próxima foto">
-              →
-            </button>
+            <button id="previousPhoto" type="button" aria-label="Foto anterior">←</button>
+            <span id="galleryCounter" class="gallery-counter">0 / 0</span>
+            <button id="nextPhoto" type="button" aria-label="Próxima foto">→</button>
           </div>
         </div>
 
         <div class="reading-copy">
           <span class="eyebrow">Energia da semana</span>
 
-          <h3>Caminhos, escolhas e movimento</h3>
+          <h3 id="readingTitle">—</h3>
 
-          <p class="reading-date">
-            Semana de 09 a 15 de novembro
-          </p>
+          <p id="readingDate" class="reading-date"></p>
 
-          <p>
-            Neste espaço será publicada uma introdução sobre
-            a abertura realizada pela cartomante.
-          </p>
-
-          <p>
-            A interpretação completa das cartas poderá ser ouvida
-            diretamente no áudio desta publicação.
-          </p>
+          <div id="readingIntro"></div>
 
           <div class="audio-card">
             <div class="audio-heading">
               <div class="audio-icon">♪</div>
-
               <div>
                 <span class="eyebrow">Ouça a interpretação</span>
                 <strong>Áudio da leitura</strong>
               </div>
             </div>
 
-            <p>
-              Explicação das cartas, dos sinais observados
-              e das orientações da semana.
-            </p>
+            <p>Explicação das cartas, dos sinais observados e das orientações da semana.</p>
 
-            <audio controls preload="metadata">
-              <!-- O endereço do áudio será inserido pelo painel administrativo. -->
-            </audio>
+            <audio id="readingAudio" controls preload="metadata" hidden></audio>
 
-            <div class="audio-empty">
+            <div id="readingAudioEmpty" class="audio-empty">
               O áudio publicado pela cartomante aparecerá neste player.
             </div>
           </div>
@@ -1349,26 +1309,19 @@
 
       </article>
 
-      <article class="video-section">
+      <article id="readingVideoSection" class="video-section" hidden>
         <div>
           <span class="eyebrow">Mensagem em vídeo</span>
-
           <h3>Assista à leitura</h3>
-
-          <p>
-            Quando a leitura possuir vídeo, a publicação será apresentada aqui.
-          </p>
+          <p>Quando a leitura possuir vídeo, a publicação será apresentada aqui.</p>
         </div>
 
         <div class="video-box">
-          <div class="video-placeholder">
+          <video id="readingVideo" controls playsinline preload="metadata" style="width:100%;max-height:420px;display:none"></video>
+          <div id="readingVideoPlaceholder" class="video-placeholder">
             <span>▷</span>
             <strong>Vídeo da leitura</strong>
-
-            <small>
-              O vídeo enviado pelo painel administrativo
-              aparecerá neste espaço.
-            </small>
+            <small>O vídeo enviado pelo painel administrativo aparecerá neste espaço.</small>
           </div>
         </div>
       </article>
@@ -1379,38 +1332,9 @@
             <span class="eyebrow">Arquivo</span>
             <h3>Leituras anteriores</h3>
           </div>
-
-          <span class="helper-text">
-            Seu histórico exclusivo
-          </span>
+          <span class="helper-text">Seu histórico exclusivo</span>
         </div>
-
-        <button class="archive-item" type="button">
-          <div>
-            <span class="archive-date">02 A 08 NOV</span>
-            <strong>Entre permanências e novos caminhos</strong>
-          </div>
-
-          <span class="archive-type">FOTOS · ÁUDIO</span>
-        </button>
-
-        <button class="archive-item" type="button">
-          <div>
-            <span class="archive-date">26 OUT A 01 NOV</span>
-            <strong>O que precisa ser encerrado</strong>
-          </div>
-
-          <span class="archive-type">FOTOS · VÍDEO · ÁUDIO</span>
-        </button>
-
-        <button class="archive-item" type="button">
-          <div>
-            <span class="archive-date">19 A 25 OUT</span>
-            <strong>Clareza antes da decisão</strong>
-          </div>
-
-          <span class="archive-type">FOTOS · ÁUDIO</span>
-        </button>
+        <div id="readingArchive"></div>
       </div>
 
     </section>
@@ -1419,67 +1343,8 @@
 
     <section id="content" class="page-section">
       <h2 class="section-title">Conteúdos para você</h2>
-
-      <div class="content-grid">
-
-        <article class="content-card">
-          <div class="content-media">
-            Imagem da publicação
-          </div>
-
-          <div class="content-body">
-            <span class="eyebrow">Cartomancia</span>
-            <h3>Título do conteúdo</h3>
-
-            <p>
-              Texto exclusivo publicado para clientes cadastrados.
-            </p>
-
-            <button class="text-button" type="button">
-              Ler conteúdo →
-            </button>
-          </div>
-        </article>
-
-        <article class="content-card">
-          <div class="content-media">
-            Vídeo exclusivo
-          </div>
-
-          <div class="content-body">
-            <span class="eyebrow">Orientação</span>
-            <h3>Mensagem em vídeo</h3>
-
-            <p>
-              Conteúdo publicado em vídeo pela cartomante.
-            </p>
-
-            <button class="text-button" type="button">
-              Assistir →
-            </button>
-          </div>
-        </article>
-
-        <article class="content-card">
-          <div class="content-media">
-            Imagem
-          </div>
-
-          <div class="content-body">
-            <span class="eyebrow">Especial</span>
-            <h3>Nova publicação</h3>
-
-            <p>
-              Textos, imagens, áudios e conteúdos especiais.
-            </p>
-
-            <button class="text-button" type="button">
-              Abrir →
-            </button>
-          </div>
-        </article>
-
-      </div>
+      <p id="contentEmpty" class="helper-text" hidden>Nenhum conteúdo exclusivo publicado no momento.</p>
+      <div id="contentGrid" class="content-grid"></div>
     </section>
 
     <!-- AGENDA -->
@@ -1488,73 +1353,19 @@
       <h2 class="section-title">Horários em primeira mão</h2>
 
       <p class="schedule-intro">
-        Clientes cadastrados poderão visualizar novos horários
-        antes da divulgação no site público.
+        Clientes cadastrados visualizam novos horários antes da divulgação no site público.
       </p>
 
-      <div class="slot-grid">
-
-        <article class="slot-card">
-          <span class="slot-date">12 NOVEMBRO</span>
-          <strong>14:00</strong>
-          <p>Jogo completo</p>
-
-          <button class="primary-button" type="button">
-            Solicitar horário
-          </button>
-        </article>
-
-        <article class="slot-card">
-          <span class="slot-date">12 NOVEMBRO</span>
-          <strong>17:30</strong>
-          <p>Jogo completo</p>
-
-          <button class="primary-button" type="button">
-            Solicitar horário
-          </button>
-        </article>
-
-        <article class="slot-card">
-          <span class="slot-date">13 NOVEMBRO</span>
-          <strong>10:00</strong>
-          <p>3 perguntas</p>
-
-          <button class="primary-button" type="button">
-            Solicitar horário
-          </button>
-        </article>
-
-      </div>
+      <p id="scheduleMessage" class="helper-text" aria-live="polite"></p>
+      <div id="slotGrid" class="slot-grid"></div>
     </section>
 
     <!-- BENEFÍCIOS -->
 
     <section id="offers" class="page-section">
       <h2 class="section-title">Benefícios exclusivos</h2>
-
-      <article class="promo-card">
-        <div class="promo-media">
-          Imagem da promoção
-        </div>
-
-        <div class="promo-copy">
-          <span class="eyebrow">Exclusivo para clientes</span>
-
-          <h3>Especial da semana</h3>
-
-          <p>
-            Aqui serão exibidos a descrição, a validade
-            e as condições da promoção.
-          </p>
-
-          <span class="old-price">R$ 47,00</span>
-          <span class="new-price">R$ 39,00</span>
-
-          <button class="primary-button" type="button">
-            Quero aproveitar
-          </button>
-        </div>
-      </article>
+      <p id="offersEmpty" class="helper-text" hidden>Nenhuma promoção exclusiva disponível no momento.</p>
+      <div id="offersGrid"></div>
     </section>
 
     <!-- MINHA CONTA -->
@@ -1634,7 +1445,10 @@
   <script>
 const SUPABASE_URL='https://bsjmaunkzqcrrsrkwltw.supabase.co';
 const SUPABASE_KEY='sb_publishable_yAVI7GeegJUCTpGW9MIUhA_WMeDqLOH';
+const WEEKLY_BUCKET='weekly-reading-media';
+const PHONE='5521978966560';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
 const authScreen=document.getElementById('authScreen');
 const clientArea=document.getElementById('clientArea');
 const mobileNavigation=document.getElementById('mobileNavigation');
@@ -1642,27 +1456,444 @@ const loginTab=document.getElementById('loginTab');
 const registerTab=document.getElementById('registerTab');
 const loginForm=document.getElementById('loginForm');
 const registerForm=document.getElementById('registerForm');
-function msg(id,text){const e=document.getElementById(id);if(e)e.textContent=text}
+
+let currentSlide=0;
+let galleryUrls=[];
+let currentProfile=null;
+let clientSlots=[];
+
+function msg(id,text){const e=document.getElementById(id);if(e)e.textContent=text||'';}
 function showLogin(){loginTab.classList.add('active');registerTab.classList.remove('active');loginForm.classList.remove('hidden');registerForm.classList.add('hidden')}
 function showRegister(){registerTab.classList.add('active');loginTab.classList.remove('active');registerForm.classList.remove('hidden');loginForm.classList.add('hidden')}
 function showLoggedOut(){authScreen.classList.remove('hidden');clientArea.classList.add('hidden');mobileNavigation.classList.add('hidden');showLogin()}
 function showLoggedIn(){authScreen.classList.add('hidden');clientArea.classList.remove('hidden');mobileNavigation.classList.remove('hidden')}
-loginTab.addEventListener('click',showLogin);registerTab.addEventListener('click',showRegister);
-async function loadProfile(user){const {data,error}=await sb.from('profiles').select('id,email,full_name,phone,birth_date,role,status').eq('id',user.id).single();if(error)throw error;if(data.status!=='ativo')throw new Error('Sua conta não está ativa.');document.getElementById('accountName').value=data.full_name||'';document.getElementById('accountBirth').value=data.birth_date||'';document.getElementById('accountPhone').value=data.phone||'';document.getElementById('accountEmail').value=data.email||user.email||'';return data}
-async function enter(user){try{await loadProfile(user);showLoggedIn()}catch(e){await sb.auth.signOut();showLoggedOut();msg('loginMessage',e.message)}}
-loginForm.addEventListener('submit',async e=>{e.preventDefault();msg('loginMessage','Entrando...');const {data,error}=await sb.auth.signInWithPassword({email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPassword').value});if(error)return msg('loginMessage',error.message);await enter(data.user)});
-registerForm.addEventListener('submit',async e=>{e.preventDefault();const p=document.getElementById('registerPassword').value;if(p!==document.getElementById('registerPasswordConfirm').value)return msg('registerMessage','As senhas precisam ser iguais.');msg('registerMessage','Criando conta...');const email=document.getElementById('registerEmail').value.trim();const {error}=await sb.auth.signUp({email,password:p,options:{emailRedirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/confirmar.html',data:{full_name:document.getElementById('registerName').value.trim(),birth_date:document.getElementById('registerBirth').value,phone:document.getElementById('registerPhone').value.trim()}}});if(error)return msg('registerMessage',error.message);location.href='confirmar.html?email='+encodeURIComponent(email)});
-document.getElementById('forgotPasswordButton').addEventListener('click',async()=>{const email=document.getElementById('loginEmail').value.trim();if(!email)return msg('loginMessage','Digite seu e-mail primeiro.');const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/redefinir-senha.html'});msg('loginMessage',error?error.message:'Se a conta existir, o link de recuperação foi enviado.')});
-document.getElementById('saveAccountButton').addEventListener('click',async()=>{msg('accountMessage','Salvando...');const {data:{user}}=await sb.auth.getUser();if(!user)return msg('accountMessage','Sessão expirada. Entre novamente.');const {error}=await sb.from('profiles').update({full_name:document.getElementById('accountName').value.trim(),birth_date:document.getElementById('accountBirth').value||null,phone:document.getElementById('accountPhone').value.trim(),updated_at:new Date().toISOString()}).eq('id',user.id);msg('accountMessage',error?error.message:'Dados atualizados.')});
-document.getElementById('logoutButton').addEventListener('click',async()=>{await sb.auth.signOut();showLoggedOut();window.scrollTo(0,0)});
+loginTab.addEventListener('click',showLogin);
+registerTab.addEventListener('click',showRegister);
+
+function brDate(v){
+  if(!v)return '—';
+  const [y,m,d]=String(v).slice(0,10).split('-');
+  if(!y||!m||!d)return String(v);
+  return `${d}/${m}/${y}`;
+}
+function periodLabel(start,end){
+  if(!start||!end)return '—';
+  const a=String(start).slice(0,10).split('-');
+  const b=String(end).slice(0,10).split('-');
+  const months=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+  const sameMonth=a[1]===b[1]&&a[0]===b[0];
+  if(sameMonth)return `${a[2]} A ${b[2]} ${months[Number(a[1])-1]}`;
+  return `${a[2]} ${months[Number(a[1])-1]} A ${b[2]} ${months[Number(b[1])-1]}`;
+}
+function monthDayLabel(date){
+  if(!date)return '—';
+  const [y,m,d]=String(date).slice(0,10).split('-');
+  const months=['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+  return `${d} ${months[Number(m)-1]||''}`;
+}
+function money(v){
+  const n=Number(v);
+  if(!Number.isFinite(n))return '';
+  return n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+}
+function escapeHtml(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+async function signedMedia(path){
+  if(!path)return null;
+  if(/^https?:\/\//i.test(path))return path;
+  const {data,error}=await sb.storage.from(WEEKLY_BUCKET).createSignedUrl(path,3600);
+  if(error)return null;
+  return data?.signedUrl||null;
+}
+
+async function loadProfile(user){
+  const {data,error}=await sb.from('profiles').select('id,email,full_name,phone,birth_date,role,status').eq('id',user.id).single();
+  if(error)throw new Error(error.message||'Não foi possível carregar seu perfil.');
+  if(data.status!=='ativo')throw new Error('Sua conta não está ativa.');
+  if(data.role==='admin')throw new Error('Esta conta é administrativa. Use o painel em /admin/.');
+  if(data.role&&data.role!=='cliente')throw new Error('Esta conta não tem permissão para a Área do Cliente.');
+  currentProfile=data;
+  document.getElementById('accountName').value=data.full_name||'';
+  document.getElementById('accountBirth').value=data.birth_date||'';
+  document.getElementById('accountPhone').value=data.phone||'';
+  document.getElementById('accountEmail').value=data.email||user.email||'';
+  return data;
+}
+
+function renderGallery(urls){
+  galleryUrls=urls||[];
+  currentSlide=0;
+  const gallery=document.getElementById('readingGallery');
+  const counter=document.getElementById('galleryCounter');
+  if(!galleryUrls.length){
+    gallery.innerHTML='<div class="gallery-slide active"><div class="reading-photo">Sem fotos publicadas nesta leitura</div></div>';
+    if(counter)counter.textContent='0 / 0';
+    return;
+  }
+  gallery.innerHTML=galleryUrls.map((url,i)=>`<div class="gallery-slide${i===0?' active':''}"><div class="reading-photo" style="background-image:url('${url}');background-size:cover;background-position:center;color:transparent">Foto ${i+1}</div></div>`).join('');
+  if(counter)counter.textContent=`1 / ${galleryUrls.length}`;
+}
+function showSlide(i){
+  const slides=[...document.querySelectorAll('#readingGallery .gallery-slide')];
+  if(!slides.length)return;
+  currentSlide=(i+slides.length)%slides.length;
+  slides.forEach((s,idx)=>s.classList.toggle('active',idx===currentSlide));
+  const counter=document.getElementById('galleryCounter');
+  if(counter)counter.textContent=`${currentSlide+1} / ${slides.length}`;
+}
+document.getElementById('nextPhoto')?.addEventListener('click',()=>showSlide(currentSlide+1));
+document.getElementById('previousPhoto')?.addEventListener('click',()=>showSlide(currentSlide-1));
+
+async function fillReading(reading,photos){
+  const empty=document.getElementById('readingEmpty');
+  const feature=document.getElementById('readingFeature');
+  if(!reading){
+    empty.hidden=false;
+    feature.hidden=true;
+    document.getElementById('readingVideoSection').hidden=true;
+    document.getElementById('homeReadingTitle').textContent='Nenhuma leitura publicada no momento.';
+    document.getElementById('homeReadingText').textContent='Assim que a cartomante publicar a leitura da semana, ela aparece aqui.';
+    return;
+  }
+  empty.hidden=true;
+  feature.hidden=false;
+  document.getElementById('readingPeriod').textContent=periodLabel(reading.start_date,reading.end_date);
+  document.getElementById('readingTitle').textContent=reading.title||'Leitura da semana';
+  document.getElementById('readingDate').textContent=`Semana de ${brDate(reading.start_date)} a ${brDate(reading.end_date)}`;
+  const intro=document.getElementById('readingIntro');
+  const text=reading.introduction||'';
+  intro.innerHTML=text?text.split(/\n+/).filter(Boolean).map(p=>`<p>${escapeHtml(p)}</p>`).join(''):'<p>A interpretação completa das cartas poderá ser ouvida no áudio desta publicação.</p>';
+
+  document.getElementById('homeReadingTitle').textContent=reading.title?`${reading.title}`:'A nova leitura já está disponível.';
+  document.getElementById('homeReadingText').textContent=text?text.slice(0,160)+(text.length>160?'…':''):'Veja as cartas abertas, acompanhe a interpretação e ouça o áudio preparado pela cartomante.';
+
+  const paths=(photos||[]).map(p=>p.storage_path||p.image_url).filter(Boolean);
+  const urls=(await Promise.all(paths.map(signedMedia))).filter(Boolean);
+  renderGallery(urls);
+
+  const audio=document.getElementById('readingAudio');
+  const audioEmpty=document.getElementById('readingAudioEmpty');
+  const audioPath=reading.audio_storage_path||reading.audio_url;
+  const audioUrl=await signedMedia(audioPath);
+  if(audioUrl){
+    audio.src=audioUrl;
+    audio.hidden=false;
+    audioEmpty.hidden=true;
+  }else{
+    audio.removeAttribute('src');
+    audio.hidden=true;
+    audioEmpty.hidden=false;
+  }
+
+  const videoSection=document.getElementById('readingVideoSection');
+  const video=document.getElementById('readingVideo');
+  const videoPlaceholder=document.getElementById('readingVideoPlaceholder');
+  const videoPath=reading.video_storage_path||reading.video_url;
+  const videoUrl=await signedMedia(videoPath);
+  if(videoUrl){
+    videoSection.hidden=false;
+    video.style.display='block';
+    video.src=videoUrl;
+    videoPlaceholder.hidden=true;
+  }else{
+    videoSection.hidden=true;
+    video.removeAttribute('src');
+    video.style.display='none';
+    videoPlaceholder.hidden=false;
+  }
+}
+
+async function loadReadings(){
+  const {data,error}=await sb.from('weekly_readings')
+    .select('id,title,introduction,start_date,end_date,status,published_at,audio_storage_path,audio_url,video_storage_path,video_url,updated_at')
+    .eq('status','published')
+    .order('published_at',{ascending:false});
+  if(error)throw error;
+  const list=data||[];
+  const current=list[0]||null;
+  let photos=[];
+  if(current){
+    const {data:ph}=await sb.from('weekly_reading_photos')
+      .select('id,storage_path,image_url,display_order,active')
+      .eq('reading_id',current.id)
+      .eq('active',true)
+      .order('display_order');
+    photos=ph||[];
+  }
+  await fillReading(current,photos);
+
+  const archive=document.getElementById('readingArchive');
+  const older=list.slice(1);
+  if(!older.length){
+    archive.innerHTML='<p class="helper-text">Ainda não há leituras anteriores.</p>';
+    return;
+  }
+  archive.innerHTML=older.map(r=>{
+    const types=[];
+    if(r.audio_storage_path||r.audio_url)types.push('ÁUDIO');
+    if(r.video_storage_path||r.video_url)types.push('VÍDEO');
+    types.unshift('FOTOS');
+    return `<button class="archive-item" type="button" data-reading-id="${r.id}">
+      <div>
+        <span class="archive-date">${escapeHtml(periodLabel(r.start_date,r.end_date))}</span>
+        <strong>${escapeHtml(r.title||'Leitura')}</strong>
+      </div>
+      <span class="archive-type">${types.join(' · ')}</span>
+    </button>`;
+  }).join('');
+  archive.querySelectorAll('[data-reading-id]').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.dataset.readingId;
+      const reading=list.find(x=>String(x.id)===String(id));
+      if(!reading)return;
+      const {data:ph}=await sb.from('weekly_reading_photos')
+        .select('id,storage_path,image_url,display_order,active')
+        .eq('reading_id',reading.id)
+        .eq('active',true)
+        .order('display_order');
+      await fillReading(reading,ph||[]);
+      openPage('reading');
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  });
+}
+
+async function loadContents(){
+  const grid=document.getElementById('contentGrid');
+  const empty=document.getElementById('contentEmpty');
+  try{
+    let query=sb.from('exclusive_contents').select('*').order('published_at',{ascending:false}).order('created_at',{ascending:false});
+    const {data,error}=await query;
+    if(error)throw error;
+    const items=(data||[]).filter(item=>{
+      const status=String(item.status||item.publication_status||'published').toLowerCase();
+      const visibility=String(item.visibility||item.audience||'client').toLowerCase();
+      const okStatus=['published','publicado','active','ativo',''].includes(status);
+      const okVis=['client','cliente','both','ambos','exclusive','exclusivo',''].includes(visibility);
+      return okStatus&&okVis;
+    });
+    if(!items.length){
+      empty.hidden=false;
+      grid.innerHTML='';
+      return;
+    }
+    empty.hidden=true;
+    grid.innerHTML=items.map(item=>{
+      const title=item.title||item.name||'Conteúdo exclusivo';
+      const category=item.category||item.type||item.content_type||'Exclusivo';
+      const body=item.summary||item.description||item.body||item.text||'Conteúdo publicado para clientes cadastrados.';
+      const media=item.cover_url||item.image_url||item.media_url||'';
+      const mediaStyle=media?(' style="background-image:url(\''+escapeHtml(media)+'\');background-size:cover;background-position:center;color:transparent"'):'';
+      return '<article class="content-card"><div class="content-media"'+mediaStyle+'>'+(media?'':'Publicação')+'</div><div class="content-body"><span class="eyebrow">'+escapeHtml(category)+'</span><h3>'+escapeHtml(title)+'</h3><p>'+escapeHtml(String(body).slice(0,180))+(String(body).length>180?'…':'')+'</p></div></article>';
+    }).join('');
+  }catch(_e){
+    empty.hidden=false;
+    empty.textContent='Os conteúdos exclusivos ainda não estão disponíveis nesta conta.';
+    grid.innerHTML='';
+  }
+}
+
+async function loadOffers(){
+  const grid=document.getElementById('offersGrid');
+  const empty=document.getElementById('offersEmpty');
+  try{
+    const {data,error}=await sb.from('promotions').select('*').order('created_at',{ascending:false});
+    if(error)throw error;
+    const items=(data||[]).filter(item=>{
+      const status=String(item.status||'').toLowerCase();
+      const visibility=String(item.visibility||item.audience||'').toLowerCase();
+      const okStatus=['ativa','active','published','publicado',''].includes(status);
+      const okVis=['cliente','client','ambos','both','exclusive','exclusivo',''].includes(visibility);
+      return okStatus&&okVis;
+    });
+    if(!items.length){
+      empty.hidden=false;
+      grid.innerHTML='';
+      document.getElementById('homeOfferTitle').textContent='Sem promoção no momento';
+      document.getElementById('homeOfferText').textContent='Quando houver benefício exclusivo, ele aparece aqui.';
+      return;
+    }
+    empty.hidden=true;
+    const first=items[0];
+    document.getElementById('homeOfferTitle').textContent=first.title||'Condição especial';
+    document.getElementById('homeOfferText').textContent=first.description||first.text||'Veja a promoção disponível exclusivamente na sua conta.';
+    grid.innerHTML=items.map(item=>{
+      const oldP=item.normal_price??item.price_normal??item.old_price;
+      const newP=item.client_price??item.sale_price??item.promo_price??item.price;
+      const media=item.image_url||item.cover_url||'';
+      const mediaStyle=media?(' style="background-image:url(\''+escapeHtml(media)+'\');background-size:cover;background-position:center;color:transparent"'):'';
+      return '<article class="promo-card" style="margin-bottom:18px"><div class="promo-media"'+mediaStyle+'>'+(media?'':'Imagem da promoção')+'</div><div class="promo-copy"><span class="eyebrow">Exclusivo para clientes</span><h3>'+escapeHtml(item.title||'Promoção')+'</h3><p>'+escapeHtml(item.description||item.text||'Condições da promoção.')+'</p>'+(oldP!=null&&oldP!==''?'<span class="old-price">'+money(oldP)+'</span>':'')+(newP!=null&&newP!==''?'<span class="new-price">'+money(newP)+'</span>':'')+'</div></article>';
+    }).join('');
+  }catch(_e){
+    empty.hidden=false;
+    empty.textContent='As promoções exclusivas ainda não estão disponíveis nesta conta.';
+    grid.innerHTML='';
+  }
+}
+
+async function loadSchedule(){
+  const grid=document.getElementById('slotGrid');
+  const message=document.getElementById('scheduleMessage');
+  message.textContent='Carregando horários...';
+  const {data,error}=await sb.rpc('get_available_schedule_slots',{p_channel:'client'});
+  if(error){
+    clientSlots=[];
+    grid.innerHTML='';
+    message.textContent=error.message||'Agenda indisponível no momento.';
+    document.getElementById('homeScheduleText').textContent='Agenda temporariamente indisponível.';
+    return;
+  }
+  clientSlots=(Array.isArray(data)?data:[]).filter(x=>x&&x.id);
+  if(!clientSlots.length){
+    grid.innerHTML='';
+    message.textContent='Nenhum horário liberado para clientes no momento.';
+    document.getElementById('homeScheduleText').textContent='Não há horários antecipados liberados agora.';
+    return;
+  }
+  message.textContent='';
+  document.getElementById('homeScheduleText').textContent=`${clientSlots.length} horário(s) disponíveis em primeira mão.`;
+  grid.innerHTML=clientSlots.map(slot=>{
+    const hour=String(slot.appointment_time||'').slice(0,5);
+    const service=slot.service_name||'Atendimento';
+    const modality=slot.modality==='presencial'?'Presencial':slot.modality==='online'?'Online':'';
+    return `<article class="slot-card">
+      <span class="slot-date">${escapeHtml(monthDayLabel(slot.appointment_date))}</span>
+      <strong>${escapeHtml(hour)}</strong>
+      <p>${escapeHtml([service,modality].filter(Boolean).join(' · '))}</p>
+      <button class="primary-button" type="button" data-reserve="${slot.id}">Solicitar horário</button>
+    </article>`;
+  }).join('');
+  grid.querySelectorAll('[data-reserve]').forEach(btn=>{
+    btn.addEventListener('click',()=>reserveSlot(btn.dataset.reserve,btn));
+  });
+}
+
+async function reserveSlot(slotId,button){
+  if(!slotId)return;
+  const slot=clientSlots.find(x=>String(x.id)===String(slotId));
+  if(!slot)return msg('scheduleMessage','Horário não encontrado. Atualize a lista.');
+  const original=button.textContent;
+  button.disabled=true;
+  button.textContent='Reservando...';
+  msg('scheduleMessage','Reservando horário...');
+  const name=currentProfile?.full_name||'';
+  const phone=currentProfile?.phone||'';
+  const {error}=await sb.rpc('reserve_schedule_slot',{
+    p_slot_id:Number(slotId),
+    p_channel:'client',
+    p_customer_name:name||null,
+    p_customer_phone:phone||null,
+    p_message:'Reserva pela Área do Cliente'
+  });
+  if(error){
+    msg('scheduleMessage',error.message);
+    button.disabled=false;
+    button.textContent=original;
+    await loadSchedule();
+    return;
+  }
+  const hour=String(slot.appointment_time||'').slice(0,5);
+  const text=encodeURIComponent(`Olá! Reservei pela Área do Cliente o horário de ${brDate(slot.appointment_date)} às ${hour}. Nome: ${name||'não informado'}.`);
+  window.open(`https://wa.me/${PHONE}?text=${text}`,'_blank','noopener');
+  msg('scheduleMessage','Horário reservado com sucesso.');
+  await loadSchedule();
+}
+
+async function loadClientData(){
+  await Promise.allSettled([loadReadings(),loadContents(),loadOffers(),loadSchedule()]);
+}
+
+async function enter(user){
+  try{
+    await loadProfile(user);
+    showLoggedIn();
+    await loadClientData();
+  }catch(e){
+    await sb.auth.signOut();
+    showLoggedOut();
+    msg('loginMessage',e.message||'Não foi possível entrar.');
+  }
+}
+
+loginForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  msg('loginMessage','Entrando...');
+  const {data,error}=await sb.auth.signInWithPassword({
+    email:document.getElementById('loginEmail').value.trim(),
+    password:document.getElementById('loginPassword').value
+  });
+  if(error)return msg('loginMessage',error.message);
+  await enter(data.user);
+});
+
+registerForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const p=document.getElementById('registerPassword').value;
+  if(p!==document.getElementById('registerPasswordConfirm').value)return msg('registerMessage','As senhas precisam ser iguais.');
+  msg('registerMessage','Criando conta...');
+  const email=document.getElementById('registerEmail').value.trim();
+  const {error}=await sb.auth.signUp({
+    email,
+    password:p,
+    options:{
+      emailRedirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/confirmar.html',
+      data:{
+        full_name:document.getElementById('registerName').value.trim(),
+        birth_date:document.getElementById('registerBirth').value,
+        phone:document.getElementById('registerPhone').value.trim(),
+        role:'cliente'
+      }
+    }
+  });
+  if(error)return msg('registerMessage',error.message);
+  location.href='confirmar.html?email='+encodeURIComponent(email);
+});
+
+document.getElementById('forgotPasswordButton').addEventListener('click',async()=>{
+  const email=document.getElementById('loginEmail').value.trim();
+  if(!email)return msg('loginMessage','Digite seu e-mail primeiro.');
+  const {error}=await sb.auth.resetPasswordForEmail(email,{
+    redirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/redefinir-senha.html'
+  });
+  msg('loginMessage',error?error.message:'Se a conta existir, o link de recuperação foi enviado.');
+});
+
+document.getElementById('saveAccountButton').addEventListener('click',async()=>{
+  msg('accountMessage','Salvando...');
+  const {data:{user}}=await sb.auth.getUser();
+  if(!user)return msg('accountMessage','Sessão expirada. Entre novamente.');
+  const {error}=await sb.from('profiles').update({
+    full_name:document.getElementById('accountName').value.trim(),
+    birth_date:document.getElementById('accountBirth').value||null,
+    phone:document.getElementById('accountPhone').value.trim(),
+    updated_at:new Date().toISOString()
+  }).eq('id',user.id).eq('role','cliente');
+  msg('accountMessage',error?error.message:'Dados atualizados.');
+});
+
+document.getElementById('logoutButton').addEventListener('click',async()=>{
+  await sb.auth.signOut();
+  currentProfile=null;
+  showLoggedOut();
+  window.scrollTo(0,0);
+});
+
 const navigationButtons=document.querySelectorAll('.desktop-nav button,.mobile-nav button');
 const pageSections=document.querySelectorAll('.page-section');
-function openPage(id){navigationButtons.forEach(b=>b.classList.toggle('active',b.dataset.page===id));pageSections.forEach(s=>s.classList.toggle('active',s.id===id));document.querySelector('.desktop-nav')?.scrollIntoView({behavior:'smooth'})}
+function openPage(id){
+  navigationButtons.forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  pageSections.forEach(s=>s.classList.toggle('active',s.id===id));
+  document.querySelector('.desktop-nav')?.scrollIntoView({behavior:'smooth'});
+}
 navigationButtons.forEach(b=>b.addEventListener('click',()=>openPage(b.dataset.page)));
 document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openPage(b.dataset.open)));
-let currentSlide=0;const slides=document.querySelectorAll('.gallery-slide');const counter=document.querySelector('.gallery-counter');function renderGallery(){slides.forEach((s,i)=>s.classList.toggle('active',i===currentSlide));if(counter)counter.textContent=(currentSlide+1)+' / '+slides.length}document.getElementById('nextPhoto')?.addEventListener('click',()=>{currentSlide=(currentSlide+1)%slides.length;renderGallery()});document.getElementById('previousPhoto')?.addEventListener('click',()=>{currentSlide=(currentSlide-1+slides.length)%slides.length;renderGallery()});
-(async()=>{const {data:{session}}=await sb.auth.getSession();if(session?.user)await enter(session.user);else showLoggedOut()})();
-</script>
 
+(async()=>{
+  const {data:{session}}=await sb.auth.getSession();
+  if(session?.user)await enter(session.user);
+  else showLoggedOut();
+})();
+</script>
 </body>
 </html>
