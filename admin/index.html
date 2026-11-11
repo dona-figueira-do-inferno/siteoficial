@@ -200,13 +200,35 @@ p{color:var(--muted);line-height:1.65}
 
 /* PERFIL E GESTAO DE ADMINISTRADORES */
 .profile-layout{display:grid;grid-template-columns:260px 1fr;gap:20px}.avatar-box{display:grid;place-items:center;gap:14px;text-align:center}.avatar-preview{width:150px;height:150px;border-radius:50%;border:2px solid var(--gold);background:#090705;display:grid;place-items:center;overflow:hidden;color:var(--muted);font-size:38px}.avatar-preview img{width:100%;height:100%;object-fit:cover}.profile-menu-button{display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--text)}.profile-menu-button img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:1px solid var(--gold)}.admin-real-list{display:grid;gap:10px}.admin-real-item{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);background:var(--panel2)}.admin-real-item img,.admin-avatar-fallback{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--line)}.admin-avatar-fallback{display:grid;place-items:center;background:#090705;color:var(--gold)}.account-actions{display:flex;gap:8px;flex-wrap:wrap}.account-actions button{min-height:38px;padding:8px 11px;font-size:10px}.message{min-height:18px;margin-top:10px;color:var(--gold2);font-size:11px}@media(max-width:760px){.profile-layout{grid-template-columns:1fr}.admin-real-item{grid-template-columns:42px 1fr}.admin-real-item .account-actions{grid-column:1/-1}.account-actions button{flex:1}}
+
+/* INSTALACAO DO ADMIN */
+.install-admin{margin:0 0 18px;padding:13px 15px;border:1px solid var(--line);background:var(--panel);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}.install-admin p{margin:4px 0 0;font-size:11px}.install-admin .primary{min-height:40px}.install-admin.hidden{display:none!important}
+
+/* Identidade aprovada: arvore da vida e figura em contorno dourado */
+.auth-screen{background:linear-gradient(145deg,rgba(8,7,5,.91),rgba(8,7,5,.95)),url('./folhas-fundo.png') left bottom/260px auto no-repeat,#080705}
+.auth-card{position:relative;background:linear-gradient(145deg,rgba(28,19,12,.97),rgba(12,9,7,.98));border-radius:16px}
+.auth-brand{display:flex;flex-direction:column;align-items:center;gap:8px;margin-bottom:20px;text-align:center}
+.auth-brand img{width:132px;height:132px;object-fit:contain;border-radius:26px}
+.auth-brand strong{font-family:Georgia,serif;color:var(--gold2);font-size:24px;font-weight:normal}
+.auth-brand small{color:var(--gold);letter-spacing:5px;font-size:10px}
+.content{background-image:linear-gradient(rgba(8,7,5,.93),rgba(8,7,5,.95)),url('./folhas-fundo.png');background-position:center,bottom left;background-repeat:no-repeat;background-size:auto,260px auto}
+.sidebar{background-image:linear-gradient(rgba(13,10,8,.92),rgba(13,10,8,.95)),url('./folhas-fundo.png');background-position:center,bottom left;background-repeat:no-repeat;background-size:auto,200px auto}
+.recording-live{color:#ef9b9b!important}.recording-live::before{content:"● ";animation:pulse 1s infinite}@keyframes pulse{50%{opacity:.25}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#080705">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dona Figueira Admin">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 </head>
 
 <body>
 <div id="adminAuthScreen" class="auth-screen">
   <section id="adminLoginCard" class="auth-card">
+    <div class="auth-brand"><img src="./logo-admin.png" alt="Dona Figueira Admin"><strong>Dona Figueira</strong><small>ADMIN</small></div>
     <span class="eyebrow">Administração</span><h1>Entrar no painel</h1><p>Acesso reservado aos administradores autorizados.</p>
     <label class="field">E-mail<input id="adminLoginEmail" type="email" autocomplete="username" required></label>
     <label class="field">Senha<input id="adminLoginPassword" type="password" autocomplete="current-password" required></label>
@@ -215,6 +237,7 @@ p{color:var(--muted);line-height:1.65}
     <p id="adminAuthMessage" class="auth-message"></p>
   </section>
   <section id="adminRecoveryCard" class="auth-card hidden">
+    <div class="auth-brand"><img src="./logo-admin.png" alt="Dona Figueira Admin"><strong>Dona Figueira</strong><small>ADMIN</small></div>
     <span class="eyebrow">Recuperação</span><h1>Recuperar senha</h1><p>Informe o e-mail administrativo. Você receberá o link seguro de recuperação no e-mail administrativo.</p>
     <label class="field">E-mail<input id="adminRecoveryEmail" type="email"></label>
     <button id="adminRecoverySend" class="primary" type="button">Enviar link de recuperação</button>
@@ -307,6 +330,11 @@ p{color:var(--muted);line-height:1.65}
 </header>
 
 <main class="content">
+<div id="installAdminBanner" class="install-admin hidden" aria-live="polite">
+  <div><strong>Dona Figueira Admin no seu dispositivo</strong><p id="installAdminText">Instale o painel para abrir como aplicativo.</p></div>
+  <div class="actions"><button id="installAdminButton" type="button" class="primary">Instalar aplicativo</button><button id="dismissInstallAdmin" type="button" class="secondary">Agora não</button></div>
+</div>
+
 
 <!-- DASHBOARD -->
 
@@ -642,7 +670,7 @@ p{color:var(--muted);line-height:1.65}
 </section>
 </div>
 
-<div id="siteWorks" class="tab-panel" data-tab-panel-group="site"><section class="panel"><div class="panel-head"><h2>Trabalhos</h2><label class="primary" style="display:inline-flex;align-items:center">Adicionar fotos<input id="worksFiles" class="hidden" type="file" accept="image/*" multiple></label></div><div class="form-grid"><label class="field">Título<input id="workTitle" placeholder="Título do trabalho"></label><label class="field">Status<select><option>Publicado</option><option>Rascunho</option><option>Oculto</option></select></label></div><label class="field">Descrição<textarea id="workDescription"></textarea></label><div id="worksGallery" class="gallery-admin"><div class="empty-note">Adicione fotos para montar e ordenar o trabalho.</div></div><div class="toolbar"><button class="secondary">Salvar rascunho</button><button class="primary">Publicar trabalho</button></div></section></div>
+<div id="siteWorks" class="tab-panel" data-tab-panel-group="site"><section class="panel"><div class="panel-head"><h2>Trabalhos</h2><label class="primary" style="display:inline-flex;align-items:center">Adicionar fotos<input id="worksFiles" class="hidden" type="file" accept="image/*" multiple></label></div><div class="form-grid"><label class="field">Título<input id="workTitle" placeholder="Título do trabalho"></label><label class="field">Status<select><option>Publicado</option><option>Rascunho</option><option>Oculto</option><option>Arquivado</option></select></label></div><label class="field">Descrição<textarea id="workDescription"></textarea></label><div id="worksGallery" class="gallery-admin"><div class="empty-note">Adicione fotos para montar e ordenar o trabalho.</div></div><div class="toolbar"><button class="secondary">Salvar rascunho</button><button class="primary">Publicar trabalho</button></div></section></div>
 <div id="siteFeedbacks" class="tab-panel" data-tab-panel-group="site"><section class="panel"><div class="panel-head"><h2>Feedbacks</h2><label class="primary" style="display:inline-flex;align-items:center">Adicionar imagem<input id="feedbackFiles" class="hidden" type="file" accept="image/*" multiple></label></div><label class="field">Texto/depoimento<textarea id="feedbackText"></textarea></label><label class="check"><input type="checkbox" checked>Mostrar no site</label><div id="feedbackGallery" class="gallery-admin"><div class="empty-note">Adicione imagens dos feedbacks e ordene a exibição.</div></div><div class="toolbar"><button class="secondary">Salvar rascunho</button><button class="primary">Publicar feedbacks</button></div></section></div>
 </section>
 
@@ -1019,10 +1047,10 @@ p{color:var(--muted);line-height:1.65}
 <div class="tabs"><button class="active" data-tab-group="reading" data-tab="readingEditor">Editor</button><button data-tab-group="reading" data-tab="readingHistory">Histórico</button></div>
 <div id="readingEditor" class="tab-panel active" data-tab-panel-group="reading"><div class="editor-grid"><div>
 <section class="panel"><div class="panel-head"><h2>Informações</h2><select id="readingStatus" class="status-select"><option>Rascunho</option><option>Publicado</option><option>Oculto</option></select></div><label class="field">Título<input id="readingTitle" value="Caminhos, escolhas e movimento"></label><div class="form-grid"><label class="field">Data inicial<input id="readingStart" type="date"></label><label class="field">Data final<input id="readingEnd" type="date"></label></div><label class="field">Texto introdutório<textarea id="readingText">Acompanhe a abertura das cartas e ouça a interpretação preparada para esta semana.</textarea></label></section>
-<section class="panel"><div class="panel-head"><h2>Fotos das cartas</h2><label class="secondary" style="display:inline-flex;align-items:center">Adicionar fotos<input id="readingPhotos" class="hidden" type="file" accept="image/*" multiple></label></div><div id="readingGalleryAdmin" class="gallery-admin"><div class="empty-note">Nenhuma foto selecionada.</div></div></section>
-<section class="panel"><h2>Áudio da interpretação</h2><div class="media-slot"><div id="readingAudioPreview" class="media-preview">MP3, M4A ou áudio compatível</div><input id="readingAudio" type="file" accept="audio/*"><button id="removeReadingAudio" class="danger" type="button" style="margin-top:10px">Remover áudio</button></div></section>
+<section class="panel"><div class="panel-head"><h2>Fotos das cartas</h2><label class="secondary" style="display:inline-flex;align-items:center">Adicionar fotos<input id="readingPhotos" class="hidden" type="file" accept="image/*" multiple></label></div><div id="readingGalleryAdmin" class="gallery-admin"><div class="empty-note">Nenhuma foto selecionada.</div></div><p id="readingPhotosMessage" class="message" aria-live="polite"></p></section>
+<section class="panel"><h2>Áudio da interpretação</h2><div class="media-slot"><div id="readingAudioPreview" class="media-preview">Grave pelo microfone ou envie um arquivo</div><div class="toolbar"><button id="startReadingRecording" class="primary" type="button">Gravar áudio</button><button id="stopReadingRecording" class="secondary" type="button" disabled>Finalizar gravação</button><button id="discardReadingRecording" class="danger" type="button" disabled>Descartar gravação</button></div><label class="field">Ou enviar áudio pronto<input id="readingAudio" type="file" accept="audio/*"></label><button id="removeReadingAudio" class="danger" type="button" style="margin-top:10px">Remover áudio</button><p id="readingAudioMessage" class="message"></p></div></section>
 <section class="panel"><h2>Vídeo opcional</h2><div class="media-slot"><div id="readingVideoPreview" class="media-preview">MP4 ou WebM</div><input id="readingVideo" type="file" accept="video/mp4,video/webm"><button id="removeReadingVideo" class="danger" type="button" style="margin-top:10px">Remover vídeo</button></div></section>
-<div class="toolbar"><button id="readingDraft" class="secondary">Salvar rascunho</button><button id="readingPreviewAction" class="secondary">Pré-visualizar</button><button id="readingPublish" class="primary">Publicar leitura</button><button id="readingHide" class="danger">Ocultar</button></div>
+<div class="toolbar"><button id="readingDraft" class="secondary" type="button">Salvar rascunho</button><button id="readingPreviewAction" class="secondary" type="button">Pré-visualizar</button><button id="readingPublish" class="primary" type="button">Publicar leitura</button><button id="readingHide" class="danger" type="button">Ocultar</button></div><p id="readingSaveMessage" class="message"></p>
 </div><aside><div class="preview-switch"><button id="readingDesktop" class="secondary">Desktop</button><button id="readingMobile" class="secondary">Mobile</button></div><div id="readingPreviewCard" class="preview-card sticky-preview"><span class="eyebrow">LEITURA DA SEMANA</span><h3 id="readingPreviewTitle">Caminhos, escolhas e movimento</h3><p id="readingPreviewPeriod">Período da leitura</p><div id="readingPreviewImage" class="preview-media">A primeira foto aparecerá aqui</div><p id="readingPreviewText">Acompanhe a abertura das cartas e ouça a interpretação preparada para esta semana.</p><div id="readingPreviewAudio" class="media-preview" style="min-height:90px">O áudio aparecerá aqui</div><div id="readingPreviewVideo" class="media-preview">O vídeo aparecerá aqui</div></div></aside></div></div>
 <div id="readingHistory" class="tab-panel" data-tab-panel-group="reading"><div class="history-grid"><div class="history-item"><div><strong>Nenhuma leitura salva ainda</strong><br><span class="small">O histórico real será carregado do banco.</span></div></div></div></div>
 </section>
@@ -1057,8 +1085,8 @@ p{color:var(--muted);line-height:1.65}
 </div>
 
 <div id="agendaList" class="tab-panel active" data-tab-panel-group="agenda">
-
-<div class="schedule-list">
+<p id="scheduleListMessage" class="message"></p>
+<div id="scheduleList" class="schedule-list">
 
 <article class="schedule-item" data-date="2026-11-15" data-time="14:00">
   <span class="drag">⋮⋮</span>
@@ -1136,17 +1164,17 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="field">
   Data
-  <input type="date">
+  <input id="scheduleDate" type="date">
 </label>
 
 <label class="field">
   Horário
-  <input type="time">
+  <input id="scheduleTime" type="time">
 </label>
 
 <label class="field">
   Serviço
-  <select>
+  <select id="scheduleService">
     <option>Jogo completo</option>
     <option>3 perguntas</option>
   </select>
@@ -1154,7 +1182,7 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="field">
   Modalidade
-  <select>
+  <select id="scheduleModality">
     <option>Online</option>
     <option>Presencial</option>
   </select>
@@ -1164,7 +1192,7 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="field">
   Observação
-  <textarea></textarea>
+  <textarea id="scheduleNotes"></textarea>
 </label>
 
 <h3>Onde publicar primeiro?</h3>
@@ -1203,26 +1231,25 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="field">
   Liberar para clientes em
-  <input type="datetime-local">
+  <input id="scheduleClientRelease" type="datetime-local">
 </label>
 
 <label class="field">
   Liberar publicamente em
-  <input type="datetime-local">
+  <input id="schedulePublicRelease" type="datetime-local">
 </label>
 
 </div>
 
 <label class="check">
-  <input type="checkbox" checked>
+  <input id="scheduleAutoPublish" type="checkbox" checked>
   Publicar automaticamente no site público se ainda estiver disponível
 </label>
 
 </div>
 
-<button class="primary">
-  Adicionar horário
-</button>
+<button id="saveScheduleButton" class="primary" type="button">Adicionar horário</button>
+<p id="scheduleSaveMessage" class="message"></p>
 
 <div class="notice">
   Se o horário for reservado enquanto estiver exclusivo
@@ -1391,7 +1418,7 @@ p{color:var(--muted);line-height:1.65}
     <strong>Integração com banco</strong>
     <small>Conexão e sincronização.</small>
   </div>
-  <button class="secondary">Status</button>
+  <button id="databaseStatusButton" class="secondary" type="button">Status</button>
 </div>
 
 </div>
@@ -1714,7 +1741,7 @@ async function requireAdmin(user){
   if(profile?.status && profile.status!=='ativo')throw new Error('Conta administrativa inativa.');
   return {full_name:profile?.full_name||'Administrador',email:verified.user.email};
 }
-async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.getElementById('topAdminName').textContent=p.full_name||'Administrador';document.getElementById('topAdminEmail').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await Promise.all([loadAdminData(),loadMyProfile(),loadAdminsList()])}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
+async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.getElementById('topAdminName').textContent=p.full_name||'Administrador';document.getElementById('topAdminEmail').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await Promise.all([loadAdminData(),loadMyProfile(),loadAdminsList(),loadScheduleSlots(),loadWeeklyReadings()])}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
 document.getElementById('adminLoginButton').onclick=async()=>{const email=document.getElementById('adminLoginEmail').value.trim(),password=document.getElementById('adminLoginPassword').value;if(!email||!password)return authMsg.textContent='Preencha e-mail e senha.';authMsg.textContent='Verificando acesso...';const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return authMsg.textContent=error.message;await openAdmin(data.user)};
 document.getElementById('adminForgotButton').onclick=()=>{adminLoginCard.classList.add('hidden');adminRecoveryCard.classList.remove('hidden');document.getElementById('adminRecoveryEmail').value=document.getElementById('adminLoginEmail').value};
 document.getElementById('adminRecoveryBack').onclick=()=>{adminRecoveryCard.classList.add('hidden');adminLoginCard.classList.remove('hidden')};
@@ -1753,6 +1780,171 @@ if(invite){
     finally{invite.disabled=false;}
   });
 }
+
+
+/* AGENDA E LEITURA DA SEMANA - INTEGRACAO CONSOLIDADA */
+let currentReadingId=null;
+let selectedReadingPhotos=[];
+let recordedAudioBlob=null;
+let readingMediaRecorder=null;
+let readingRecorderStream=null;
+let readingAudioChunks=[];
+const weeklyBucket='weekly-reading-media';
+
+function setMessage(id,text,isError=false){const el=document.getElementById(id);if(!el)return;el.textContent=text||'';el.style.color=isError?'#e0a6ab':'var(--gold2)';}
+function localDate(value){if(!value)return'';const [y,m,d]=String(value).split('-');return `${d}/${m}/${y}`;}
+function toIsoOrNull(value){return value?new Date(value).toISOString():null;}
+function statusLabel(value){return ({draft:'Rascunho',published:'Publicado',hidden:'Oculto',archived:'Arquivado'})[value]||value;}
+function readingStatusValue(){return ({Rascunho:'draft',Publicado:'published',Oculto:'hidden',Arquivado:'archived'})[document.getElementById('readingStatus').value]||'draft';}
+function selectReadingStatus(value){document.getElementById('readingStatus').value=({draft:'Rascunho',published:'Publicado',hidden:'Oculto',archived:'Arquivado'})[value]||'Rascunho';}
+function signedUrl(path,expires=3600){return sb.storage.from(weeklyBucket).createSignedUrl(path,expires).then(r=>{if(r.error)throw r.error;return r.data.signedUrl});}
+
+async function loadScheduleSlots(){
+ const container=document.getElementById('scheduleList');if(!container)return;
+ setMessage('scheduleListMessage','Carregando horários...');
+ const {data,error}=await sb.from('schedule_slots').select('*').order('appointment_date',{ascending:true}).order('appointment_time',{ascending:true});
+ if(error){setMessage('scheduleListMessage',error.message,true);return;}
+ setMessage('scheduleListMessage',data?.length?`${data.length} horário(s) sincronizado(s) entre os administradores.`:'Nenhum horário salvo no banco.');
+ container.innerHTML=(data||[]).length?(data||[]).map((slot,i)=>`<article class="schedule-item" data-id="${slot.id}" data-date="${slot.appointment_date}" data-time="${String(slot.appointment_time||'').slice(0,5)}"><span class="drag">⋮⋮</span><div class="schedule-info"><strong>${localDate(slot.appointment_date)} às ${String(slot.appointment_time||'').slice(0,5)}</strong><small>${slot.service_name||'Atendimento'}${slot.modality?' · '+slot.modality:''}</small><div class="badges"><span class="badge">${slot.status||'disponível'}</span><span class="badge">Banco sincronizado</span></div></div><div class="schedule-actions"><button type="button" data-schedule-up>↑</button><button type="button" data-schedule-down>↓</button><button type="button" data-schedule-edit>✎</button><button type="button" data-schedule-delete>×</button></div></article>`).join(''):'<div class="empty-note">Nenhum horário cadastrado.</div>';
+ container.querySelectorAll('[data-schedule-delete]').forEach(b=>b.onclick=()=>deleteSchedule(b.closest('.schedule-item').dataset.id));
+ container.querySelectorAll('[data-schedule-edit]').forEach(b=>b.onclick=()=>editSchedule(data.find(x=>String(x.id)===b.closest('.schedule-item').dataset.id)));
+ container.querySelectorAll('[data-schedule-up]').forEach(b=>b.onclick=()=>moveItem(b,'up'));
+ container.querySelectorAll('[data-schedule-down]').forEach(b=>b.onclick=()=>moveItem(b,'down'));
+}
+async function saveSchedule(){
+ const button=document.getElementById('saveScheduleButton'),date=document.getElementById('scheduleDate').value,time=document.getElementById('scheduleTime').value;
+ if(!date||!time){setMessage('scheduleSaveMessage','Informe data e horário.',true);return;}
+ button.disabled=true;setMessage('scheduleSaveMessage','Salvando no Supabase...');
+ try{
+  const {data:{user}}=await sb.auth.getUser();
+  const currentCount=document.querySelectorAll('#scheduleList .schedule-item').length;
+  const payload={service_name:document.getElementById('scheduleService').value,appointment_date:date,appointment_time:time,status:'available',active:true,public_display_order:currentCount+1,featured:false,public_release_at:toIsoOrNull(document.getElementById('schedulePublicRelease').value),auto_publish_public:document.getElementById('scheduleAutoPublish').checked,created_by:user?.id||null};
+  const editId=button.dataset.editId;
+  const q=editId?sb.from('schedule_slots').update({...payload,updated_at:new Date().toISOString()}).eq('id',editId):sb.from('schedule_slots').insert(payload);
+  const {error}=await q;if(error)throw error;
+  delete button.dataset.editId;button.textContent='Adicionar horário';setMessage('scheduleSaveMessage','Horário salvo e compartilhado com todos os administradores.');await loadScheduleSlots();
+ }catch(e){setMessage('scheduleSaveMessage',e.message||'Não foi possível salvar o horário.',true)}finally{button.disabled=false}
+}
+function editSchedule(slot){if(!slot)return;document.getElementById('scheduleDate').value=slot.appointment_date||'';document.getElementById('scheduleTime').value=String(slot.appointment_time||'').slice(0,5);document.getElementById('scheduleService').value=slot.service_name||'Jogo completo';const b=document.getElementById('saveScheduleButton');b.dataset.editId=slot.id;b.textContent='Salvar alteração';document.querySelector('[data-tab="agendaNew"]').click();}
+async function deleteSchedule(id){if(!confirm('Excluir este horário do banco compartilhado?'))return;const {error}=await sb.from('schedule_slots').delete().eq('id',id);if(error)return setMessage('scheduleListMessage',error.message,true);await loadScheduleSlots();}
+document.getElementById('saveScheduleButton')?.addEventListener('click',saveSchedule);
+
+function renderSelectedReadingPhotos(){
+ const box=document.getElementById('readingGalleryAdmin');
+ if(!selectedReadingPhotos.length){box.innerHTML='<div class="empty-note">Nenhuma foto selecionada.</div>';document.getElementById('readingPreviewImage').innerHTML='A primeira foto aparecerá aqui';return;}
+ box.innerHTML=selectedReadingPhotos.map((item,i)=>`<article class="gallery-admin-item"><img src="${item.url}" alt="Foto ${i+1}"><div><strong>Foto ${i+1}</strong><br><span class="small">${item.file?item.file.name:'Salva no Supabase'}</span></div><div class="mini-actions"><button type="button" data-photo-up="${i}">↑</button><button type="button" data-photo-down="${i}">↓</button><button type="button" data-photo-remove="${i}">×</button></div></article>`).join('');
+ document.getElementById('readingPreviewImage').innerHTML=`<img alt="Prévia da primeira carta" src="${selectedReadingPhotos[0].url}">`;
+ box.querySelectorAll('[data-photo-remove]').forEach(b=>b.onclick=()=>{const i=+b.dataset.photoRemove;selectedReadingPhotos.splice(i,1);renderSelectedReadingPhotos()});
+ box.querySelectorAll('[data-photo-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.photoUp;if(i>0)[selectedReadingPhotos[i-1],selectedReadingPhotos[i]]=[selectedReadingPhotos[i],selectedReadingPhotos[i-1]];renderSelectedReadingPhotos()});
+ box.querySelectorAll('[data-photo-down]').forEach(b=>b.onclick=()=>{const i=+b.dataset.photoDown;if(i<selectedReadingPhotos.length-1)[selectedReadingPhotos[i+1],selectedReadingPhotos[i]]=[selectedReadingPhotos[i],selectedReadingPhotos[i+1]];renderSelectedReadingPhotos()});
+}
+document.getElementById('readingPhotos')?.addEventListener('change',function(){for(const file of this.files){if(!file.type.startsWith('image/'))continue;selectedReadingPhotos.push({file,url:URL.createObjectURL(file),path:null});}renderSelectedReadingPhotos();setMessage('readingPhotosMessage',`${selectedReadingPhotos.filter(x=>x.file).length} foto(s) pronta(s) para salvar.`);this.value='';});
+
+function previewAudioSource(src){document.getElementById('readingAudioPreview').innerHTML=src?`<audio controls src="${src}"></audio>`:'Grave pelo microfone ou envie um arquivo';document.getElementById('readingPreviewAudio').innerHTML=src?`<audio controls src="${src}"></audio>`:'O áudio aparecerá aqui';}
+document.getElementById('readingAudio')?.addEventListener('change',function(){const file=this.files[0];if(!file)return;recordedAudioBlob=null;previewAudioSource(URL.createObjectURL(file));setMessage('readingAudioMessage','Arquivo selecionado. Salve o rascunho ou publique para enviar ao Supabase.');});
+document.getElementById('startReadingRecording')?.addEventListener('click',async()=>{
+ try{readingRecorderStream=await navigator.mediaDevices.getUserMedia({audio:true});const preferred=MediaRecorder.isTypeSupported('audio/webm;codecs=opus')?'audio/webm;codecs=opus':'';readingMediaRecorder=new MediaRecorder(readingRecorderStream,preferred?{mimeType:preferred}:undefined);readingAudioChunks=[];readingMediaRecorder.ondataavailable=e=>{if(e.data.size)readingAudioChunks.push(e.data)};readingMediaRecorder.onstop=()=>{recordedAudioBlob=new Blob(readingAudioChunks,{type:readingMediaRecorder.mimeType||'audio/webm'});previewAudioSource(URL.createObjectURL(recordedAudioBlob));readingRecorderStream?.getTracks().forEach(t=>t.stop());setMessage('readingAudioMessage','Gravação pronta. Ouça e depois salve o rascunho ou publique.');document.getElementById('readingAudioPreview').classList.remove('recording-live');document.getElementById('discardReadingRecording').disabled=false};readingMediaRecorder.start();document.getElementById('readingAudioPreview').textContent='Gravando pelo microfone...';document.getElementById('readingAudioPreview').classList.add('recording-live');document.getElementById('startReadingRecording').disabled=true;document.getElementById('stopReadingRecording').disabled=false;setMessage('readingAudioMessage','Gravação em andamento.');
+ }catch(e){setMessage('readingAudioMessage','Não foi possível acessar o microfone: '+e.message,true)}
+});
+document.getElementById('stopReadingRecording')?.addEventListener('click',()=>{if(readingMediaRecorder?.state==='recording')readingMediaRecorder.stop();document.getElementById('startReadingRecording').disabled=false;document.getElementById('stopReadingRecording').disabled=true});
+document.getElementById('discardReadingRecording')?.addEventListener('click',()=>{recordedAudioBlob=null;document.getElementById('readingAudio').value='';previewAudioSource(null);setMessage('readingAudioMessage','Gravação descartada.');document.getElementById('discardReadingRecording').disabled=true});
+document.getElementById('removeReadingAudio')?.addEventListener('click',()=>{recordedAudioBlob=null;document.getElementById('readingAudio').value='';previewAudioSource(null);setMessage('readingAudioMessage','Áudio removido desta edição.');});
+
+function syncReadingPreview(){document.getElementById('readingPreviewTitle').textContent=document.getElementById('readingTitle').value||'Leitura da semana';document.getElementById('readingPreviewText').textContent=document.getElementById('readingText').value||'';const a=document.getElementById('readingStart').value,b=document.getElementById('readingEnd').value;document.getElementById('readingPreviewPeriod').textContent=a&&b?`${localDate(a)} a ${localDate(b)}`:'Período da leitura';}
+['readingTitle','readingText','readingStart','readingEnd'].forEach(id=>document.getElementById(id)?.addEventListener('input',syncReadingPreview));
+document.getElementById('readingPreviewAction')?.addEventListener('click',syncReadingPreview);
+
+async function uploadWeeklyBlob(path,blob,contentType){const {error}=await sb.storage.from(weeklyBucket).upload(path,blob,{upsert:true,contentType});if(error)throw error;return path;}
+async function saveWeeklyReading(targetStatus){
+ const msg='readingSaveMessage',title=document.getElementById('readingTitle').value.trim(),start=document.getElementById('readingStart').value,end=document.getElementById('readingEnd').value;
+ if(!title||!start||!end){setMessage(msg,'Preencha título, data inicial e data final.',true);return;}
+ if(end<start){setMessage(msg,'A data final não pode ser anterior à inicial.',true);return;}
+ const buttons=['readingDraft','readingPublish','readingHide'].map(id=>document.getElementById(id));
+ buttons.forEach(b=>b.disabled=true);
+ let mediaSaved=0;
+ try{
+  const {data:{user},error:userError}=await sb.auth.getUser();if(userError||!user)throw new Error('Sessão expirada. Entre novamente.');
+  const base={title,introduction:document.getElementById('readingText').value.trim(),start_date:start,end_date:end,updated_at:new Date().toISOString()};
+  let reading;
+  // Primeiro persistimos o rascunho e seus arquivos. Só publicamos após tudo concluir.
+  if(currentReadingId){const {data,error}=await sb.from('weekly_readings').update(base).eq('id',currentReadingId).select().single();if(error)throw error;reading=data;}
+  else{const {data,error}=await sb.from('weekly_readings').insert({...base,status:'draft',created_by:user.id}).select().single();if(error)throw error;reading=data;currentReadingId=reading.id;}
+  const folder=`readings/${reading.id}`;
+  const audioFile=document.getElementById('readingAudio').files[0];const audioBlob=recordedAudioBlob||audioFile;
+  if(audioBlob){
+   setMessage(msg,'Enviando áudio...');
+   const ext=recordedAudioBlob?'webm':(audioFile.name.split('.').pop()||'bin');const path=`${folder}/audio/interpretacao.${safe(ext)}`;
+   await uploadWeeklyBlob(path,audioBlob,audioBlob.type||'application/octet-stream');
+   const {error}=await sb.from('weekly_readings').update({audio_storage_path:path,audio_url:null}).eq('id',reading.id);if(error)throw error;
+   mediaSaved++;
+  }
+  // Upload sequencial para não perder a seleção nem exibir sucesso antes do banco confirmar.
+  const pending=selectedReadingPhotos.filter(item=>item.file instanceof File);
+  for(let i=0;i<pending.length;i++){
+   const item=pending[i];
+   if(!item.file.type.startsWith('image/'))throw new Error('Selecione apenas imagens para as cartas.');
+   setMessage(msg,`Salvando foto ${i+1} de ${pending.length}...`);
+   const ext=safe((item.file.name.split('.').pop()||'jpg').toLowerCase());
+   const path=`${folder}/photos/carta-${crypto.randomUUID()}.${ext}`;
+   await uploadWeeklyBlob(path,item.file,item.file.type);
+   // image_url recebe um caminho persistente, não uma URL assinada que expiraria.
+   const payload={reading_id:reading.id,image_url:path,storage_path:path,alt_text:`Carta da leitura ${title}`,caption:null,display_order:selectedReadingPhotos.indexOf(item)+1,active:true};
+   const {data:row,error}=await sb.from('weekly_reading_photos').insert(payload).select('id,storage_path').single();
+   if(error)throw new Error(`Foto enviada ao Storage, mas o banco recusou o registro: ${error.message}`);
+   item.file=null;item.path=path;item.id=row.id;
+   try{item.url=await signedUrl(path)}catch(_e){}
+   mediaSaved++;
+  }
+  // Confere o vínculo persistido antes de confirmar a operação.
+  const {data:storedPhotos,error:photoError}=await sb.from('weekly_reading_photos').select('id,storage_path').eq('reading_id',reading.id).eq('active',true);
+  if(photoError)throw photoError;
+  if(selectedReadingPhotos.length && !storedPhotos?.length)throw new Error('A leitura foi salva, mas nenhuma foto foi registrada.');
+  const statusPayload={status:targetStatus,updated_at:new Date().toISOString()};
+  if(targetStatus==='published')statusPayload.published_at=new Date().toISOString();
+  const {error:statusError}=await sb.from('weekly_readings').update(statusPayload).eq('id',reading.id);
+  if(statusError)throw statusError;
+  selectReadingStatus(targetStatus);
+  setMessage(msg,`${targetStatus==='published'?'Leitura publicada':'Leitura salva'} com sucesso. ${storedPhotos?.length||0} foto(s) no banco. Todos os administradores podem visualizar.`);
+  await loadWeeklyReadings();
+  renderSelectedReadingPhotos();
+ }catch(e){
+  console.error('Falha ao salvar leitura/fotos',e);
+  setMessage(msg,`Erro ao salvar: ${e.message||'falha desconhecida'}. A leitura permanece disponível como rascunho ou no estado anterior; não publique novamente até verificar.`,true);
+ }finally{buttons.forEach(b=>b.disabled=false)}
+}
+document.getElementById('readingDraft')?.addEventListener('click',()=>saveWeeklyReading('draft'));
+document.getElementById('readingPublish')?.addEventListener('click',()=>saveWeeklyReading('published'));
+document.getElementById('readingHide')?.addEventListener('click',()=>saveWeeklyReading('hidden'));
+
+async function loadWeeklyReadings(){
+ const history=document.querySelector('#readingHistory .history-grid');if(!history)return;
+ const {data,error}=await sb.from('weekly_readings').select('*').order('updated_at',{ascending:false});
+ if(error){history.innerHTML=`<div class="empty-note">${error.message}</div>`;return;}
+ history.innerHTML=(data||[]).length?(data||[]).map(r=>`<article class="history-item"><div><strong>${r.title}</strong><br><span class="small">${localDate(r.start_date)} a ${localDate(r.end_date)} · ${statusLabel(r.status)} · Atualizado ${new Date(r.updated_at||r.created_at).toLocaleString('pt-BR')}</span></div><div class="account-actions"><button class="secondary" type="button" data-reading-edit="${r.id}">Abrir</button><button class="danger" type="button" data-reading-archive="${r.id}">Arquivar</button></div></article>`).join(''):'<div class="empty-note">Nenhuma leitura salva ainda.</div>';
+ history.querySelectorAll('[data-reading-edit]').forEach(b=>b.onclick=()=>openWeeklyReading(data.find(r=>String(r.id)===b.dataset.readingEdit)));
+ history.querySelectorAll('[data-reading-archive]').forEach(b=>b.onclick=async()=>{if(!confirm('Arquivar esta leitura?'))return;const {error}=await sb.from('weekly_readings').update({status:'archived',updated_at:new Date().toISOString()}).eq('id',b.dataset.readingArchive);if(error)alert(error.message);else loadWeeklyReadings()});
+ // Ao abrir o admin, mostrar a leitura mais recente para evitar duplicidade.
+ if(!currentReadingId&&data?.[0])await openWeeklyReading(data[0],false);
+}
+async function openWeeklyReading(reading,switchTab=true){
+ currentReadingId=reading.id;document.getElementById('readingTitle').value=reading.title||'';document.getElementById('readingText').value=reading.introduction||'';document.getElementById('readingStart').value=reading.start_date||'';document.getElementById('readingEnd').value=reading.end_date||'';selectReadingStatus(reading.status);selectedReadingPhotos=[];
+ const {data:photos,error}=await sb.from('weekly_reading_photos').select('*').eq('reading_id',reading.id).eq('active',true).order('display_order');if(error)throw error;
+ for(const photo of photos||[]){
+  const path=photo.storage_path||photo.image_url;
+  if(!path)continue;
+  try{selectedReadingPhotos.push({file:null,id:photo.id,path,url:await signedUrl(path)})}
+  catch(e){console.error('Falha ao recuperar foto',path,e);setMessage('readingSaveMessage','Uma foto está cadastrada, mas não pôde ser carregada: '+e.message,true)}
+ }
+ renderSelectedReadingPhotos();
+ if(reading.audio_storage_path){try{previewAudioSource(await signedUrl(reading.audio_storage_path))}catch(_){previewAudioSource(null)}}else previewAudioSource(null);
+ syncReadingPreview();if(switchTab)document.querySelector('[data-tab="readingEditor"]').click();setMessage('readingSaveMessage',`Leitura #${reading.id} carregada do banco compartilhado.`);
+}
+
+async function checkDatabaseStatus(){
+ const button=document.getElementById('databaseStatusButton');button.disabled=true;button.textContent='Verificando...';
+ try{const checks=await Promise.all([sb.from('profiles').select('id',{head:true,count:'exact'}),sb.from('schedule_slots').select('id',{head:true,count:'exact'}),sb.from('weekly_readings').select('id',{head:true,count:'exact'}),sb.storage.from(weeklyBucket).list('readings',{limit:1})]);const errors=checks.map(x=>x.error).filter(Boolean);alert(errors.length?`Conexão parcial: ${errors.map(e=>e.message).join(' | ')}`:'Supabase Auth, banco de dados e Storage estão conectados.');}finally{button.disabled=false;button.textContent='Status'}
+}
+document.getElementById('databaseStatusButton')?.addEventListener('click',checkDatabaseStatus);
 
 /* PERFIL ADMINISTRATIVO */
 let currentAdminProfile=null;
@@ -1838,6 +2030,39 @@ document.getElementById('sendAdminRecovery').addEventListener('click',async()=>{
 
 (async()=>{const {data:{session}}=await sb.auth.getSession();if(session?.user)await openAdmin(session.user);else adminAuthScreen.classList.remove('hidden')})();
 
+</script>
+<script>
+/* PWA ADMIN: apenas instala; nao guarda dados privados offline */
+(function(){
+  const banner=document.getElementById('installAdminBanner');
+  const button=document.getElementById('installAdminButton');
+  const text=document.getElementById('installAdminText');
+  const dismiss=document.getElementById('dismissInstallAdmin');
+  let deferredPrompt=null;
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(console.warn));}
+  if(standalone)return;
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+  if(isIOS){
+    banner.classList.remove('hidden');
+    text.textContent='No Safari, toque em Compartilhar e depois Adicionar à Tela de Início.';
+    button.textContent='Como instalar';
+    button.addEventListener('click',()=>alert('No Safari: toque em Compartilhar, escolha Adicionar à Tela de Início e confirme.'));
+  }
+  window.addEventListener('beforeinstallprompt',event=>{
+    event.preventDefault();deferredPrompt=event;banner.classList.remove('hidden');
+    text.textContent='Instale o painel e abra diretamente pela tela inicial.';
+    button.textContent='Instalar aplicativo';
+  });
+  if(!isIOS)button.addEventListener('click',async()=>{
+    if(!deferredPrompt){text.textContent='Abra o menu do navegador e procure Instalar aplicativo ou Adicionar à tela inicial.';return;}
+    const prompt=deferredPrompt;deferredPrompt=null;await prompt.prompt();
+    const result=await prompt.userChoice;
+    if(result?.outcome==='accepted')banner.classList.add('hidden');
+  });
+  dismiss.addEventListener('click',()=>banner.classList.add('hidden'));
+  window.addEventListener('appinstalled',()=>{deferredPrompt=null;banner.classList.add('hidden');});
+})();
 </script>
 </body>
 </html>
