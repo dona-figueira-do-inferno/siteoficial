@@ -438,6 +438,7 @@ h1{
 
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 
@@ -658,144 +659,14 @@ Voltar para entrar
 
 
 <script>
-
-/*
-===========================================
-ESTADO DEMONSTRATIVO
-===========================================
-
-Quando fizermos a integração com Supabase,
-esta página identificará automaticamente:
-
-1. aguardando confirmação
-2. confirmação realizada
-3. link inválido/expirado
-
-Por enquanto a página abre no estado
-"Confira seu e-mail".
-*/
-
-
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
-
-
-const email =
-  params.get("email");
-
-
-if(email){
-
-  document
-    .getElementById("userEmail")
-    .textContent =
-    email;
-
-}
-
-
-/*
-===========================================
-FUNÇÃO PARA ALTERAR ESTADO
-===========================================
-*/
-
-function showState(stateId){
-
-  document
-    .querySelectorAll(".state")
-    .forEach(
-      function(state){
-
-        state.classList.remove(
-          "active"
-        );
-
-      }
-    );
-
-
-  document
-    .getElementById(stateId)
-    .classList.add(
-      "active"
-    );
-
-}
-
-
-/*
-===========================================
-DEMONSTRAÇÃO
-
-Para testar manualmente:
-
-confirmar.html?status=confirmed
-
-confirmar.html?status=error
-
-===========================================
-*/
-
-const status =
-  params.get("status");
-
-
-if(status === "confirmed"){
-
-  showState("confirmed");
-
-}
-
-
-if(status === "error"){
-
-  showState("errorState");
-
-}
-
-
-/*
-===========================================
-REENVIAR CONFIRMAÇÃO
-
-Depois será conectado ao Supabase.
-===========================================
-*/
-
-document
-  .getElementById(
-    "resendButton"
-  )
-  .addEventListener(
-    "click",
-    function(){
-
-      alert(
-        "O reenvio será ativado na integração com o Supabase."
-      );
-
-    }
-  );
-
-
-document
-  .getElementById(
-    "newLinkButton"
-  )
-  .addEventListener(
-    "click",
-    function(){
-
-      showState(
-        "waiting"
-      );
-
-    }
-  );
-
+const sb=window.supabase.createClient('https://bsjmaunkzqcrrsrkwltw.supabase.co','sb_publishable_yAVI7GeegJUCTpGW9MIUhA_WMeDqLOH');
+const params=new URLSearchParams(location.search),email=params.get('email');
+if(email)document.getElementById('userEmail').textContent=email;
+function showState(id){document.querySelectorAll('.state').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
+async function detect(){const {data:{session}}=await sb.auth.getSession();if(session)showState('confirmed');else if(location.hash.includes('error')||params.get('error'))showState('errorState')}
+document.getElementById('resendButton').onclick=async()=>{if(!email)return alert('Volte ao cadastro e informe o e-mail novamente.');const {error}=await sb.auth.resend({type:'signup',email,options:{emailRedirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/confirmar.html'}});alert(error?error.message:'E-mail reenviado.')};
+document.getElementById('newLinkButton').onclick=()=>location.href='./';
+sb.auth.onAuthStateChange((event,session)=>{if(session||event==='SIGNED_IN')showState('confirmed')});detect();
 </script>
 
 </body>
