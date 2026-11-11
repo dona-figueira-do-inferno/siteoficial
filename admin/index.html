@@ -198,6 +198,7 @@ p{color:var(--muted);line-height:1.65}
 @media(max-width:760px){.gallery-admin-item{grid-template-columns:60px 1fr}.gallery-admin-item img{width:60px;height:55px}.mini-actions{grid-column:1/-1}.content-type-options,.media-library-grid{grid-template-columns:1fr 1fr}.history-item{grid-template-columns:1fr}.toolbar button{width:100%}}
 @media(max-width:390px){.content-type-options,.media-library-grid{grid-template-columns:1fr}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -211,7 +212,7 @@ p{color:var(--muted);line-height:1.65}
     <p id="adminAuthMessage" class="auth-message"></p>
   </section>
   <section id="adminRecoveryCard" class="auth-card hidden">
-    <span class="eyebrow">Recuperação</span><h1>Recuperar senha</h1><p>Informe o e-mail administrativo. O link real será enviado quando conectarmos ao Supabase.</p>
+    <span class="eyebrow">Recuperação</span><h1>Recuperar senha</h1><p>Informe o e-mail administrativo. Você receberá o link seguro de recuperação no e-mail administrativo.</p>
     <label class="field">E-mail<input id="adminRecoveryEmail" type="email"></label>
     <button id="adminRecoverySend" class="primary" type="button">Enviar link de recuperação</button>
     <button id="adminRecoveryBack" class="secondary" type="button">Voltar</button>
@@ -277,7 +278,7 @@ p{color:var(--muted);line-height:1.65}
     <div class="status">
       <span class="dot"></span>Admin preparado
     </div>
-    <button class="secondary">Sair</button>
+    <button id="adminLogoutButton" class="secondary">Sair</button>
   </div>
 
 </aside>
@@ -1653,15 +1654,29 @@ window.addEventListener("keydown",event=>{
 });
 
 
-/* ADMIN AUTH DEMONSTRATIVO */
-const adminAuthScreen=document.getElementById("adminAuthScreen");
-const adminLoginCard=document.getElementById("adminLoginCard");
-const adminRecoveryCard=document.getElementById("adminRecoveryCard");
-document.getElementById("adminLoginButton").addEventListener("click",()=>{const email=document.getElementById("adminLoginEmail").value.trim();const pass=document.getElementById("adminLoginPassword").value;if(!email||!pass){document.getElementById("adminAuthMessage").textContent="Preencha e-mail e senha.";return;}adminAuthScreen.classList.add("hidden");});
-document.getElementById("adminForgotButton").addEventListener("click",()=>{adminLoginCard.classList.add("hidden");adminRecoveryCard.classList.remove("hidden");document.getElementById("adminRecoveryEmail").value=document.getElementById("adminLoginEmail").value;});
-document.getElementById("adminRecoveryBack").addEventListener("click",()=>{adminRecoveryCard.classList.add("hidden");adminLoginCard.classList.remove("hidden");});
-document.getElementById("adminRecoverySend").addEventListener("click",()=>{const email=document.getElementById("adminRecoveryEmail").value.trim();document.getElementById("adminRecoveryMessage").textContent=email?"Fluxo preparado. O e-mail real será enviado após a integração com o Supabase.":"Informe o e-mail administrativo.";});
-const inviteButton=document.getElementById("inviteAdminButton");if(inviteButton){inviteButton.addEventListener("click",()=>{const email=document.getElementById("inviteAdminEmail").value.trim();document.getElementById("inviteAdminMessage").textContent=email?"Convite preparado para "+email+". O envio real será ativado com o Supabase.":"Informe o e-mail do novo administrador.";});}
+/* SUPABASE ADMIN REAL */
+const SUPABASE_URL='https://bsjmaunkzqcrrsrkwltw.supabase.co';
+const SUPABASE_KEY='sb_publishable_yAVI7GeegJUCTpGW9MIUhA_WMeDqLOH';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const adminAuthScreen=document.getElementById('adminAuthScreen');
+const adminLoginCard=document.getElementById('adminLoginCard');
+const adminRecoveryCard=document.getElementById('adminRecoveryCard');
+const authMsg=document.getElementById('adminAuthMessage');
+async function requireAdmin(user){const {data,error}=await sb.from('profiles').select('id,email,full_name,role,status').eq('id',user.id).single();if(error)throw error;if(data.role!=='admin'||data.status!=='ativo')throw new Error('Acesso negado. Esta conta não é administradora ativa.');return data}
+async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.querySelector('.user strong').textContent=p.full_name||'Administrador';document.querySelector('.user span').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await loadAdminData()}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
+document.getElementById('adminLoginButton').onclick=async()=>{const email=document.getElementById('adminLoginEmail').value.trim(),password=document.getElementById('adminLoginPassword').value;if(!email||!password)return authMsg.textContent='Preencha e-mail e senha.';authMsg.textContent='Verificando acesso...';const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return authMsg.textContent=error.message;await openAdmin(data.user)};
+document.getElementById('adminForgotButton').onclick=()=>{adminLoginCard.classList.add('hidden');adminRecoveryCard.classList.remove('hidden');document.getElementById('adminRecoveryEmail').value=document.getElementById('adminLoginEmail').value};
+document.getElementById('adminRecoveryBack').onclick=()=>{adminRecoveryCard.classList.add('hidden');adminLoginCard.classList.remove('hidden')};
+document.getElementById('adminRecoverySend').onclick=async()=>{const email=document.getElementById('adminRecoveryEmail').value.trim(),box=document.getElementById('adminRecoveryMessage');if(!email)return box.textContent='Informe o e-mail administrativo.';box.textContent='Enviando...';const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/redefinir-senha.html'});box.textContent=error?error.message:'Se a conta existir, o link foi enviado.'};
+document.getElementById('adminLogoutButton').onclick=async()=>{await sb.auth.signOut();adminAuthScreen.classList.remove('hidden')};
+async function loadAdminData(){const qs=['weekly_readings','exclusive_contents','schedule_slots','promotions','profiles'].map(t=>sb.from(t).select('*',{count:'exact',head:true}));const rs=await Promise.all(qs);document.querySelectorAll('#dashboard .metric strong').forEach((x,i)=>x.textContent=rs[i].count??0);const {data:clients}=await sb.from('profiles').select('full_name,email,phone,status').eq('role','cliente').order('created_at',{ascending:false});const list=document.querySelector('#clients .list');if(clients){list.innerHTML=clients.length?clients.map(c=>`<div class="list-row"><div><strong>${c.full_name||'Cliente'}</strong><small>${c.email||''} · ${c.phone||'Sem telefone'} · ${c.status}</small></div><span class="badge">CLIENTE</span></div>`).join(''):'<div class="list-row"><div><strong>Nenhum cliente cadastrado</strong></div></div>'}}
+function safe(n){return String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9._-]/g,'-')}
+async function upload(bucket,file,folder){if(!file)return null;const path=`${folder}/${Date.now()}-${safe(file.name)}`;const {error}=await sb.storage.from(bucket).upload(path,file);if(error)throw error;return path}
+async function saveEssence(){try{const {data:old}=await sb.from('site_essence').select('*').limit(1).maybeSingle();const payload={eyebrow:essenceEyebrow.value,title:essenceTitle.value,description:essenceText.value,left_storage_path:await upload('site-public',document.getElementById('leftImageInput').files[0],'essence')||old?.left_storage_path||null,right_storage_path:await upload('site-public',document.getElementById('rightImageInput').files[0],'essence')||old?.right_storage_path||null,left_position_x:+document.getElementById('leftX').value,left_position_y:+document.getElementById('leftY').value,right_position_x:+document.getElementById('rightX').value,right_position_y:+document.getElementById('rightY').value,active:true,updated_at:new Date().toISOString()};const q=old?.id?sb.from('site_essence').update(payload).eq('id',old.id):sb.from('site_essence').insert(payload);const {error}=await q;if(error)throw error;alert('Nossa Essência salva no Supabase.')}catch(e){alert(e.message)}}
+const siteSave=document.querySelector('#site .page-head .primary');if(siteSave){const n=siteSave.cloneNode(true);siteSave.replaceWith(n);n.onclick=saveEssence}
+const invite=document.getElementById('inviteAdminButton');if(invite){const n=invite.cloneNode(true);invite.replaceWith(n);n.onclick=()=>document.getElementById('inviteAdminMessage').textContent='O convite exige uma Supabase Edge Function com chave secreta. A chave secreta não foi exposta neste HTML.'}
+(async()=>{const {data:{session}}=await sb.auth.getSession();if(session?.user)await openAdmin(session.user);else adminAuthScreen.classList.remove('hidden')})();
+
 </script>
 </body>
 </html>
