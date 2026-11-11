@@ -1320,7 +1320,7 @@ p{color:var(--muted);line-height:1.65}
   <div>
     <h3>Acessos atuais</h3>
     <div class="admin-list-item"><div><strong>Administrador principal</strong><br><span class="small">A lista real virá do banco.</span></div><span class="badge">ADMIN</span></div>
-    <div class="notice">O convite real usará o fluxo de convite do Supabase e o perfil convidado receberá papel <strong>admin</strong> após a integração.</div>
+    <div class="notice">Os convites são enviados pela função segura invite-admin. O novo administrador deverá aceitar o convite e definir a senha.</div>
   </div>
 </div>
 </section>
@@ -1662,7 +1662,14 @@ const adminAuthScreen=document.getElementById('adminAuthScreen');
 const adminLoginCard=document.getElementById('adminLoginCard');
 const adminRecoveryCard=document.getElementById('adminRecoveryCard');
 const authMsg=document.getElementById('adminAuthMessage');
-async function requireAdmin(user){const {data,error}=await sb.from('profiles').select('id,email,full_name,role,status').eq('id',user.id).single();if(error)throw error;if(data.role!=='admin'||data.status!=='ativo')throw new Error('Acesso negado. Esta conta não é administradora ativa.');return data}
+async function requireAdmin(user){
+  const {data:verified,error:authError}=await sb.auth.getUser();
+  if(authError||!verified?.user||verified.user.id!==user.id)throw new Error('Sessão inválida. Entre novamente.');
+  if(verified.user.app_metadata?.role!=='admin')throw new Error('Acesso negado. Esta conta não é administradora.');
+  const {data:profile}=await sb.from('profiles').select('id,email,full_name,role,status').eq('id',user.id).maybeSingle();
+  if(profile?.status && profile.status!=='ativo')throw new Error('Conta administrativa inativa.');
+  return {full_name:profile?.full_name||'Administrador',email:verified.user.email};
+}
 async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.querySelector('.user strong').textContent=p.full_name||'Administrador';document.querySelector('.user span').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await loadAdminData()}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
 document.getElementById('adminLoginButton').onclick=async()=>{const email=document.getElementById('adminLoginEmail').value.trim(),password=document.getElementById('adminLoginPassword').value;if(!email||!password)return authMsg.textContent='Preencha e-mail e senha.';authMsg.textContent='Verificando acesso...';const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return authMsg.textContent=error.message;await openAdmin(data.user)};
 document.getElementById('adminForgotButton').onclick=()=>{adminLoginCard.classList.add('hidden');adminRecoveryCard.classList.remove('hidden');document.getElementById('adminRecoveryEmail').value=document.getElementById('adminLoginEmail').value};
@@ -1674,7 +1681,33 @@ function safe(n){return String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,''
 async function upload(bucket,file,folder){if(!file)return null;const path=`${folder}/${Date.now()}-${safe(file.name)}`;const {error}=await sb.storage.from(bucket).upload(path,file);if(error)throw error;return path}
 async function saveEssence(){try{const {data:old}=await sb.from('site_essence').select('*').limit(1).maybeSingle();const payload={eyebrow:essenceEyebrow.value,title:essenceTitle.value,description:essenceText.value,left_storage_path:await upload('site-public',document.getElementById('leftImageInput').files[0],'essence')||old?.left_storage_path||null,right_storage_path:await upload('site-public',document.getElementById('rightImageInput').files[0],'essence')||old?.right_storage_path||null,left_position_x:+document.getElementById('leftX').value,left_position_y:+document.getElementById('leftY').value,right_position_x:+document.getElementById('rightX').value,right_position_y:+document.getElementById('rightY').value,active:true,updated_at:new Date().toISOString()};const q=old?.id?sb.from('site_essence').update(payload).eq('id',old.id):sb.from('site_essence').insert(payload);const {error}=await q;if(error)throw error;alert('Nossa Essência salva no Supabase.')}catch(e){alert(e.message)}}
 const siteSave=document.querySelector('#site .page-head .primary');if(siteSave){const n=siteSave.cloneNode(true);siteSave.replaceWith(n);n.onclick=saveEssence}
-const invite=document.getElementById('inviteAdminButton');if(invite){const n=invite.cloneNode(true);invite.replaceWith(n);n.onclick=()=>document.getElementById('inviteAdminMessage').textContent='O convite exige uma Supabase Edge Function com chave secreta. A chave secreta não foi exposta neste HTML.'}
+const invite=document.getElementById('inviteAdminButton');
+if(invite){
+  invite.addEventListener('click',async()=>{
+    const message=document.getElementById('inviteAdminMessage');
+    const emailField=document.getElementById('inviteAdminEmail');
+    const email=emailField.value.trim().toLowerCase();
+    if(!emailField.checkValidity()||!email){message.textContent='Informe um e-mail válido.';return;}
+    const {data:{session},error:sessionError}=await sb.auth.getSession();
+    if(sessionError||!session?.access_token){message.textContent='Sua sessão expirou. Entre novamente.';return;}
+    invite.disabled=true;
+    message.textContent='Enviando convite...';
+    try{
+      const {data,error}=await sb.functions.invoke('invite-admin',{body:{email}});
+      if(error){
+        let detail=error.message;
+        if(error.context && typeof error.context.json==='function'){
+          try{const response=await error.context.json();detail=response.error||detail;}catch(_e){}
+        }
+        throw new Error(detail||'Falha ao enviar o convite.');
+      }
+      if(!data?.success)throw new Error(data?.error||'O convite não foi confirmado.');
+      message.textContent=data.message||'Convite enviado com sucesso.';
+      emailField.value='';
+    }catch(e){message.textContent=e.message||'Erro ao enviar convite.';}
+    finally{invite.disabled=false;}
+  });
+}
 (async()=>{const {data:{session}}=await sb.auth.getSession();if(session?.user)await openAdmin(session.user);else adminAuthScreen.classList.remove('hidden')})();
 
 </script>
