@@ -1009,6 +1009,7 @@
       }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -1067,17 +1068,19 @@
 
           <label class="field">
             E-mail
-            <input type="email" autocomplete="email" required>
+            <input id="loginEmail" type="email" autocomplete="email" required>
           </label>
 
           <label class="field">
             Senha
-            <input type="password" autocomplete="current-password" required>
+            <input id="loginPassword" type="password" autocomplete="current-password" required>
           </label>
 
           <button class="primary-button" type="submit">
             Entrar
           </button>
+          <button id="forgotPasswordButton" class="text-button" type="button">Esqueci minha senha</button>
+          <p id="loginMessage" class="helper-text" aria-live="polite"></p>
 
           <p class="helper-text">
             Esta versão permite visualizar o portal.
@@ -1090,38 +1093,39 @@
 
           <label class="field">
             Nome completo
-            <input type="text" autocomplete="name" required>
+            <input id="registerName" type="text" autocomplete="name" required>
           </label>
 
           <label class="field">
             Data de nascimento
-            <input type="date" required>
+            <input id="registerBirth" type="date" required>
           </label>
 
           <label class="field">
             WhatsApp
-            <input type="tel" autocomplete="tel" required>
+            <input id="registerPhone" type="tel" autocomplete="tel" required>
           </label>
 
           <label class="field">
             E-mail
-            <input type="email" autocomplete="email" required>
+            <input id="registerEmail" type="email" autocomplete="email" required>
           </label>
 
           <label class="field">
             Criar senha
-            <input type="password" minlength="6" required>
+            <input id="registerPassword" type="password" minlength="8" required>
           </label>
 
           <label class="field">
             Confirmar senha
-            <input type="password" minlength="6" required>
+            <input id="registerPasswordConfirm" type="password" minlength="8" required>
           </label>
 
           <button class="primary-button" type="submit">
             Criar minha conta
           </button>
 
+          <p id="registerMessage" class="helper-text" aria-live="polite"></p>
           <p class="helper-text">
             O cadastro real será ativado na integração com o banco.
           </p>
@@ -1563,29 +1567,30 @@
 
           <label class="field">
             Nome
-            <input type="text">
+            <input id="accountName" type="text">
           </label>
 
           <label class="field">
             Data de nascimento
-            <input type="date">
+            <input id="accountBirth" type="date">
           </label>
 
           <label class="field">
             WhatsApp
-            <input type="tel">
+            <input id="accountPhone" type="tel">
           </label>
 
           <label class="field">
             E-mail
-            <input type="email" disabled>
+            <input id="accountEmail" type="email" disabled>
           </label>
 
         </div>
 
-        <button class="primary-button" type="button">
+        <button id="saveAccountButton" class="primary-button" type="button">
           Salvar meus dados
         </button>
+        <p id="accountMessage" class="helper-text" aria-live="polite"></p>
       </div>
     </section>
 
@@ -1627,151 +1632,37 @@
   </nav>
 
   <script>
-    const authScreen = document.getElementById("authScreen");
-    const clientArea = document.getElementById("clientArea");
-    const mobileNavigation = document.getElementById("mobileNavigation");
-
-    const loginTab = document.getElementById("loginTab");
-    const registerTab = document.getElementById("registerTab");
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-
-    loginTab.addEventListener("click", function () {
-      loginTab.classList.add("active");
-      registerTab.classList.remove("active");
-
-      loginForm.classList.remove("hidden");
-      registerForm.classList.add("hidden");
-    });
-
-    registerTab.addEventListener("click", function () {
-      registerTab.classList.add("active");
-      loginTab.classList.remove("active");
-
-      registerForm.classList.remove("hidden");
-      loginForm.classList.add("hidden");
-    });
-
-    loginForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      authScreen.classList.add("hidden");
-      clientArea.classList.remove("hidden");
-      mobileNavigation.classList.remove("hidden");
-
-      window.scrollTo({ top: 0 });
-    });
-
-    registerForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      alert(
-        "O cadastro real será ativado quando esta página for conectada ao Supabase."
-      );
-    });
-
-    document
-      .getElementById("logoutButton")
-      .addEventListener("click", function () {
-        clientArea.classList.add("hidden");
-        mobileNavigation.classList.add("hidden");
-        authScreen.classList.remove("hidden");
-
-        window.scrollTo({ top: 0 });
-      });
-
-    const navigationButtons = document.querySelectorAll(
-      ".desktop-nav button, .mobile-nav button"
-    );
-
-    const pageSections = document.querySelectorAll(".page-section");
-
-    function openPage(pageId) {
-      navigationButtons.forEach(function (button) {
-        button.classList.toggle(
-          "active",
-          button.dataset.page === pageId
-        );
-      });
-
-      pageSections.forEach(function (section) {
-        section.classList.toggle(
-          "active",
-          section.id === pageId
-        );
-      });
-
-      const destination =
-        document.querySelector(".desktop-nav") ||
-        document.querySelector(".topbar");
-
-      destination.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
-
-    navigationButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-        openPage(button.dataset.page);
-      });
-    });
-
-    document
-      .querySelectorAll("[data-open]")
-      .forEach(function (button) {
-        button.addEventListener("click", function () {
-          openPage(button.dataset.open);
-        });
-      });
-
-    const gallerySlides = Array.from(
-      document.querySelectorAll(".gallery-slide")
-    );
-
-    const galleryCounter =
-      document.getElementById("galleryCounter");
-
-    let currentPhoto = 0;
-
-    function renderGallery() {
-      gallerySlides.forEach(function (slide, index) {
-        slide.classList.toggle(
-          "active",
-          index === currentPhoto
-        );
-      });
-
-      galleryCounter.textContent =
-        (currentPhoto + 1) +
-        " / " +
-        gallerySlides.length;
-    }
-
-    document
-      .getElementById("nextPhoto")
-      .addEventListener("click", function () {
-        currentPhoto =
-          (currentPhoto + 1) % gallerySlides.length;
-
-        renderGallery();
-      });
-
-    document
-      .getElementById("previousPhoto")
-      .addEventListener("click", function () {
-        currentPhoto =
-          (
-            currentPhoto -
-            1 +
-            gallerySlides.length
-          ) % gallerySlides.length;
-
-        renderGallery();
-      });
-
-    renderGallery();
-  </script>
+const SUPABASE_URL='https://bsjmaunkzqcrrsrkwltw.supabase.co';
+const SUPABASE_KEY='sb_publishable_yAVI7GeegJUCTpGW9MIUhA_WMeDqLOH';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const authScreen=document.getElementById('authScreen');
+const clientArea=document.getElementById('clientArea');
+const mobileNavigation=document.getElementById('mobileNavigation');
+const loginTab=document.getElementById('loginTab');
+const registerTab=document.getElementById('registerTab');
+const loginForm=document.getElementById('loginForm');
+const registerForm=document.getElementById('registerForm');
+function msg(id,text){const e=document.getElementById(id);if(e)e.textContent=text}
+function showLogin(){loginTab.classList.add('active');registerTab.classList.remove('active');loginForm.classList.remove('hidden');registerForm.classList.add('hidden')}
+function showRegister(){registerTab.classList.add('active');loginTab.classList.remove('active');registerForm.classList.remove('hidden');loginForm.classList.add('hidden')}
+function showLoggedOut(){authScreen.classList.remove('hidden');clientArea.classList.add('hidden');mobileNavigation.classList.add('hidden');showLogin()}
+function showLoggedIn(){authScreen.classList.add('hidden');clientArea.classList.remove('hidden');mobileNavigation.classList.remove('hidden')}
+loginTab.addEventListener('click',showLogin);registerTab.addEventListener('click',showRegister);
+async function loadProfile(user){const {data,error}=await sb.from('profiles').select('id,email,full_name,phone,birth_date,role,status').eq('id',user.id).single();if(error)throw error;if(data.status!=='ativo')throw new Error('Sua conta não está ativa.');document.getElementById('accountName').value=data.full_name||'';document.getElementById('accountBirth').value=data.birth_date||'';document.getElementById('accountPhone').value=data.phone||'';document.getElementById('accountEmail').value=data.email||user.email||'';return data}
+async function enter(user){try{await loadProfile(user);showLoggedIn()}catch(e){await sb.auth.signOut();showLoggedOut();msg('loginMessage',e.message)}}
+loginForm.addEventListener('submit',async e=>{e.preventDefault();msg('loginMessage','Entrando...');const {data,error}=await sb.auth.signInWithPassword({email:document.getElementById('loginEmail').value.trim(),password:document.getElementById('loginPassword').value});if(error)return msg('loginMessage',error.message);await enter(data.user)});
+registerForm.addEventListener('submit',async e=>{e.preventDefault();const p=document.getElementById('registerPassword').value;if(p!==document.getElementById('registerPasswordConfirm').value)return msg('registerMessage','As senhas precisam ser iguais.');msg('registerMessage','Criando conta...');const email=document.getElementById('registerEmail').value.trim();const {error}=await sb.auth.signUp({email,password:p,options:{emailRedirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/confirmar.html',data:{full_name:document.getElementById('registerName').value.trim(),birth_date:document.getElementById('registerBirth').value,phone:document.getElementById('registerPhone').value.trim()}}});if(error)return msg('registerMessage',error.message);location.href='confirmar.html?email='+encodeURIComponent(email)});
+document.getElementById('forgotPasswordButton').addEventListener('click',async()=>{const email=document.getElementById('loginEmail').value.trim();if(!email)return msg('loginMessage','Digite seu e-mail primeiro.');const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/redefinir-senha.html'});msg('loginMessage',error?error.message:'Se a conta existir, o link de recuperação foi enviado.')});
+document.getElementById('saveAccountButton').addEventListener('click',async()=>{msg('accountMessage','Salvando...');const {data:{user}}=await sb.auth.getUser();if(!user)return msg('accountMessage','Sessão expirada. Entre novamente.');const {error}=await sb.from('profiles').update({full_name:document.getElementById('accountName').value.trim(),birth_date:document.getElementById('accountBirth').value||null,phone:document.getElementById('accountPhone').value.trim(),updated_at:new Date().toISOString()}).eq('id',user.id);msg('accountMessage',error?error.message:'Dados atualizados.')});
+document.getElementById('logoutButton').addEventListener('click',async()=>{await sb.auth.signOut();showLoggedOut();window.scrollTo(0,0)});
+const navigationButtons=document.querySelectorAll('.desktop-nav button,.mobile-nav button');
+const pageSections=document.querySelectorAll('.page-section');
+function openPage(id){navigationButtons.forEach(b=>b.classList.toggle('active',b.dataset.page===id));pageSections.forEach(s=>s.classList.toggle('active',s.id===id));document.querySelector('.desktop-nav')?.scrollIntoView({behavior:'smooth'})}
+navigationButtons.forEach(b=>b.addEventListener('click',()=>openPage(b.dataset.page)));
+document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openPage(b.dataset.open)));
+let currentSlide=0;const slides=document.querySelectorAll('.gallery-slide');const counter=document.querySelector('.gallery-counter');function renderGallery(){slides.forEach((s,i)=>s.classList.toggle('active',i===currentSlide));if(counter)counter.textContent=(currentSlide+1)+' / '+slides.length}document.getElementById('nextPhoto')?.addEventListener('click',()=>{currentSlide=(currentSlide+1)%slides.length;renderGallery()});document.getElementById('previousPhoto')?.addEventListener('click',()=>{currentSlide=(currentSlide-1+slides.length)%slides.length;renderGallery()});
+(async()=>{const {data:{session}}=await sb.auth.getSession();if(session?.user)await enter(session.user);else showLoggedOut()})();
+</script>
 
 </body>
 </html>
