@@ -1815,52 +1815,79 @@ async function reserveSlot(slotId,button){
   button.disabled=true;
   button.textContent='Enviando solicitação...';
   msg('scheduleMessage','Enviando solicitação...');
-  const name=currentProfile?.full_name||'';
-  const phone=currentProfile?.phone||'';
-  const birth=currentProfile?.birth_date?brDate(currentProfile.birth_date):'';
-  const hour=String(slot.appointment_time||'').slice(0,5);
-  const service=slot.service_name||'Atendimento';
-  const reservaMsg=[
-    'Reserva pela Área do Cliente',
-    'Modalidade: '+modalityLabel,
-    name?('Nome: '+name):'',
-    birth?('Nascimento: '+birth):'',
-    phone?('WhatsApp: '+phone):''
-  ].filter(Boolean).join(' | ');
-  const {data:{user}}=await sb.auth.getUser();
-  const {error}=await sb.rpc('reserve_schedule_slot',{
-    p_slot_id:Number(slotId),
-    p_channel:'client',
-    p_customer_name:name||null,
-    p_customer_phone:phone||null,
-    p_message:reservaMsg,
-    p_customer_email:user?.email||currentProfile?.email||null,
-    p_customer_birth_date:currentProfile?.birth_date||null
-  });
-  if(error){
-    msg('scheduleMessage',error.message);
+  // Abre a janela no clique (antes do await) para o navegador não bloquear o WhatsApp
+  const waWin=window.open('about:blank','_blank');
+  try{
+    const name=currentProfile?.full_name||'';
+    const phone=currentProfile?.phone||'';
+    const birth=currentProfile?.birth_date?brDate(currentProfile.birth_date):'';
+    const hour=String(slot.appointment_time||'').slice(0,5);
+    const service=slot.service_name||'Atendimento';
+    const reservaMsg=[
+      'Reserva pela Área do Cliente',
+      'Modalidade: '+modalityLabel,
+      name?('Nome: '+name):'',
+      birth?('Nascimento: '+birth):'',
+      phone?('WhatsApp: '+phone):''
+    ].filter(Boolean).join(' | ');
+    const {data:authData,error:authError}=await sb.auth.getUser();
+    if(authError)throw authError;
+    const user=authData?.user||null;
+    let {error}=await sb.rpc('reserve_schedule_slot',{
+      p_slot_id:Number(slotId),
+      p_channel:'client',
+      p_customer_name:name||null,
+      p_customer_phone:phone||null,
+      p_message:reservaMsg,
+      p_customer_email:user?.email||currentProfile?.email||null,
+      p_customer_birth_date:currentProfile?.birth_date||null
+    });
+    // Fallback se o banco ainda tiver a assinatura antiga (5 args)
+    if(error&&/could not find the function|PGRST202|schema cache/i.test(error.message||'')){
+      ({error}=await sb.rpc('reserve_schedule_slot',{
+        p_slot_id:Number(slotId),
+        p_channel:'client',
+        p_customer_name:name||null,
+        p_customer_phone:phone||null,
+        p_message:reservaMsg
+      }));
+    }
+    if(error)throw error;
+    // Mesma ficha do agendamento do site público
+    const lines=[
+      'Olá! Gostaria de solicitar atendimento ou informações.',
+      '',
+      'FICHA DE SOLICITAÇÃO — DONA FIGUEIRA',
+      '',
+      '• Nome: '+(name||'não informado'),
+      '• Atendimento / assunto: '+service,
+      '• Modalidade: '+modalityLabel
+    ];
+    if(phone)lines.push('• WhatsApp de contato: '+phone);
+    lines.push('• Data desejada: '+brDate(slot.appointment_date));
+    lines.push('• Horário desejado: '+hour);
+    const obsParts=[
+      'Solicitação pela Área do Cliente (aguardando aceite do admin)',
+      birth?('Nascimento: '+birth):'',
+      (user?.email||currentProfile?.email)?('E-mail: '+(user?.email||currentProfile?.email)):''
+    ].filter(Boolean);
+    if(obsParts.length)lines.push('• Observação: '+obsParts.join(' | '));
+    lines.push('','Aguardo confirmação de disponibilidade. Esta solicitação não confirma a reserva.');
+    const waUrl=`https://wa.me/${PHONE}?text=${encodeURIComponent(lines.join('\n'))}`;
+    if(waWin)waWin.location.href=waUrl;
+    else window.location.href=waUrl;
+    msg('scheduleMessage','Solicitação enviada. Aguarde o aceite do admin. Abrindo WhatsApp...');
+    clientSlots=clientSlots.filter(x=>String(x.id)!==String(slotId));
+    await loadSchedule();
+  }catch(e){
+    if(waWin)try{waWin.close()}catch(_e){}
+    const errText=e?.message||String(e);
+    msg('scheduleMessage',errText);
+    alert('Não foi possível solicitar o horário:\n'+errText);
     button.disabled=false;
     button.textContent=original;
     await loadSchedule();
-    return;
   }
-  const lines=[
-    'Olá! Solicitei um horário pela Área do Cliente (aguardando aceite).',
-    '',
-    '• Nome: '+(name||'não informado'),
-    '• Data de nascimento: '+(birth||'não informada'),
-    phone?('• WhatsApp: '+phone):'',
-    '• Modalidade: '+modalityLabel,
-    '• Atendimento: '+service,
-    '• Data: '+brDate(slot.appointment_date),
-    '• Horário: '+hour,
-    '',
-    'Aguardo a confirmação no painel admin.'
-  ].filter(Boolean);
-  const text=encodeURIComponent(lines.join('\n'));
-  window.open(`https://wa.me/${PHONE}?text=${text}`,'_blank','noopener');
-  msg('scheduleMessage','Solicitação enviada. Aguarde o aceite do admin. Abrindo WhatsApp...');
-  await loadSchedule();
 }
 
 async function loadClientData(){
