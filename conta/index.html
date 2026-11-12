@@ -44,6 +44,7 @@
     body,
     button,
     input,
+    select,
     textarea {
       font: 14px/1.6 Arial, sans-serif;
     }
@@ -206,7 +207,8 @@
       font-size: 12px;
     }
 
-    .field input {
+    .field input,
+    .field select {
       display: block;
       width: 100%;
       min-height: 48px;
@@ -217,10 +219,35 @@
       outline: none;
       background: var(--bg);
       color: var(--text);
+      appearance: none;
+      -webkit-appearance: none;
     }
 
-    .field input:focus {
+    .field select {
+      padding-right: 40px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--gold) 50%),
+        linear-gradient(135deg, var(--gold) 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) 50%,
+        calc(100% - 12px) 50%;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    .field select option {
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    .field input:focus,
+    .field select:focus {
       border-color: var(--gold);
+    }
+
+    #clientModality {
+      max-width: 420px;
     }
 
     .auth-panel .primary-button {
@@ -1356,7 +1383,7 @@
         O admin libera data e horário. Você escolhe se prefere Online ou Presencial na reserva.
       </p>
 
-      <label class="field" style="max-width:420px;display:grid;gap:8px;margin:0 0 18px">
+      <label class="field" style="max-width:420px;margin:0 0 18px">
         Modalidade desejada
         <select id="clientModality">
           <option value="">Selecione Online ou Presencial</option>
@@ -1786,16 +1813,29 @@ async function reserveSlot(slotId,button){
   const modalityLabel=modality==='presencial'?'Presencial':'Online';
   const original=button.textContent;
   button.disabled=true;
-  button.textContent='Reservando...';
-  msg('scheduleMessage','Reservando horário...');
+  button.textContent='Enviando solicitação...';
+  msg('scheduleMessage','Enviando solicitação...');
   const name=currentProfile?.full_name||'';
   const phone=currentProfile?.phone||'';
+  const birth=currentProfile?.birth_date?brDate(currentProfile.birth_date):'';
+  const hour=String(slot.appointment_time||'').slice(0,5);
+  const service=slot.service_name||'Atendimento';
+  const reservaMsg=[
+    'Reserva pela Área do Cliente',
+    'Modalidade: '+modalityLabel,
+    name?('Nome: '+name):'',
+    birth?('Nascimento: '+birth):'',
+    phone?('WhatsApp: '+phone):''
+  ].filter(Boolean).join(' | ');
+  const {data:{user}}=await sb.auth.getUser();
   const {error}=await sb.rpc('reserve_schedule_slot',{
     p_slot_id:Number(slotId),
     p_channel:'client',
     p_customer_name:name||null,
     p_customer_phone:phone||null,
-    p_message:'Reserva pela Área do Cliente | Modalidade escolhida pelo cliente: '+modalityLabel
+    p_message:reservaMsg,
+    p_customer_email:user?.email||currentProfile?.email||null,
+    p_customer_birth_date:currentProfile?.birth_date||null
   });
   if(error){
     msg('scheduleMessage',error.message);
@@ -1804,10 +1844,22 @@ async function reserveSlot(slotId,button){
     await loadSchedule();
     return;
   }
-  const hour=String(slot.appointment_time||'').slice(0,5);
-  const text=encodeURIComponent(`Olá! Reservei pela Área do Cliente o horário de ${brDate(slot.appointment_date)} às ${hour} (${modalityLabel}). Nome: ${name||'não informado'}.`);
+  const lines=[
+    'Olá! Solicitei um horário pela Área do Cliente (aguardando aceite).',
+    '',
+    '• Nome: '+(name||'não informado'),
+    '• Data de nascimento: '+(birth||'não informada'),
+    phone?('• WhatsApp: '+phone):'',
+    '• Modalidade: '+modalityLabel,
+    '• Atendimento: '+service,
+    '• Data: '+brDate(slot.appointment_date),
+    '• Horário: '+hour,
+    '',
+    'Aguardo a confirmação no painel admin.'
+  ].filter(Boolean);
+  const text=encodeURIComponent(lines.join('\n'));
   window.open(`https://wa.me/${PHONE}?text=${text}`,'_blank','noopener');
-  msg('scheduleMessage','Horário reservado com sucesso.');
+  msg('scheduleMessage','Solicitação enviada. Aguarde o aceite do admin. Abrindo WhatsApp...');
   await loadSchedule();
 }
 
