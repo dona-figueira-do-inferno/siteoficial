@@ -688,15 +688,14 @@ p{color:var(--muted);line-height:1.65}
   <div class="metric"><strong>0</strong><span>Cursos</span></div>
   <div class="metric"><strong>0</strong><span>Oficinas</span></div>
   <div class="metric"><strong>0</strong><span>Exclusivos</span></div>
-  <div class="metric"><strong>0</strong><span>Pagamentos pendentes</span></div>
 </div>
+<p class="helper-text" style="margin:-6px 0 16px">Pagamentos, reservas e fechamento de pedidos da loja são feitos pelo WhatsApp — não há checkout no site.</p>
 
 <div class="tabs">
   <button class="active" data-tab-group="store" data-tab="storeOverview">Visão geral</button>
   <button data-tab-group="store" data-tab="storeCatalog">Catálogo</button>
   <button data-tab-group="store" data-tab="storeNew">Novo item</button>
   <button data-tab-group="store" data-tab="storeVisibility">Visibilidade</button>
-  <button data-tab-group="store" data-tab="storeOrders">Compras e inscrições</button>
 </div>
 
 <div id="storeOverview" class="tab-panel active" data-tab-panel-group="store">
@@ -734,11 +733,6 @@ p{color:var(--muted);line-height:1.65}
     <button class="quick" data-store-type="oficina">
       <strong>Nova oficina</strong>
       <span>Data, horário e vagas.</span>
-    </button>
-
-    <button class="quick" data-store-open="storeOrders">
-      <strong>Validar pagamentos</strong>
-      <span>Compras e inscrições.</span>
     </button>
   </div>
 </section>
@@ -917,7 +911,7 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="check">
   <input type="checkbox">
-  Exigir conta para comprar ou se inscrever
+  Destacar que o interessado deve falar no WhatsApp
 </label>
 
 <label class="check">
@@ -978,7 +972,7 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="check">
   <input type="checkbox" checked>
-  Permitir compras sem conta quando o produto permitir
+  Interesse pela loja segue pelo formulário + WhatsApp
 </label>
 
 <button id="saveStoreVisibility" class="primary">
@@ -1003,32 +997,6 @@ p{color:var(--muted);line-height:1.65}
 </aside>
 
 </div>
-</div>
-
-<div id="storeOrders" class="tab-panel" data-tab-panel-group="store">
-
-<section class="panel">
-
-<h2>Compras e inscrições</h2>
-
-<div class="list">
-  <div class="list-row">
-    <div>
-      <strong>Nenhuma compra registrada</strong>
-      <small>As compras aparecerão depois da conexão com o banco.</small>
-    </div>
-  </div>
-</div>
-
-<div class="notice">
-  Fluxo previsto:<br><br>
-  1. Cliente realiza compra ou inscrição.<br>
-  2. Financeiro valida o pagamento.<br>
-  3. Admin recebe acesso à ficha.<br>
-  4. Admin acompanha curso/oficina e certificado.
-</div>
-
-</section>
 </div>
 
 </section>
