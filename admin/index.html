@@ -353,10 +353,10 @@ p{color:var(--muted);line-height:1.65}
   </div>
 
   <div class="metrics">
-    <div class="metric"><strong>1</strong><span>Leitura atual</span></div>
-    <div class="metric"><strong>3</strong><span>Conteúdos</span></div>
-    <div class="metric"><strong>3</strong><span>Horários</span></div>
-    <div class="metric"><strong>1</strong><span>Promoção</span></div>
+    <div class="metric"><strong>0</strong><span>Leitura atual</span></div>
+    <div class="metric"><strong>0</strong><span>Conteúdos</span></div>
+    <div class="metric"><strong>0</strong><span>Horários</span></div>
+    <div class="metric"><strong>0</strong><span>Promoção</span></div>
     <div class="metric"><strong>0</strong><span>Clientes</span></div>
   </div>
 
@@ -422,8 +422,9 @@ p{color:var(--muted);line-height:1.65}
     <p>Textos, fotografias, preços, trabalhos e feedbacks.</p>
   </div>
 
-  <button class="primary">Salvar alterações</button>
+  <button class="primary" type="button" id="saveSiteCmsButton">Salvar e publicar no site</button>
 </div>
+<p id="siteCmsMessage" class="helper-text" style="margin:-8px 0 16px"></p>
 
 <div class="tabs">
   <button class="active" data-tab-group="site" data-tab="siteGeneral">Geral</button>
@@ -442,28 +443,28 @@ p{color:var(--muted);line-height:1.65}
   <div class="form-grid">
     <label class="field">
       Nome
-      <input value="Dona Figueira">
+      <input id="siteBrand" value="Dona Figueira">
     </label>
 
     <label class="field">
       WhatsApp
-      <input value="5521978966560">
+      <input id="siteWhatsapp" value="5521978966560">
     </label>
 
     <label class="field">
       Instagram
-      <input placeholder="@usuario">
+      <input id="siteInstagram" placeholder="@usuario">
     </label>
 
     <label class="field">
       E-mail
-      <input type="email">
+      <input id="siteEmail" type="email">
     </label>
   </div>
 
   <label class="field">
     Texto principal
-    <textarea>Um espaço dedicado ao encontro, à escuta e ao respeito.</textarea>
+    <textarea id="siteHeroText">Um espaço dedicado ao encontro, à escuta e ao respeito.</textarea>
   </label>
 </section>
 
@@ -655,20 +656,10 @@ p{color:var(--muted);line-height:1.65}
 <section class="panel">
 <div class="panel-head">
   <h2>Atendimentos</h2>
-  <button class="primary">Novo atendimento</button>
+  <button class="primary" type="button" id="addServiceBtn">Novo atendimento</button>
 </div>
-
-<div class="list">
-  <div class="list-row">
-    <div><strong>3 perguntas</strong><small>R$ 27,00 · Ativo</small></div>
-    <button class="secondary">Editar</button>
-  </div>
-
-  <div class="list-row">
-    <div><strong>Jogo completo</strong><small>R$ 47,00 · Ativo</small></div>
-    <button class="secondary">Editar</button>
-  </div>
-</div>
+<div id="servicesEditor" class="list"></div>
+<p class="helper-text">Esses atendimentos alimentam preços e textos do site público.</p>
 </section>
 </div>
 
@@ -810,14 +801,14 @@ p{color:var(--muted);line-height:1.65}
 
 <label class="field">
   Descrição
-  <textarea placeholder="Descrição"></textarea>
+  <textarea id="storeDescription" placeholder="Descrição"></textarea>
 </label>
 
 <div class="form-grid">
 
 <label class="field">
   Preço normal
-  <input type="number" min="0" step=".01">
+  <input id="storePrice" type="number" min="0" step=".01">
 </label>
 
 <label class="field">
@@ -1090,7 +1081,7 @@ p{color:var(--muted);line-height:1.65}
 <div id="agendaRequests" class="tab-panel" data-tab-panel-group="agenda">
 <section class="panel">
   <div class="panel-head"><div><span class="eyebrow">Agenda</span><h2>Solicitações pendentes</h2></div></div>
-  <p class="helper-text">Quando um cliente solicita horário, aparece aqui. Aceite para confirmar e enviar o e-mail.</p>
+  <p class="helper-text">Quando um cliente solicita horário, aparece aqui. Aceite ou recuse a solicitação.</p>
   <p id="pendingRequestsMessage" class="message"></p>
   <div id="pendingRequestsList" class="schedule-list"></div>
 </section>
@@ -1760,11 +1751,24 @@ document.getElementById('adminForgotButton').onclick=()=>{adminLoginCard.classLi
 document.getElementById('adminRecoveryBack').onclick=()=>{adminRecoveryCard.classList.add('hidden');adminLoginCard.classList.remove('hidden')};
 document.getElementById('adminRecoverySend').onclick=async()=>{const email=document.getElementById('adminRecoveryEmail').value.trim(),box=document.getElementById('adminRecoveryMessage');if(!email)return box.textContent='Informe o e-mail administrativo.';box.textContent='Enviando...';const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://dona-figueira-do-inferno.github.io/siteoficial/conta/redefinir-senha.html'});box.textContent=error?error.message:'Se a conta existir, o link foi enviado.'};
 document.getElementById('adminLogoutButton').onclick=async()=>{await sb.auth.signOut();adminAuthScreen.classList.remove('hidden')};
-async function loadAdminData(){const qs=['weekly_readings','exclusive_contents','schedule_slots','promotions','profiles'].map(t=>sb.from(t).select('*',{count:'exact',head:true}));const rs=await Promise.all(qs);document.querySelectorAll('#dashboard .metric strong').forEach((x,i)=>x.textContent=rs[i].count??0);const {data:clients}=await sb.from('profiles').select('full_name,email,phone,status').eq('role','cliente').order('created_at',{ascending:false});const list=document.querySelector('#clients .list');if(clients){list.innerHTML=clients.length?clients.map(c=>`<div class="list-row"><div><strong>${c.full_name||'Cliente'}</strong><small>${c.email||''} · ${c.phone||'Sem telefone'} · ${c.status}</small></div><span class="badge">CLIENTE</span></div>`).join(''):'<div class="list-row"><div><strong>Nenhum cliente cadastrado</strong></div></div>'}}
+async function loadAdminData(){
+  const today=new Date();const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const qs=await Promise.all([
+    sb.from('weekly_readings').select('*',{count:'exact',head:true}).eq('status','published'),
+    sb.from('exclusive_contents').select('*',{count:'exact',head:true}),
+    sb.from('schedule_slots').select('*',{count:'exact',head:true}).eq('active',true).eq('status','available').gte('appointment_date',todayStr),
+    sb.from('promotions').select('*',{count:'exact',head:true}),
+    sb.from('profiles').select('*',{count:'exact',head:true}).eq('role','cliente')
+  ]);
+  document.querySelectorAll('#dashboard .metric strong').forEach((x,i)=>x.textContent=qs[i].count??0);
+  const {data:clients}=await sb.from('profiles').select('full_name,email,phone,status').eq('role','cliente').order('created_at',{ascending:false});
+  const list=document.querySelector('#clients .list');
+  if(clients){list.innerHTML=clients.length?clients.map(c=>`<div class="list-row"><div><strong>${c.full_name||'Cliente'}</strong><small>${c.email||''} · ${c.phone||'Sem telefone'} · ${c.status}</small></div><span class="badge">CLIENTE</span></div>`).join(''):'<div class="list-row"><div><strong>Nenhum cliente cadastrado</strong></div></div>'}
+}
 function safe(n){return String(n).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9._-]/g,'-')}
 async function upload(bucket,file,folder){if(!file)return null;const path=`${folder}/${Date.now()}-${safe(file.name)}`;const {error}=await sb.storage.from(bucket).upload(path,file);if(error)throw error;return path}
-async function saveEssence(){try{const {data:old}=await sb.from('site_essence').select('*').limit(1).maybeSingle();const payload={eyebrow:essenceEyebrow.value,title:essenceTitle.value,description:essenceText.value,left_storage_path:await upload('site-public',document.getElementById('leftImageInput').files[0],'essence')||old?.left_storage_path||null,right_storage_path:await upload('site-public',document.getElementById('rightImageInput').files[0],'essence')||old?.right_storage_path||null,left_position_x:+document.getElementById('leftX').value,left_position_y:+document.getElementById('leftY').value,right_position_x:+document.getElementById('rightX').value,right_position_y:+document.getElementById('rightY').value,active:true,updated_at:new Date().toISOString()};const q=old?.id?sb.from('site_essence').update(payload).eq('id',old.id):sb.from('site_essence').insert(payload);const {error}=await q;if(error)throw error;alert('Nossa Essência salva no Supabase.')}catch(e){alert(e.message)}}
-const siteSave=document.querySelector('#site .page-head .primary');if(siteSave){const n=siteSave.cloneNode(true);siteSave.replaceWith(n);n.onclick=saveEssence}
+async function saveEssence(){try{const {data:old}=await sb.from('site_essence').select('*').limit(1).maybeSingle();const payload={eyebrow:essenceEyebrow.value,title:essenceTitle.value,description:essenceText.value,left_storage_path:await upload('site-public',document.getElementById('leftImageInput').files[0],'essence')||old?.left_storage_path||null,right_storage_path:await upload('site-public',document.getElementById('rightImageInput').files[0],'essence')||old?.right_storage_path||null,left_position_x:+document.getElementById('leftX').value,left_position_y:+document.getElementById('leftY').value,right_position_x:+document.getElementById('rightX').value,right_position_y:+document.getElementById('rightY').value,active:true,updated_at:new Date().toISOString()};const q=old?.id?sb.from('site_essence').update(payload).eq('id',old.id):sb.from('site_essence').insert(payload);const {error}=await q;if(error)throw error;if(!window.__silentEssence)alert('Nossa Essência salva no Supabase.')}catch(e){if(!window.__silentEssence)alert(e.message);throw e}}
+/* site save handled by #saveSiteCmsButton */
 const invite=document.getElementById('inviteAdminButton');
 if(invite){
   invite.addEventListener('click',async()=>{
@@ -1838,7 +1842,7 @@ async function saveSchedule(){
   const editId=button.dataset.editId;
   const q=editId?sb.from('schedule_slots').update({...payload,updated_at:new Date().toISOString()}).eq('id',editId):sb.from('schedule_slots').insert(payload);
   const {error}=await q;if(error)throw error;
-  delete button.dataset.editId;button.textContent='Adicionar horário';setMessage('scheduleSaveMessage','Horário salvo e compartilhado com todos os administradores.');await loadScheduleSlots();
+  delete button.dataset.editId;button.textContent='Adicionar horário';setMessage('scheduleSaveMessage','Horário salvo e compartilhado com todos os administradores.');await Promise.all([loadScheduleSlots(),loadAdminData()]);
  }catch(e){setMessage('scheduleSaveMessage',e.message||'Não foi possível salvar o horário.',true)}finally{button.disabled=false}
 }
 function editSchedule(slot){if(!slot)return;document.getElementById('scheduleDate').value=slot.appointment_date||'';document.getElementById('scheduleTime').value=String(slot.appointment_time||'').slice(0,5);document.getElementById('scheduleService').value=slot.service_name||'Jogo completo';document.getElementById('scheduleModality').value=(()=>{const m=String(slot.modality||'livre').toLowerCase();return m==='presencial'?'presencial':m==='online'?'online':'livre'})();const vis=document.querySelector(`input[name="publishFirst"][value="${slot.visibility||'both'}"]`);if(vis)vis.checked=true;document.getElementById('scheduleClientRelease').value=slot.client_release_at?new Date(slot.client_release_at).toISOString().slice(0,16):'';document.getElementById('schedulePublicRelease').value=slot.public_release_at?new Date(slot.public_release_at).toISOString().slice(0,16):'';const b=document.getElementById('saveScheduleButton');b.dataset.editId=slot.id;b.textContent='Salvar alteração';document.querySelector('[data-tab="agendaNew"]').click();}
@@ -1850,9 +1854,9 @@ async function releaseSchedule(id,keepBlocked){
  const {error}=await sb.rpc('release_schedule_slot',{p_slot_id:Number(id),p_keep_blocked:keepBlocked,p_reason:reason});
  if(error)return setMessage('scheduleListMessage',error.message,true);
  setMessage('scheduleListMessage',keepBlocked?'Agendamento cancelado e horário bloqueado.':'Agendamento cancelado; horário liberado novamente nos canais originais.');
- await loadScheduleSlots();
+ await Promise.all([loadScheduleSlots(),loadAdminData()]);
 }
-async function deleteSchedule(id){if(!confirm('Excluir este horário do banco compartilhado?'))return;const {error}=await sb.from('schedule_slots').delete().eq('id',id);if(error)return setMessage('scheduleListMessage',error.message,true);await loadScheduleSlots();}
+async function deleteSchedule(id){if(!confirm('Excluir este horário do banco compartilhado?'))return;const {error}=await sb.from('schedule_slots').delete().eq('id',id);if(error)return setMessage('scheduleListMessage',error.message,true);await Promise.all([loadScheduleSlots(),loadAdminData()]);}
 /* SOLICITACOES PENDENTES */
 function brDateAdmin(v){if(!v)return '—';const [y,m,d]=String(v).slice(0,10).split('-');return `${d}/${m}/${y}`;}
 function modalityLabelAdmin(msg,slotMod){
@@ -1914,14 +1918,14 @@ async function acceptReservation(id){
   const {error}=await sb.rpc('accept_schedule_reservation',{p_reservation_id:Number(id)});
   if(error){if(box){box.textContent=error.message;box.classList.add('error')}return}
   if(box){box.textContent='Solicitação aceita.';box.classList.remove('error')}
-  await Promise.all([loadPendingRequests(),loadScheduleSlots()]);
+  await Promise.all([loadPendingRequests(),loadScheduleSlots(),loadAdminData()]);
 }
 async function rejectReservation(id){
   const reason=prompt('Motivo da recusa (opcional):')||'';
   if(reason===null)return;
   const {error}=await sb.rpc('reject_schedule_reservation',{p_reservation_id:Number(id),p_reason:reason||null});
   if(error){alert(error.message);return}
-  await Promise.all([loadPendingRequests(),loadScheduleSlots()]);
+  await Promise.all([loadPendingRequests(),loadScheduleSlots(),loadAdminData()]);
 }
 let pendingWatch=null;
 function watchPendingRequests(){
@@ -1996,6 +2000,15 @@ async function saveWeeklyReading(targetStatus){
    const ext=recordedAudioBlob?'webm':(audioFile.name.split('.').pop()||'bin');const path=`${folder}/audio/interpretacao.${safe(ext)}`;
    await uploadWeeklyBlob(path,audioBlob,audioBlob.type||'application/octet-stream');
    const {error}=await sb.from('weekly_readings').update({audio_storage_path:path,audio_url:null}).eq('id',reading.id);if(error)throw error;
+   mediaSaved++;
+  }
+  const videoFile=document.getElementById('readingVideo')?.files?.[0];
+  if(videoFile){
+   setMessage(msg,'Enviando vídeo...');
+   const ext=safe((videoFile.name.split('.').pop()||'mp4').toLowerCase());
+   const path=`${folder}/video/leitura.${ext}`;
+   await uploadWeeklyBlob(path,videoFile,videoFile.type||'video/mp4');
+   const {error}=await sb.from('weekly_readings').update({video_storage_path:path,video_url:null}).eq('id',reading.id);if(error)throw error;
    mediaSaved++;
   }
   // Upload sequencial para não perder a seleção nem exibir sucesso antes do banco confirmar.
@@ -2182,6 +2195,352 @@ document.getElementById('sendAdminRecovery').addEventListener('click',async()=>{
   });
   dismiss.addEventListener('click',()=>banner.classList.add('hidden'));
   window.addEventListener('appinstalled',()=>{deferredPrompt=null;banner.classList.add('hidden');});
+})();
+</script>
+
+<script id="site-cms-admin">
+(function(){
+const SITE_BUCKET='site-public';
+function money(n){return Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+function val(id){const el=document.getElementById(id);return el?(el.type==='checkbox'?el.checked:el.value):'';}
+function setVal(id,v){const el=document.getElementById(id);if(!el)return;if(el.type==='checkbox')el.checked=!!v;else el.value=v??'';}
+
+function collectBenefits(){
+  return [...document.querySelectorAll('#benefitsEditor .benefit-row')].map(row=>{
+    const on=row.querySelector('input[type="checkbox"]')?.checked!==false;
+    const text=row.querySelector('.benefit-text')?.value?.trim()||'';
+    return on&&text?text:null;
+  }).filter(Boolean);
+}
+
+function renderServices(list){
+  const box=document.getElementById('servicesEditor');
+  if(!box)return;
+  const rows=(list&&list.length)?list:[{name:'3 perguntas',price:27,active:true,blurb:''},{name:'Jogo completo',price:47,active:true,blurb:''}];
+  box.innerHTML=rows.map((s,i)=>`<article class="list-row" data-service-i="${i}" style="display:grid;gap:10px;grid-template-columns:1fr">
+    <div class="form-grid">
+      <label class="field">Nome<input data-s="name" value="${String(s.name||'').replace(/"/g,'&quot;')}"></label>
+      <label class="field">Preço (R$)<input data-s="price" type="number" min="0" step="0.01" value="${s.price??0}"></label>
+      <label class="field">Ativo<select data-s="active"><option value="true" ${s.active!==false?'selected':''}>Ativo</option><option value="false" ${s.active===false?'selected':''}>Oculto</option></select></label>
+    </div>
+    <label class="field">Texto<textarea data-s="blurb">${String(s.blurb||'')}</textarea></label>
+    <div class="account-actions"><button type="button" class="danger" data-remove-service>Remover</button></div>
+  </article>`).join('');
+  box.querySelectorAll('[data-remove-service]').forEach(b=>b.onclick=()=>{
+    const all=collectServices().filter((_,idx)=>String(idx)!==b.closest('[data-service-i]').dataset.serviceI);
+    renderServices(all);
+  });
+}
+function collectServices(){
+  return [...document.querySelectorAll('#servicesEditor [data-service-i]')].map(row=>({
+    name:row.querySelector('[data-s="name"]')?.value?.trim()||'Atendimento',
+    price:Number(row.querySelector('[data-s="price"]')?.value||0),
+    active:row.querySelector('[data-s="active"]')?.value!=='false',
+    blurb:row.querySelector('[data-s="blurb"]')?.value?.trim()||''
+  }));
+}
+
+async function publicUrl(path){
+  if(!path)return null;
+  if(/^https?:/i.test(path))return path;
+  const {data}=sb.storage.from(SITE_BUCKET).getPublicUrl(path);
+  return data?.publicUrl||null;
+}
+
+async function uploadMany(inputEl, folder){
+  const files=[...((inputEl&&inputEl.files)||[])];
+  const out=[];
+  for(const file of files){
+    const path=await upload(SITE_BUCKET,file,folder);
+    if(path) out.push({path, url: await publicUrl(path), name:file.name});
+  }
+  return out;
+}
+
+function collectPayload(extra={}){
+  return {
+    general:{
+      brand:val('siteBrand')||'Dona Figueira',
+      whatsapp:String(val('siteWhatsapp')||'').replace(/\D/g,''),
+      instagram:val('siteInstagram')||'',
+      email:val('siteEmail')||'',
+      heroText:val('siteHeroText')||''
+    },
+    exclusive:{
+      visible:!!document.getElementById('exclusiveVisible')?.checked,
+      kicker:val('exclusiveKicker'),
+      title:val('exclusiveTitle'),
+      description:val('exclusiveDescription'),
+      benefits:collectBenefits(),
+      createText:val('exclusiveCreateText'),
+      loginText:val('exclusiveLoginText'),
+      buttonsVisible:!!document.getElementById('exclusiveButtonsVisible')?.checked,
+      rightVisible:!!document.getElementById('exclusiveRightVisible')?.checked,
+      rightKicker:val('exclusiveRightKicker'),
+      rightTitle:val('exclusiveRightTitle'),
+      rightText:val('exclusiveRightText')
+    },
+    services:collectServices(),
+    presencial:{
+      eyebrow:'Encontro & presença',
+      title:'Atendimentos presenciais.',
+      text: document.querySelector('#presencial .heading > p') ? undefined : 'Nos atendimentos presenciais, contamos também com o auxílio de Seu Zé.',
+      cta:'Pedir informações do presencial ↗'
+    },
+    loja:{
+      eyebrow:'Loja',
+      title:'Produtos, cursos e oficinas.',
+      text:'Sem agendar horário. Peça mais informações sobre o que deseja conhecer.',
+      cta:'Pedir informações da loja ↗'
+    },
+    contato:{
+      eyebrow:'Vamos conversar',
+      title:'Seu caminho começa aqui.',
+      text:'Entre em contato para conhecer os atendimentos, consultar valores dos trabalhos e solicitar seu horário.',
+      cta:'Agendar atendimento ↗'
+    },
+    works: window.__cmsWorks || [],
+    feedbacks: window.__cmsFeedbacks || [],
+    ...extra
+  };
+}
+
+async function loadSiteCms(){
+  const {data,error}=await sb.from('site_cms').select('payload,status').eq('id','main').maybeSingle();
+  if(error){console.warn(error);renderServices();return;}
+  const p=data?.payload||{};
+  if(p.general){
+    setVal('siteBrand',p.general.brand);
+    setVal('siteWhatsapp',p.general.whatsapp);
+    setVal('siteInstagram',p.general.instagram);
+    setVal('siteEmail',p.general.email);
+    setVal('siteHeroText',p.general.heroText);
+  }
+  if(p.exclusive){
+    const e=p.exclusive;
+    setVal('exclusiveVisible',e.visible!==false);
+    setVal('exclusiveKicker',e.kicker);
+    setVal('exclusiveTitle',e.title);
+    setVal('exclusiveDescription',e.description);
+    setVal('exclusiveCreateText',e.createText);
+    setVal('exclusiveLoginText',e.loginText);
+    setVal('exclusiveButtonsVisible',e.buttonsVisible!==false);
+    setVal('exclusiveRightVisible',e.rightVisible!==false);
+    setVal('exclusiveRightKicker',e.rightKicker);
+    setVal('exclusiveRightTitle',e.rightTitle);
+    setVal('exclusiveRightText',e.rightText);
+    if(Array.isArray(e.benefits)){
+      const box=document.getElementById('benefitsEditor');
+      if(box){
+        box.innerHTML=e.benefits.map(t=>`<label class="benefit-row"><input type="checkbox" checked><input class="benefit-text" type="text" value="${String(t).replace(/"/g,'&quot;')}"><button class="danger remove-benefit" type="button">Remover</button></label>`).join('');
+        box.querySelectorAll('.remove-benefit').forEach(b=>b.onclick=()=>b.closest('.benefit-row')?.remove());
+      }
+    }
+  }
+  renderServices(p.services||[]);
+  window.__cmsWorks=Array.isArray(p.works)?p.works:[];
+  window.__cmsFeedbacks=Array.isArray(p.feedbacks)?p.feedbacks:[];
+  renderGallery('worksGallery', window.__cmsWorks);
+  renderGallery('feedbackGallery', window.__cmsFeedbacks);
+}
+
+function renderGallery(id, items){
+  const box=document.getElementById(id);
+  if(!box)return;
+  if(!items.length){box.innerHTML='<div class="empty-note">Nenhuma mídia salva ainda.</div>';return;}
+  box.innerHTML=items.map((it,i)=>`<article class="gallery-admin-item" data-g="${i}"><img src="${it.url||''}" alt=""><div><strong>${it.name||('Item '+(i+1))}</strong><br><span class="small">${it.path||''}</span></div><button type="button" class="danger" data-g-del>Remover</button></article>`).join('');
+  box.querySelectorAll('[data-g-del]').forEach(b=>b.onclick=()=>{
+    const i=+b.closest('[data-g]').dataset.g;
+    if(id==='worksGallery'){window.__cmsWorks.splice(i,1);renderGallery(id,window.__cmsWorks);}
+    else {window.__cmsFeedbacks.splice(i,1);renderGallery(id,window.__cmsFeedbacks);}
+  });
+}
+
+async function saveSiteCms(){
+  const msg=document.getElementById('siteCmsMessage');
+  if(msg)msg.textContent='Publicando no site...';
+  try{
+    window.__silentEssence=true;
+    await saveEssence();
+  }catch(e){ console.warn(e); }
+  finally{ window.__silentEssence=false; }
+  try{
+    const {data:{user}}=await sb.auth.getUser();
+    const payload=collectPayload();
+    const row={id:'main',status:'published',payload,updated_at:new Date().toISOString(),updated_by:user?.id||null};
+    const {error}=await sb.from('site_cms').upsert(row);
+    if(error)throw error;
+    if(msg)msg.textContent='Site público atualizado. Abra o site e dê Ctrl+F5.';
+    alert('Conteúdo publicado. O site público passa a ler esses dados do banco.');
+  }catch(e){
+    if(msg)msg.textContent=e.message||String(e);
+    alert(e.message||e);
+  }
+}
+
+document.getElementById('addServiceBtn')?.addEventListener('click',()=>{
+  const list=collectServices();
+  list.push({name:'Novo atendimento',price:0,active:true,blurb:''});
+  renderServices(list);
+});
+
+document.getElementById('worksFiles')?.addEventListener('change',async e=>{
+  try{
+    const added=await uploadMany(e.target,'works');
+    window.__cmsWorks=(window.__cmsWorks||[]).concat(added);
+    renderGallery('worksGallery', window.__cmsWorks);
+    e.target.value='';
+  }catch(err){alert(err.message||err)}
+});
+document.getElementById('feedbackFiles')?.addEventListener('change',async e=>{
+  try{
+    const added=await uploadMany(e.target,'feedbacks');
+    window.__cmsFeedbacks=(window.__cmsFeedbacks||[]).concat(added.map(x=>({...x, text: document.getElementById('feedbackText')?.value||''})));
+    renderGallery('feedbackGallery', window.__cmsFeedbacks);
+    e.target.value='';
+  }catch(err){alert(err.message||err)}
+});
+
+// Troca alerts demo de exclusivos
+const exclusivePublish=document.getElementById('exclusivePublish');
+if(exclusivePublish){
+  const n=exclusivePublish.cloneNode(true);exclusivePublish.replaceWith(n);
+  n.addEventListener('click',()=>saveSiteCms());
+}
+const exclusiveDraft=document.getElementById('exclusiveDraft');
+if(exclusiveDraft){
+  const n=exclusiveDraft.cloneNode(true);exclusiveDraft.replaceWith(n);
+  n.addEventListener('click',()=>saveSiteCms());
+}
+
+const saveBtn=document.getElementById('saveSiteCmsButton');
+if(saveBtn){
+  saveBtn.onclick=saveSiteCms;
+}
+
+// Hook openAdmin para carregar CMS
+const _openAdmin=window.openAdmin;
+// openAdmin is declared as async function in outer scope — patch after definition via monkey on load
+document.addEventListener('DOMContentLoaded',()=>{});
+const prevOpen=openAdmin;
+openAdmin=async function(user){
+  await prevOpen(user);
+  try{await loadSiteCms();}catch(e){console.warn(e)}
+};
+
+// Promoções reais
+const promoPublish=document.getElementById('promoPublish');
+if(promoPublish){
+  const n=promoPublish.cloneNode(true);promoPublish.replaceWith(n);
+  n.addEventListener('click',async()=>{
+    try{
+      const title=document.getElementById('promoTitle')?.value?.trim();
+      if(!title)return alert('Informe o título da promoção.');
+      const visRaw=document.getElementById('promoVisibility')?.value||'Público';
+      const visibility=visRaw.includes('Cliente')&&visRaw.includes('Público')||visRaw==='Ambos'?'both':visRaw.includes('Cliente')?'client':'public';
+      const stRaw=document.getElementById('promoStatus')?.value||'Ativa';
+      const status=stRaw==='Rascunho'?'draft':stRaw==='Oculta'?'hidden':stRaw==='Encerrada'?'hidden':'published';
+      const payload={
+        title,
+        description:document.getElementById('promoText')?.value||'',
+        text:document.getElementById('promoText')?.value||'',
+        visibility,
+        status,
+        normal_price:Number(document.getElementById('promoNormal')?.value||0)||null,
+        price_normal:Number(document.getElementById('promoNormal')?.value||0)||null,
+        sale_price:Number(document.getElementById('promoSale')?.value||0)||null,
+        promo_price:Number(document.getElementById('promoSale')?.value||0)||null,
+        client_price:Number(document.getElementById('promoClient')?.value||0)||null,
+        updated_at:new Date().toISOString()
+      };
+      // tenta insert completo; se colunas sobrarem, tenta mínimo
+      let {error}=await sb.from('promotions').insert(payload);
+      if(error){
+        ({error}=await sb.from('promotions').insert({
+          title,
+          description:payload.description,
+          visibility,
+          status,
+          updated_at:payload.updated_at
+        }));
+      }
+      if(error)throw error;
+      alert('Promoção salva no banco.');
+      loadAdminData();
+    }catch(e){alert(e.message||e)}
+  });
+}
+
+// Conteúdo exclusivo — botão publish se existir
+document.querySelectorAll('#contents .primary, #content .primary').forEach(()=>{});
+const contentPublish=document.getElementById('contentPublish')||document.querySelector('#contentsPublish, #exclusiveContentPublish')||[...document.querySelectorAll('#contents button.primary, #content button.primary')].find(b=>/Publicar/i.test(b.textContent||''));
+if(contentPublish){
+  const n=contentPublish.cloneNode(true);contentPublish.replaceWith(n);
+  n.addEventListener('click',async()=>{
+    try{
+      const title=document.getElementById('contentTitle')?.value?.trim()||'';
+      const body=document.getElementById('contentText')?.value||'';
+      if(!title)return alert('Informe o título do conteúdo.');
+      let {error}=await sb.from('exclusive_contents').insert({
+        title,
+        body,
+        description:body,
+        summary:body,
+        category:document.getElementById('contentCategory')?.value||null,
+        status:'published',
+        visibility:'client',
+        published_at:new Date().toISOString(),
+        updated_at:new Date().toISOString()
+      });
+      if(error){
+        ({error}=await sb.from('exclusive_contents').insert({
+          title,
+          description:body,
+          status:'published',
+          visibility:'client',
+          published_at:new Date().toISOString()
+        }));
+      }
+      if(error)throw error;
+      alert('Conteúdo exclusivo publicado.');
+      loadAdminData();
+    }catch(e){alert(e.message||e)}
+  });
+}
+
+// Loja: publicar item real
+const storePublish=document.getElementById('storePublish');
+if(storePublish){
+  const n=storePublish.cloneNode(true);storePublish.replaceWith(n);
+  n.addEventListener('click',async()=>{
+    try{
+      const title=document.getElementById('storeItemName')?.value?.trim();
+      if(!title)return alert('Informe o nome do item.');
+      const kindRaw=(document.getElementById('storeType')?.value||'produto').toLowerCase();
+      const kind=kindRaw.includes('curso')?'curso':kindRaw.includes('oficina')?'oficina':kindRaw.includes('digital')?'outro':'produto';
+      const visibility=document.querySelector('input[name="itemVisibility"]:checked')?.value||'both';
+      const {data:{user}}=await sb.auth.getUser();
+      let image_storage_path=null;
+      const img=document.getElementById('storeImage')?.files?.[0];
+      if(img) image_storage_path=await upload('site-public',img,'store');
+      const {error}=await sb.from('store_items').insert({
+        title,
+        kind,
+        description:document.getElementById('storeDescription')?.value||'',
+        price:Number(document.getElementById('storePrice')?.value||0)||null,
+        visibility: visibility==='hidden'?'hidden':visibility,
+        status:'published',
+        image_storage_path,
+        created_by:user?.id||null,
+        updated_at:new Date().toISOString()
+      });
+      if(error)throw error;
+      alert('Item da loja publicado. O site usa o formulário de informações + catálogo.');
+    }catch(e){alert(e.message||e)}
+  });
+}
+
+renderServices();
 })();
 </script>
 </body>
