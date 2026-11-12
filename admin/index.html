@@ -143,8 +143,10 @@ p{color:var(--muted);line-height:1.65}
 .schedule-info small{color:var(--muted)}
 .badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 .badge{padding:4px 7px;border:1px solid var(--line);color:var(--gold);font-size:8px;text-transform:uppercase}
-.schedule-actions{display:grid;grid-template-columns:repeat(4,40px);gap:6px}
-.schedule-actions button{width:40px;height:40px;border:1px solid var(--line);background:transparent;color:var(--gold)}
+.schedule-actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:center;max-width:280px}
+.schedule-actions button{min-width:40px;height:40px;padding:0 10px;border:1px solid var(--line);background:transparent;color:var(--gold);font:10px/1.2 Georgia,serif;white-space:nowrap}
+.schedule-actions button.icon-btn{width:40px;padding:0;font-size:14px}
+.schedule-actions button.action-btn{height:auto;min-height:40px;padding:8px 12px;white-space:normal;text-align:center;max-width:140px}
 
 .store-editor{display:grid;grid-template-columns:1fr 330px;gap:18px}
 
@@ -174,8 +176,8 @@ p{color:var(--muted);line-height:1.65}
   .list-row{grid-template-columns:1fr}
   .list-row button{width:100%}
   .schedule-item{grid-template-columns:auto 1fr}
-  .schedule-actions{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}
-  .schedule-actions button{width:100%}
+  .schedule-actions{grid-column:1/-1;max-width:none;justify-content:stretch}
+  .schedule-actions button.action-btn{flex:1 1 140px;max-width:none}
 }
 
 @media(max-width:390px){
@@ -1816,7 +1818,7 @@ async function loadScheduleSlots(){
  const {data,error}=await sb.from('schedule_slots').select('*').order('appointment_date',{ascending:true}).order('appointment_time',{ascending:true});
  if(error){setMessage('scheduleListMessage',error.message,true);return;}
  setMessage('scheduleListMessage',data?.length?`${data.length} horário(s) sincronizado(s) entre os administradores.`:'Nenhum horário salvo no banco.');
- container.innerHTML=(data||[]).length?(data||[]).map((slot,i)=>`<article class="schedule-item" data-id="${slot.id}" data-date="${slot.appointment_date}" data-time="${String(slot.appointment_time||'').slice(0,5)}"><span class="drag">⋮⋮</span><div class="schedule-info"><strong>${localDate(slot.appointment_date)} às ${String(slot.appointment_time||'').slice(0,5)}</strong><small>${slot.service_name||'Atendimento'}${slot.modality?' · '+slot.modality:''}</small><div class="badges"><span class="badge">${slot.status||'disponível'}</span><span class="badge">Banco sincronizado</span></div></div><div class="schedule-actions"><button type="button" data-schedule-up>↑</button><button type="button" data-schedule-down>↓</button><button type="button" data-schedule-edit>✎</button>${String(slot.status||'').toLowerCase()==='reserved'?'<button type="button" data-schedule-release>Cancelar e liberar</button><button type="button" data-schedule-cancel-block>Cancelar e bloquear</button>':''}${slot.active===false?'<button type="button" data-schedule-release>Reabrir horário</button>':''}<button type="button" data-schedule-delete>×</button></div></article>`).join(''):'<div class="empty-note">Nenhum horário cadastrado.</div>';
+ container.innerHTML=(data||[]).length?(data||[]).map((slot,i)=>`<article class="schedule-item" data-id="${slot.id}" data-date="${slot.appointment_date}" data-time="${String(slot.appointment_time||'').slice(0,5)}"><span class="drag">⋮⋮</span><div class="schedule-info"><strong>${localDate(slot.appointment_date)} às ${String(slot.appointment_time||'').slice(0,5)}</strong><small>${slot.service_name||'Atendimento'}${slot.modality?' · '+slot.modality:''}</small><div class="badges"><span class="badge">${slot.status||'disponível'}</span><span class="badge">Banco sincronizado</span></div></div><div class="schedule-actions"><button type="button" class="icon-btn" data-schedule-up title="Subir">↑</button><button type="button" class="icon-btn" data-schedule-down title="Descer">↓</button><button type="button" class="icon-btn" data-schedule-edit title="Editar">✎</button>${String(slot.status||'').toLowerCase()==='reserved'?'<button type="button" class="action-btn" data-schedule-release>Cancelar e liberar</button><button type="button" class="action-btn" data-schedule-cancel-block>Cancelar e bloquear</button>':''}${slot.active===false?'<button type="button" class="action-btn" data-schedule-release>Reabrir horário</button>':''}<button type="button" class="icon-btn" data-schedule-delete title="Excluir">×</button></div></article>`).join(''):'<div class="empty-note">Nenhum horário cadastrado.</div>';
  container.querySelectorAll('[data-schedule-delete]').forEach(b=>b.onclick=()=>deleteSchedule(b.closest('.schedule-item').dataset.id));
  container.querySelectorAll('[data-schedule-edit]').forEach(b=>b.onclick=()=>editSchedule(data.find(x=>String(x.id)===b.closest('.schedule-item').dataset.id)));
  container.querySelectorAll('[data-schedule-release]').forEach(b=>b.onclick=()=>releaseSchedule(b.closest('.schedule-item').dataset.id,false));
@@ -1911,16 +1913,40 @@ async function acceptReservation(id){
   if(box)box.textContent='Aceitando...';
   const {data,error}=await sb.rpc('accept_schedule_reservation',{p_reservation_id:Number(id)});
   if(error){if(box){box.textContent=error.message;box.classList.add('error')}return}
+  let payload=data;
+  if(typeof payload==='string'){
+    try{payload=JSON.parse(payload)}catch(_e){payload={}}
+  }
+  payload=payload&&typeof payload==='object'?payload:{};
   let emailStatus='';
   try{
-    const modality=modalityLabelAdmin(data.message,data.modality);
-    const {error:mailError}=await sb.functions.invoke('booking-accepted',{body:{
-      ...data,
-      modality_label:modality
-    }});
-    emailStatus=mailError?(' E-mail: '+mailError.message):' E-mail enviado ao cliente.';
-  }catch(e){emailStatus=' E-mail não enviado (configure a function booking-accepted).'}
+    const toEmail=String(payload.customer_email||'').trim();
+    if(!toEmail){
+      emailStatus=' E-mail falhou: cliente sem e-mail na solicitação.';
+    }else{
+      const modality=modalityLabelAdmin(payload.message,payload.modality);
+      const {data:mailData,error:mailError}=await sb.functions.invoke('booking-accepted',{body:{
+        customer_email:toEmail,
+        customer_name:payload.customer_name||'cliente',
+        appointment_date:payload.appointment_date,
+        appointment_time:payload.appointment_time,
+        service_name:payload.service_name,
+        modality:payload.modality,
+        modality_label:modality
+      }});
+      if(mailError){
+        const detail=mailData?.error?.message||mailData?.error||mailError.message;
+        emailStatus=' E-mail falhou: '+ (typeof detail==='string'?detail:JSON.stringify(detail));
+      }else if(mailData?.error){
+        const detail=mailData.error?.message||mailData.error;
+        emailStatus=' E-mail falhou: '+ (typeof detail==='string'?detail:JSON.stringify(detail));
+      }else{
+        emailStatus=' E-mail enviado para '+toEmail+'.';
+      }
+    }
+  }catch(e){emailStatus=' E-mail não enviado: '+(e?.message||e)}
   if(box){box.textContent='Solicitação aceita.'+emailStatus;box.classList.remove('error')}
+  alert('Solicitação aceita.'+emailStatus);
   await Promise.all([loadPendingRequests(),loadScheduleSlots()]);
 }
 async function rejectReservation(id){
