@@ -1183,10 +1183,12 @@ p{color:var(--muted);line-height:1.65}
 <label class="field">
   Modalidade
   <select id="scheduleModality">
-    <option>Online</option>
-    <option>Presencial</option>
+    <option value="livre" selected>Cliente escolhe (Online ou Presencial)</option>
+    <option value="online">Somente Online</option>
+    <option value="presencial">Somente Presencial</option>
   </select>
 </label>
+<p class="helper-text" style="margin-top:-6px;margin-bottom:12px">Por padrão o admin só libera data e horário. O cliente escolhe Online ou Presencial na reserva.</p>
 
 </div>
 
@@ -1828,7 +1830,7 @@ async function saveSchedule(){
   delete button.dataset.editId;button.textContent='Adicionar horário';setMessage('scheduleSaveMessage','Horário salvo e compartilhado com todos os administradores.');await loadScheduleSlots();
  }catch(e){setMessage('scheduleSaveMessage',e.message||'Não foi possível salvar o horário.',true)}finally{button.disabled=false}
 }
-function editSchedule(slot){if(!slot)return;document.getElementById('scheduleDate').value=slot.appointment_date||'';document.getElementById('scheduleTime').value=String(slot.appointment_time||'').slice(0,5);document.getElementById('scheduleService').value=slot.service_name||'Jogo completo';document.getElementById('scheduleModality').value=(slot.modality||'online').toLowerCase()==='presencial'?'Presencial':'Online';const vis=document.querySelector(`input[name="publishFirst"][value="${slot.visibility||'both'}"]`);if(vis)vis.checked=true;document.getElementById('scheduleClientRelease').value=slot.client_release_at?new Date(slot.client_release_at).toISOString().slice(0,16):'';document.getElementById('schedulePublicRelease').value=slot.public_release_at?new Date(slot.public_release_at).toISOString().slice(0,16):'';const b=document.getElementById('saveScheduleButton');b.dataset.editId=slot.id;b.textContent='Salvar alteração';document.querySelector('[data-tab="agendaNew"]').click();}
+function editSchedule(slot){if(!slot)return;document.getElementById('scheduleDate').value=slot.appointment_date||'';document.getElementById('scheduleTime').value=String(slot.appointment_time||'').slice(0,5);document.getElementById('scheduleService').value=slot.service_name||'Jogo completo';document.getElementById('scheduleModality').value=(()=>{const m=String(slot.modality||'livre').toLowerCase();return m==='presencial'?'presencial':m==='online'?'online':'livre'})();const vis=document.querySelector(`input[name="publishFirst"][value="${slot.visibility||'both'}"]`);if(vis)vis.checked=true;document.getElementById('scheduleClientRelease').value=slot.client_release_at?new Date(slot.client_release_at).toISOString().slice(0,16):'';document.getElementById('schedulePublicRelease').value=slot.public_release_at?new Date(slot.public_release_at).toISOString().slice(0,16):'';const b=document.getElementById('saveScheduleButton');b.dataset.editId=slot.id;b.textContent='Salvar alteração';document.querySelector('[data-tab="agendaNew"]').click();}
 
 async function releaseSchedule(id,keepBlocked){
  const message=keepBlocked?'Cancelar este agendamento e manter o horário bloqueado?':'Cancelar este agendamento e liberar o horário novamente?';
