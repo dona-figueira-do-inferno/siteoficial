@@ -1353,8 +1353,17 @@
       <h2 class="section-title">Horários em primeira mão</h2>
 
       <p class="schedule-intro">
-        Clientes cadastrados visualizam novos horários antes da divulgação no site público.
+        O admin libera data e horário. Você escolhe se prefere Online ou Presencial na reserva.
       </p>
+
+      <label class="field" style="max-width:420px;display:grid;gap:8px;margin:0 0 18px">
+        Modalidade desejada
+        <select id="clientModality">
+          <option value="">Selecione Online ou Presencial</option>
+          <option value="online">Online</option>
+          <option value="presencial">Presencial</option>
+        </select>
+      </label>
 
       <p id="scheduleMessage" class="helper-text" aria-live="polite"></p>
       <div id="slotGrid" class="slot-grid"></div>
@@ -1756,11 +1765,10 @@ async function loadSchedule(){
   grid.innerHTML=clientSlots.map(slot=>{
     const hour=String(slot.appointment_time||'').slice(0,5);
     const service=slot.service_name||'Atendimento';
-    const modality=slot.modality==='presencial'?'Presencial':slot.modality==='online'?'Online':'';
     return `<article class="slot-card">
       <span class="slot-date">${escapeHtml(monthDayLabel(slot.appointment_date))}</span>
       <strong>${escapeHtml(hour)}</strong>
-      <p>${escapeHtml([service,modality].filter(Boolean).join(' · '))}</p>
+      <p>${escapeHtml(service)}</p>
       <button class="primary-button" type="button" data-reserve="${slot.id}">Solicitar horário</button>
     </article>`;
   }).join('');
@@ -1773,6 +1781,9 @@ async function reserveSlot(slotId,button){
   if(!slotId)return;
   const slot=clientSlots.find(x=>String(x.id)===String(slotId));
   if(!slot)return msg('scheduleMessage','Horário não encontrado. Atualize a lista.');
+  const modality=document.getElementById('clientModality')?.value||'';
+  if(!modality)return msg('scheduleMessage','Escolha se prefere Online ou Presencial antes de solicitar.');
+  const modalityLabel=modality==='presencial'?'Presencial':'Online';
   const original=button.textContent;
   button.disabled=true;
   button.textContent='Reservando...';
@@ -1784,7 +1795,7 @@ async function reserveSlot(slotId,button){
     p_channel:'client',
     p_customer_name:name||null,
     p_customer_phone:phone||null,
-    p_message:'Reserva pela Área do Cliente'
+    p_message:'Reserva pela Área do Cliente | Modalidade escolhida pelo cliente: '+modalityLabel
   });
   if(error){
     msg('scheduleMessage',error.message);
@@ -1794,7 +1805,7 @@ async function reserveSlot(slotId,button){
     return;
   }
   const hour=String(slot.appointment_time||'').slice(0,5);
-  const text=encodeURIComponent(`Olá! Reservei pela Área do Cliente o horário de ${brDate(slot.appointment_date)} às ${hour}. Nome: ${name||'não informado'}.`);
+  const text=encodeURIComponent(`Olá! Reservei pela Área do Cliente o horário de ${brDate(slot.appointment_date)} às ${hour} (${modalityLabel}). Nome: ${name||'não informado'}.`);
   window.open(`https://wa.me/${PHONE}?text=${text}`,'_blank','noopener');
   msg('scheduleMessage','Horário reservado com sucesso.');
   await loadSchedule();
