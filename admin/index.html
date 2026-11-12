@@ -1202,7 +1202,7 @@ p{color:var(--muted);line-height:1.65}
 <div class="publish-options">
 
 <label class="publish-option">
-  <input name="publishFirst" type="radio" value="client" checked>
+  <input name="publishFirst" type="radio" value="client">
   <span>
     <strong>Somente Área do Cliente</strong>
     <small>Exclusivo para clientes autenticados.</small>
@@ -1218,7 +1218,7 @@ p{color:var(--muted);line-height:1.65}
 </label>
 
 <label class="publish-option">
-  <input name="publishFirst" type="radio" value="both">
+  <input name="publishFirst" type="radio" value="both" checked>
   <span>
     <strong>Site Público e Área do Cliente</strong>
     <small>O primeiro agendamento bloqueia o horário nos dois locais.</small>
@@ -1227,7 +1227,7 @@ p{color:var(--muted);line-height:1.65}
 
 </div>
 
-<div id="clientRelease">
+<div id="clientRelease"><p class="helper-text" id="scheduleReleaseHelp">Deixe as datas de liberação VAZIAS para aparecer na hora. Se preencher no futuro, o horário fica oculto até lá.</p>
 
 <div class="form-grid">
 
@@ -1823,7 +1823,7 @@ async function saveSchedule(){
   const {data:{user}}=await sb.auth.getUser();
   const currentCount=document.querySelectorAll('#scheduleList .schedule-item').length;
   const visibility=document.querySelector('input[name="publishFirst"]:checked')?.value||'both';
-  const payload={service_name:document.getElementById('scheduleService').value,modality:document.getElementById('scheduleModality').value.trim().toLowerCase(),appointment_date:date,appointment_time:time,status:'available',active:true,visibility,client_release_at:toIsoOrNull(document.getElementById('scheduleClientRelease').value),public_release_at:toIsoOrNull(document.getElementById('schedulePublicRelease').value),auto_publish_public:visibility!=='client',public_display_order:currentCount+1,featured:false,created_by:user?.id||null};
+  const payload={service_name:document.getElementById('scheduleService').value,modality:(()=>{const m=document.getElementById('scheduleModality').value.trim().toLowerCase();return(!m||m==='livre')?null:m})(),appointment_date:date,appointment_time:time,status:'available',active:true,visibility,client_release_at:toIsoOrNull(document.getElementById('scheduleClientRelease').value),public_release_at:toIsoOrNull(document.getElementById('schedulePublicRelease').value),auto_publish_public:visibility!=='client',public_display_order:currentCount+1,featured:false,created_by:user?.id||null};
   const editId=button.dataset.editId;
   const q=editId?sb.from('schedule_slots').update({...payload,updated_at:new Date().toISOString()}).eq('id',editId):sb.from('schedule_slots').insert(payload);
   const {error}=await q;if(error)throw error;
