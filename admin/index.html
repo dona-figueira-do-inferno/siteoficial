@@ -1868,15 +1868,24 @@ async function loadPendingRequests(){
   if(!list)return;
   if(box)box.textContent='Carregando solicitações...';
   const {data,error}=await sb.from('schedule_reservations')
-    .select('id,slot_id,channel,customer_name,customer_phone,customer_email,customer_birth_date,message,status,created_at, schedule_slots(service_name,appointment_date,appointment_time,modality)')
+    .select('id,slot_id,channel,customer_name,customer_phone,customer_email,customer_birth_date,message,status,created_at')
     .eq('status','pending')
     .order('created_at',{ascending:false});
   if(error){if(box){box.textContent=error.message;box.classList.add('error')}return}
-  if(badge)badge.textContent=String((data||[]).length);
-  if(box){box.textContent=(data||[]).length?`${data.length} solicitação(ões) aguardando aceite.`:'Nenhuma solicitação pendente.';box.classList.remove('error')}
-  list.innerHTML=(data||[]).length?(data||[]).map(r=>{
-    const s=r.schedule_slots||{};
-    const hour=String(s.appointment_time||'').slice(0,5);
+  const rows=data||[];
+  const slotIds=[...new Set(rows.map(r=>r.slot_id).filter(Boolean))];
+  let slotById={};
+  if(slotIds.length){
+    const {data:slots}=await sb.from('schedule_slots')
+      .select('id,service_name,appointment_date,appointment_time,modality')
+      .in('id',slotIds);
+    slotById=Object.fromEntries((slots||[]).map(s=>[s.id,s]));
+  }
+  if(badge)badge.textContent=String(rows.length);
+  if(box){box.textContent=rows.length?`${rows.length} solicitação(ões) aguardando aceite.`:'Nenhuma solicitação pendente.';box.classList.remove('error')}
+  list.innerHTML=rows.length?rows.map(r=>{
+    const s=slotById[r.slot_id]||{};
+    const hour=String(s.appointment_time||'').slice(0,5)||'—';
     const birth=r.customer_birth_date?brDateAdmin(r.customer_birth_date):'—';
     return `<article class="schedule-item" data-reservation-id="${r.id}">
       <span class="drag">!</span>
