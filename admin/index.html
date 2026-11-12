@@ -1823,7 +1823,7 @@ async function saveSchedule(){
   const {data:{user}}=await sb.auth.getUser();
   const currentCount=document.querySelectorAll('#scheduleList .schedule-item').length;
   const visibility=document.querySelector('input[name="publishFirst"]:checked')?.value||'both';
-  const payload={service_name:document.getElementById('scheduleService').value,modality:(()=>{const m=document.getElementById('scheduleModality').value.trim().toLowerCase();return(!m||m==='livre')?null:m})(),appointment_date:date,appointment_time:time,status:'available',active:true,visibility,client_release_at:toIsoOrNull(document.getElementById('scheduleClientRelease').value),public_release_at:toIsoOrNull(document.getElementById('schedulePublicRelease').value),auto_publish_public:visibility!=='client',public_display_order:currentCount+1,featured:false,created_by:user?.id||null};
+  const payload={service_name:document.getElementById('scheduleService').value,modality:(()=>{const m=document.getElementById('scheduleModality').value.trim().toLowerCase();return(!m||m==='livre')?'livre':m})(),appointment_date:date,appointment_time:time,status:'available',active:true,visibility,client_release_at:toIsoOrNull(document.getElementById('scheduleClientRelease').value),public_release_at:toIsoOrNull(document.getElementById('schedulePublicRelease').value),auto_publish_public:visibility!=='client',public_display_order:currentCount+1,featured:false,created_by:user?.id||null};
   const editId=button.dataset.editId;
   const q=editId?sb.from('schedule_slots').update({...payload,updated_at:new Date().toISOString()}).eq('id',editId):sb.from('schedule_slots').insert(payload);
   const {error}=await q;if(error)throw error;
