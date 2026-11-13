@@ -1699,18 +1699,28 @@ async function loadContents(){
   const grid=document.getElementById('contentGrid');
   const empty=document.getElementById('contentEmpty');
   try{
-    let query=sb.from('exclusive_contents').select('*').order('published_at',{ascending:false}).order('created_at',{ascending:false});
-    const {data,error}=await query;
+    let data=null,error=null;
+    // Ordenação resiliente: se published_at/created_at não existirem, ainda lista.
+    ({data,error}=await sb.from('exclusive_contents').select('*').order('published_at',{ascending:false}));
+    if(error) ({data,error}=await sb.from('exclusive_contents').select('*').order('created_at',{ascending:false}));
+    if(error) ({data,error}=await sb.from('exclusive_contents').select('*'));
     if(error)throw error;
     const items=(data||[]).filter(item=>{
-      const status=String(item.status||item.publication_status||'published').toLowerCase();
-      const visibility=String(item.visibility||item.audience||'client').toLowerCase();
-      const okStatus=['published','publicado','active','ativo',''].includes(status);
-      const okVis=['client','cliente','both','ambos','exclusive','exclusivo',''].includes(visibility);
+      const status=String(item.status||item.publication_status||'published').toLowerCase().trim();
+      const visibility=String(item.visibility||item.audience||'client').toLowerCase().trim();
+      const blockedStatus=['draft','rascunho','hidden','oculto','archived','arquivado'];
+      const blockedVis=['public','publico','público','hidden','oculto','admin'];
+      const okStatus=!blockedStatus.includes(status);
+      const okVis=!blockedVis.includes(visibility);
       return okStatus&&okVis;
+    }).sort((a,b)=>{
+      const da=new Date(a.published_at||a.updated_at||a.created_at||0).getTime();
+      const db=new Date(b.published_at||b.updated_at||b.created_at||0).getTime();
+      return db-da;
     });
     if(!items.length){
       empty.hidden=false;
+      empty.textContent='Nenhum conteúdo exclusivo publicado no momento.';
       grid.innerHTML='';
       return;
     }
@@ -1724,6 +1734,7 @@ async function loadContents(){
       return '<article class="content-card"><div class="content-media"'+mediaStyle+'>'+(media?'':'Publicação')+'</div><div class="content-body"><span class="eyebrow">'+escapeHtml(category)+'</span><h3>'+escapeHtml(title)+'</h3><p>'+escapeHtml(String(body).slice(0,180))+(String(body).length>180?'…':'')+'</p></div></article>';
     }).join('');
   }catch(_e){
+    console.warn('loadContents',_e);
     empty.hidden=false;
     empty.textContent='Os conteúdos exclusivos ainda não estão disponíveis nesta conta.';
     grid.innerHTML='';
