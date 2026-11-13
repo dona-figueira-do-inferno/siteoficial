@@ -1021,7 +1021,7 @@ p{color:var(--muted);line-height:1.65}
 <div class="page-head"><div><span class="eyebrow">Área do Cliente</span><h1>Conteúdos exclusivos</h1><p>Crie textos, imagens, vídeos e áudios em uma única publicação.</p></div><button class="primary" data-content-tab="contentEditor">Novo conteúdo</button></div>
 <div class="tabs"><button class="active" data-tab-group="content" data-tab="contentEditor">Editor</button><button data-tab-group="content" data-tab="contentList">Publicados</button></div>
 <div id="contentEditor" class="tab-panel active" data-tab-panel-group="content"><div class="editor-grid"><section class="panel"><h2>Nova publicação</h2><div class="form-grid"><label class="field">Título<input id="contentTitle"></label><label class="field">Categoria<input id="contentCategory" placeholder="Cartomancia, orientação..."></label></div><label class="field">Texto<textarea id="contentText"></textarea></label><div class="content-type-options"><label><input id="contentHasImage" type="checkbox" checked> Imagem</label><label><input id="contentHasVideo" type="checkbox"> Vídeo</label><label><input id="contentHasAudio" type="checkbox"> Áudio</label><label><input id="contentFeatured" type="checkbox"> Destaque</label></div><div class="form-grid"><label class="field">Capa/imagem<input id="contentImage" type="file" accept="image/*"></label><label class="field">Vídeo<input id="contentVideo" type="file" accept="video/*"></label><label class="field">Áudio<input id="contentAudio" type="file" accept="audio/*"></label><label class="field">Status<select id="contentStatus"><option>Publicado</option><option>Rascunho</option><option>Oculto</option></select></label></div><div class="toolbar"><button class="secondary" id="contentDraft">Salvar rascunho</button><button class="primary" id="contentPublish">Publicar conteúdo</button></div></section><aside><div id="contentPreview" class="preview-card sticky-preview"><span id="contentPreviewCategory" class="eyebrow">CATEGORIA</span><h3 id="contentPreviewTitle">Título do conteúdo</h3><div id="contentPreviewMedia" class="preview-media">Capa da publicação</div><p id="contentPreviewText">O texto aparecerá aqui.</p></div></aside></div></div>
-<div id="contentList" class="tab-panel" data-tab-panel-group="content"><div class="empty-note">Os conteúdos publicados aparecerão aqui após a integração com o banco.</div></div>
+<div id="contentList" class="tab-panel" data-tab-panel-group="content"><div id="exclusiveContentsList" class="history-grid"><div class="empty-note">Carregando conteúdos...</div></div></div>
 </section>
 <!-- AGENDA -->
 
@@ -1713,7 +1713,7 @@ async function requireAdmin(user){
   if(profile?.status && profile.status!=='ativo')throw new Error('Conta administrativa inativa.');
   return {full_name:profile?.full_name||'Administrador',email:verified.user.email};
 }
-async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.getElementById('topAdminName').textContent=p.full_name||'Administrador';document.getElementById('topAdminEmail').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await Promise.all([loadAdminData(),loadMyProfile(),loadAdminsList(),loadScheduleSlots(),loadWeeklyReadings(),loadPendingRequests()]);watchPendingRequests()}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
+async function openAdmin(user){try{const p=await requireAdmin(user);adminAuthScreen.classList.add('hidden');document.getElementById('topAdminName').textContent=p.full_name||'Administrador';document.getElementById('topAdminEmail').textContent=p.email||user.email;document.querySelector('.status').innerHTML='<span class="dot"></span>Conectado ao Supabase';await Promise.all([loadAdminData(),loadMyProfile(),loadAdminsList(),loadScheduleSlots(),loadWeeklyReadings(),loadPendingRequests(),loadExclusiveContentsList()]);watchPendingRequests()}catch(e){await sb.auth.signOut();adminAuthScreen.classList.remove('hidden');authMsg.textContent=e.message}}
 document.getElementById('adminLoginButton').onclick=async()=>{const email=document.getElementById('adminLoginEmail').value.trim(),password=document.getElementById('adminLoginPassword').value;if(!email||!password)return authMsg.textContent='Preencha e-mail e senha.';authMsg.textContent='Verificando acesso...';const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return authMsg.textContent=error.message;await openAdmin(data.user)};
 document.getElementById('adminForgotButton').onclick=()=>{adminLoginCard.classList.add('hidden');adminRecoveryCard.classList.remove('hidden');document.getElementById('adminRecoveryEmail').value=document.getElementById('adminLoginEmail').value};
 document.getElementById('adminRecoveryBack').onclick=()=>{adminRecoveryCard.classList.add('hidden');adminLoginCard.classList.remove('hidden')};
@@ -2507,9 +2507,7 @@ async function saveExclusiveContent(asDraft){
     const {error}=await sb.from('exclusive_contents').insert(clean);
     if(!error){
       alert(status==='draft'?'Rascunho salvo.':'Conteúdo exclusivo publicado.');
-      loadAdminData();
-      const list=document.getElementById('contentList');
-      if(list) list.innerHTML=`<div class="list-row"><div><strong>${title}</strong><small>${category||'Exclusivo'} · ${status}</small></div><span class="badge">${status==='published'?'PUBLICADO':'RASCUNHO'}</span></div>`+(list.innerHTML||'');
+      await Promise.all([loadAdminData(),loadExclusiveContentsList()]);
       return;
     }
     lastError=error;
@@ -2529,7 +2527,68 @@ function wireExclusiveContentButtons(){
     n.addEventListener('click',async()=>{try{await saveExclusiveContent(true)}catch(e){alert(e.message||e)}});
   }
 }
+async function loadExclusiveContentsList(){
+  const box=document.getElementById('exclusiveContentsList');
+  if(!box)return;
+  box.innerHTML='<div class="empty-note">Carregando conteúdos...</div>';
+  try{
+    let data=null,error=null;
+    ({data,error}=await sb.from('exclusive_contents').select('*').order('published_at',{ascending:false}));
+    if(error)({data,error}=await sb.from('exclusive_contents').select('*').order('created_at',{ascending:false}));
+    if(error)({data,error}=await sb.from('exclusive_contents').select('*'));
+    if(error)throw error;
+    const items=(data||[]).slice().sort((a,b)=>{
+      const da=new Date(a.published_at||a.updated_at||a.created_at||0).getTime();
+      const db=new Date(b.published_at||b.updated_at||b.created_at||0).getTime();
+      return db-da;
+    });
+    if(!items.length){
+      box.innerHTML='<div class="empty-note">Nenhum conteúdo exclusivo no banco ainda.</div>';
+      return;
+    }
+    const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+    box.innerHTML=items.map(item=>{
+      const id=item.id;
+      const title=esc(item.title||item.name||'Sem título');
+      const status=esc(item.status||'—');
+      const cat=esc(item.category||'Exclusivo');
+      const when=item.published_at||item.updated_at||item.created_at;
+      const whenLabel=when?new Date(when).toLocaleString('pt-BR'):'sem data';
+      const preview=esc(String(item.summary||item.body||item.text||'').slice(0,120));
+      return `<article class="history-item" data-exclusive-id="${esc(id)}"><div><strong>${title}</strong><br><span class="small">${cat} · ${status} · ${whenLabel}</span>${preview?`<br><span class="small">${preview}</span>`:''}</div><div class="account-actions"><button class="danger" type="button" data-exclusive-delete="${esc(id)}">Apagar</button></div></article>`;
+    }).join('');
+    box.querySelectorAll('[data-exclusive-delete]').forEach(btn=>{
+      btn.onclick=async()=>{
+        const id=btn.dataset.exclusiveDelete;
+        if(!id)return;
+        if(!confirm('Apagar este conteúdo exclusivo? Essa ação não pode ser desfeita.'))return;
+        btn.disabled=true;
+        const {error:delErr}=await sb.from('exclusive_contents').delete().eq('id',id);
+        if(delErr){alert(delErr.message||delErr);btn.disabled=false;return;}
+        await Promise.all([loadExclusiveContentsList(),loadAdminData()]);
+      };
+    });
+  }catch(e){
+    console.warn('loadExclusiveContentsList',e);
+    box.innerHTML=`<div class="empty-note">Não foi possível carregar: ${String(e.message||e)}</div>`;
+  }
+}
+document.querySelectorAll('[data-tab-group="content"]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.dataset.tab==='contentList') loadExclusiveContentsList();
+  });
+});
+document.querySelectorAll('[data-content-tab]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const target=btn.dataset.contentTab;
+    document.querySelectorAll('[data-tab-group="content"]').forEach(t=>t.classList.toggle('active',t.dataset.tab===target));
+    document.querySelectorAll('[data-tab-panel-group="content"]').forEach(p=>p.classList.toggle('active',p.id===target));
+    if(target==='contentList') loadExclusiveContentsList();
+  });
+});
 wireExclusiveContentButtons();
+window.loadExclusiveContentsList=loadExclusiveContentsList;
+loadExclusiveContentsList();
 
 // Loja: publicar item real
 const storePublish=document.getElementById('storePublish');
