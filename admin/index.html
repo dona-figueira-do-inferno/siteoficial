@@ -2439,42 +2439,96 @@ if(promoPublish){
   });
 }
 
-// Conteúdo exclusivo — botão publish se existir
-document.querySelectorAll('#contents .primary, #content .primary').forEach(()=>{});
-const contentPublish=document.getElementById('contentPublish')||document.querySelector('#contentsPublish, #exclusiveContentPublish')||[...document.querySelectorAll('#contents button.primary, #content button.primary')].find(b=>/Publicar/i.test(b.textContent||''));
-if(contentPublish){
-  const n=contentPublish.cloneNode(true);contentPublish.replaceWith(n);
-  n.addEventListener('click',async()=>{
-    try{
-      const title=document.getElementById('contentTitle')?.value?.trim()||'';
-      const body=document.getElementById('contentText')?.value||'';
-      if(!title)return alert('Informe o título do conteúdo.');
-      let {error}=await sb.from('exclusive_contents').insert({
-        title,
-        body,
-        description:body,
-        summary:body,
-        category:document.getElementById('contentCategory')?.value||null,
-        status:'published',
-        visibility:'client',
-        published_at:new Date().toISOString(),
-        updated_at:new Date().toISOString()
-      });
-      if(error){
-        ({error}=await sb.from('exclusive_contents').insert({
-          title,
-          description:body,
-          status:'published',
-          visibility:'client',
-          published_at:new Date().toISOString()
-        }));
-      }
-      if(error)throw error;
-      alert('Conteúdo exclusivo publicado.');
+// Conteúdo exclusivo — rascunho + publicar (compatível com schema real do Supabase)
+async function saveExclusiveContent(asDraft){
+  const title=document.getElementById('contentTitle')?.value?.trim()||'';
+  const body=document.getElementById('contentText')?.value||'';
+  const category=document.getElementById('contentCategory')?.value?.trim()||null;
+  if(!title)return alert('Informe o título do conteúdo.');
+  const statusSelect=document.getElementById('contentStatus')?.value||'';
+  const status=asDraft||/rascunho/i.test(statusSelect)?'draft':/oculto/i.test(statusSelect)?'hidden':'published';
+  const featured=!!document.getElementById('contentFeatured')?.checked;
+  const now=new Date().toISOString();
+
+  let cover_url=null, image_url=null, video_url=null, audio_url=null;
+  let cover_storage_path=null, image_storage_path=null, video_storage_path=null, audio_storage_path=null;
+  try{
+    const img=document.getElementById('contentImage')?.files?.[0];
+    const vid=document.getElementById('contentVideo')?.files?.[0];
+    const aud=document.getElementById('contentAudio')?.files?.[0];
+    if(img && document.getElementById('contentHasImage')?.checked!==false){
+      cover_storage_path=image_storage_path=await upload(SITE_BUCKET,img,'exclusive');
+      cover_url=image_url=await publicUrl(cover_storage_path);
+    }
+    if(vid && document.getElementById('contentHasVideo')?.checked){
+      video_storage_path=await upload(SITE_BUCKET,vid,'exclusive');
+      video_url=await publicUrl(video_storage_path);
+    }
+    if(aud && document.getElementById('contentHasAudio')?.checked){
+      audio_storage_path=await upload(SITE_BUCKET,aud,'exclusive');
+      audio_url=await publicUrl(audio_storage_path);
+    }
+  }catch(upErr){
+    console.warn('Upload de mídia (conteúdo exclusivo):',upErr);
+  }
+
+  const rich={
+    title,
+    body,
+    summary:body,
+    text:body,
+    category,
+    status,
+    visibility:'client',
+    featured,
+    cover_url,image_url,video_url,audio_url,
+    cover_storage_path,image_storage_path,video_storage_path,audio_storage_path,
+    published_at:status==='published'?now:null,
+    updated_at:now,
+    created_at:now
+  };
+  // Tentativas do mais completo ao mínimo — NÃO enviar "description"
+  // (essa coluna não existe em exclusive_contents no projeto atual).
+  const attempts=[
+    rich,
+    {title,body,summary:body,category,status,visibility:'client',cover_url,image_url,published_at:rich.published_at,updated_at:now},
+    {title,body,category,status,visibility:'client',published_at:rich.published_at,updated_at:now},
+    {title,summary:body,status,visibility:'client',published_at:rich.published_at},
+    {title,text:body,status,visibility:'client',published_at:rich.published_at},
+    {title,body,status:'published'},
+    {title,summary:body},
+    {title,text:body},
+    {title}
+  ];
+  let lastError=null;
+  for(const payload of attempts){
+    const clean=Object.fromEntries(Object.entries(payload).filter(([,v])=>v!==null&&v!==undefined&&v!==''));
+    const {error}=await sb.from('exclusive_contents').insert(clean);
+    if(!error){
+      alert(status==='draft'?'Rascunho salvo.':'Conteúdo exclusivo publicado.');
       loadAdminData();
-    }catch(e){alert(e.message||e)}
-  });
+      const list=document.getElementById('contentList');
+      if(list) list.innerHTML=`<div class="list-row"><div><strong>${title}</strong><small>${category||'Exclusivo'} · ${status}</small></div><span class="badge">${status==='published'?'PUBLICADO':'RASCUNHO'}</span></div>`+(list.innerHTML||'');
+      return;
+    }
+    lastError=error;
+    if(!/column|schema cache|Could not find/i.test(String(error.message||''))) break;
+  }
+  throw lastError||new Error('Não foi possível salvar o conteúdo.');
 }
+function wireExclusiveContentButtons(){
+  const publish=document.getElementById('contentPublish');
+  const draft=document.getElementById('contentDraft');
+  if(publish){
+    const n=publish.cloneNode(true);publish.replaceWith(n);
+    n.addEventListener('click',async()=>{try{await saveExclusiveContent(false)}catch(e){alert(e.message||e)}});
+  }
+  if(draft){
+    const n=draft.cloneNode(true);draft.replaceWith(n);
+    n.addEventListener('click',async()=>{try{await saveExclusiveContent(true)}catch(e){alert(e.message||e)}});
+  }
+}
+wireExclusiveContentButtons();
 
 // Loja: publicar item real
 const storePublish=document.getElementById('storePublish');
